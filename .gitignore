@@ -33,3 +33,11 @@ pipeline/transcript.json
 pipeline/*.wav
 pipeline/*.mp3
 pipeline/transcript.source.json
+
+# Recursos pesados o con licencia propia: se comparten por Drive, no por Git
+assets/raw/*
+assets/music/*
+assets/sfx/*
+!assets/raw/.gitkeep
+!assets/music/.gitkeep
+!assets/sfx/.gitkeep

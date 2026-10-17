@@ -129,3 +129,33 @@ def test_mix_supports_the_same_sfx_used_twice(tmp_path: Path, monkeypatch: pytes
     monkeypatch.setattr(audio_mixer, "MUSIC_DIR", music_dir)
     audio_mixer.mix(str(video), str(beatmap), str(mixed))
     assert mixed.is_file() and mixed.stat().st_size > 0
+
+
+def test_sfx_fade_out_is_at_the_end_not_the_start() -> None:
+    from src.backend.audio_mixer import sfx_fade_out
+    assert sfx_fade_out(2.0) == (1.92, 0.08)
+    assert sfx_fade_out(0.05) == (0.0, 0.05)
+
+
+def test_sfx_remains_audible_in_the_mix(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.backend import audio_mixer
+    video, mixed = tmp_path / "v.mp4", tmp_path / "mixed.mp4"
+    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "color=c=black:s=160x90:r=25", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono",
+                    "-t", "4", "-c:v", "libx264", "-c:a", "aac", str(video)], check=True, capture_output=True)
+    sfx_dir, music_dir = tmp_path / "sfx", tmp_path / "music"
+    sfx_dir.mkdir(); music_dir.mkdir()
+    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=frequency=800", "-t", "1.5", str(sfx_dir / "pop.wav")], check=True, capture_output=True)
+    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono", "-t", "1", str(music_dir / "bed.wav")], check=True, capture_output=True)
+    beatmap = tmp_path / "beatmap.md"
+    beatmap.write_text("""| # | Inicio | Fin | Speech | Escena | Visual | Texto en pantalla | Transición | SFX | Caption |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 00:01.0 | 00:02.0 | - | CAPTIONS | - | - | - | pop | - |
+""", encoding="utf-8")
+    monkeypatch.setattr(audio_mixer, "SFX_DIR", sfx_dir)
+    monkeypatch.setattr(audio_mixer, "MUSIC_DIR", music_dir)
+    audio_mixer.mix(str(video), str(beatmap), str(mixed))
+    # Window 1.3 s to 2.3 s: after the old buggy 80 ms fade, a correct mix still carries the SFX.
+    result = subprocess.run(["ffmpeg", "-hide_banner", "-ss", "1.3", "-t", "0.8", "-i", str(mixed), "-af", "volumedetect", "-f", "null", "-"],
+                            capture_output=True, text=True)
+    mean = float([line for line in result.stderr.splitlines() if "mean_volume" in line][0].split(":")[1].split()[0])
+    assert mean > -40, f"SFX is almost silent in the mix (mean {mean} dB)"
