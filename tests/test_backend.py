@@ -108,3 +108,24 @@ def test_ffmpeg_rough_cut_and_mix_with_temporary_ten_second_video(tmp_path: Path
     monkeypatch.setattr(audio_mixer, "MUSIC_DIR", music_dir)
     audio_mixer.mix(str(rough), str(beatmap), str(mixed))
     assert mixed.is_file() and mixed.stat().st_size > 0
+
+
+def test_mix_supports_the_same_sfx_used_twice(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.backend import audio_mixer
+    video, mixed = tmp_path / "v.mp4", tmp_path / "mixed.mp4"
+    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "color=c=black:s=160x90:r=25", "-f", "lavfi", "-i", "sine=frequency=440",
+                    "-t", "4", "-c:v", "libx264", "-c:a", "aac", str(video)], check=True, capture_output=True)
+    sfx_dir, music_dir = tmp_path / "sfx", tmp_path / "music"
+    sfx_dir.mkdir(); music_dir.mkdir()
+    for path in (sfx_dir / "pop.wav", music_dir / "bed.wav"):
+        subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "sine=frequency=500", "-t", "1", str(path)], check=True, capture_output=True)
+    beatmap = tmp_path / "beatmap.md"
+    beatmap.write_text("""| # | Inicio | Fin | Speech | Escena | Visual | Transición | SFX | Caption |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 00:00.5 | 00:01.0 | - | CAPTIONS | - | - | pop | - |
+| 2 | 00:02.0 | 00:03.0 | - | CAPTIONS | - | - | pop | - |
+""", encoding="utf-8")
+    monkeypatch.setattr(audio_mixer, "SFX_DIR", sfx_dir)
+    monkeypatch.setattr(audio_mixer, "MUSIC_DIR", music_dir)
+    audio_mixer.mix(str(video), str(beatmap), str(mixed))
+    assert mixed.is_file() and mixed.stat().st_size > 0

@@ -98,8 +98,10 @@ def mix(video_path: str, beatmap_path: str = "pipeline/beatmap.md", output_path:
     video = ffmpeg.input(video_path)
     music = ffmpeg.input(str(_music_file(beatmap)), stream_loop=-1).audio.filter("volume", "-22dB")
     inputs = [video.audio, music]
-    for event in events:
-        sound = ffmpeg.input(str(_resolve_sfx(event))).audio
+    for index, event in enumerate(events):
+        # ffmpeg-python fusiona nodos idénticos; el mismo SFX repetido rompería el grafo (varias salidas
+        # de un mismo filtro). Un valor distinto por evento mantiene cada instancia independiente.
+        sound = ffmpeg.input(str(_resolve_sfx(event)), thread_queue_size=512 + index).audio
         inputs.append(sound.filter("aecho", "0.8", "0.9", "1000", "0.7").filter("afade", t="out", st=0, d=0.08).filter("adelay", f"{round(event['time'] * 1000)}:all=1"))
     mixed = ffmpeg.filter(inputs, "amix", inputs=len(inputs), duration="first", normalize=0)
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
