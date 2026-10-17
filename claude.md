@@ -56,7 +56,12 @@ No avances al siguiente paso sin aprobación del usuario sobre el beat map.
 
 ## 7. Audio
 - Música de fondo entre **-20 dB y -23 dB** durante la voz (referencia: -22 dB).
-- SFX por evento visual: whoosh en zooms/transiciones, pop/click en elementos de UI, riser en clímax.
+- SFX por evento visual (vocabulario fijo, se escribe en la columna SFX del beat map):
+  - `whoosh`: cada zoom-in/out, deslizamiento y transición de escena.
+  - `pop` / `click`: aparición de tarjetas UI, listas, botones e iconos, en el segundo exacto en que aparecen.
+  - `draw`: trazado de líneas o recuadros.
+  - `riser` + `hit`: hooks, inicio de capítulo y clímax (riser antes, hit en el instante del impacto).
+- Procesado de cada SFX: reverb ~70% y un fade out corto al final (evita cortes secos).
 - Usa solo archivos de `assets/sfx/` y `assets/music/`.
 
 ## 8. Redacción (anti-slop)
