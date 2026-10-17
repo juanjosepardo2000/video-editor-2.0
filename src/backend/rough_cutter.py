@@ -136,6 +136,11 @@ def main() -> None:
     parser.add_argument("--mode", choices=("auto", "review", "manual"), default="auto")
     args = parser.parse_args()
     transcript = json.loads(args.transcript.read_text(encoding="utf-8"))
+    if transcript.get("video") == args.output:
+        raise SystemExit(f"{args.transcript} ya fue remapeado al rough cut; usa {args.transcript.with_suffix('.source.json')} como --transcript")
+    source_copy = args.transcript.with_suffix(".source.json")
+    if not source_copy.exists():
+        source_copy.write_text(json.dumps(transcript, ensure_ascii=False, indent=2), encoding="utf-8")
     segments, words = build_cut_plan(transcript.get("words", []), args.padding_ms, args.mode)
     cut(args.video, segments, args.output)
     transcript.update(video=args.output, words=remap_words(words, segments))

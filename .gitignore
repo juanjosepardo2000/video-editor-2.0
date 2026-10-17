@@ -27,3 +27,9 @@ pipeline/qc_frames/
 
 # Config local de MCP (cada persona autoriza con su cuenta)
 .mcp.json
+
+# Artefactos generados por el pipeline (el ejemplo versionado vive en pipeline/examples/)
+pipeline/transcript.json
+pipeline/*.wav
+pipeline/*.mp3
+pipeline/transcript.source.json
