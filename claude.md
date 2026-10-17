@@ -43,7 +43,7 @@ No avances al siguiente paso sin aprobación del usuario sobre el beat map.
 
 ## 5. Zonas seguras 9:16 (1080x1920)
 - Texto y gráficos lejos de los bordes superior e inferior y de los laterales extremos (UI de TikTok/Reels/Shorts).
-- Valores de trabajo provisionales (las fuentes NO dan cifras exactas, ajustar tras pruebas): superior 150 px, inferior 380 px, derecha 120 px, márgenes laterales 60 px.
+- Las fuentes solo describen las zonas de forma cualitativa (arriba choca con la barra de búsqueda; abajo y a los lados, con los botones de interacción; subtítulos y animaciones en la mitad inferior). Valores de trabajo provisionales, ajustar tras pruebas: superior 150 px, inferior 380 px, derecha 120 px, márgenes laterales 60 px.
 - Animaciones y subtítulos en la mitad inferior de la pantalla, sin tapar nunca el rostro del hablante.
 
 ## 6. Subtítulos y animaciones

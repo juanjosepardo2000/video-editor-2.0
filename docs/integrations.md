@@ -50,4 +50,5 @@ Ver `.claude/skills/qc-loop/SKILL.md` y los sub-agentes en `.claude/agents/`.
 ## Higgsfield: notas adicionales
 - Error común: subir archivos locales desde el sandbox falla por restricciones de red; usa el widget `media_upload` o IDs/UUIDs de assets.
 - Costo de referencia: video de 3 min (46 imágenes, 3 miniaturas, 2 character sheets) ~241 créditos (~$9.50 con el plan de 1,000 créditos / $39 al mes). La guía original mencionaba planes de $19 a $47 al mes: verifica el plan vigente.
-- Pendiente de confirmar: qué plan incluye acceso MCP.
+- El MCP funciona con plan gratuito y de pago (Alwi Batarilan, ~00:15). Los créditos del plan gratuito NO están en las fuentes: revísalos en tu cuenta.
+- Planes mencionados: desde $19/mes (créditos no especificados); $39/mes = 1,000 créditos (Matt Loui, ~03:15); $47/mes (plan de Drake, créditos no especificados). Verifica precios vigentes en la página de Higgsfield.

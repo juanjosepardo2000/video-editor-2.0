@@ -8,7 +8,7 @@ description: Construye pipeline/beatmap.md a partir de pipeline/transcript.json.
 Entrada: `pipeline/transcript.json`, `claude.md`, `context/`. Salida: `pipeline/beatmap.md` (formato definido en ese archivo; no cambies sus columnas).
 
 ## Proceso
-1. Agrupa las palabras en frases y crea un beat por frase, con inicio/fin tomados del transcript.
+1. Un beat es cada frase hablada junto con lo que debe verse en pantalla mientras se dice (definición de Duncan Rogoff: "a beat map is a list of every sentence you say and what should be on screen while you say it"). Agrupa las palabras en frases y crea un beat por frase, con inicio/fin tomados del transcript.
 2. Asigna a cada beat un tipo de escena:
    - `CAPTIONS`: hook inicial (mostrar la cara genera confianza) y frases conversacionales o de enlace.
    - `CAPTION_UI`: listas numeradas, llamados de atención o títulos de capítulo, sin tapar el rostro.
