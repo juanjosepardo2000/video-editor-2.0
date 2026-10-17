@@ -44,6 +44,18 @@ DO NOT USE COMPUTER USE OR OPEN CAPCUT. Build the timeline by writing the projec
 Schedule the rendered motion graphics video for Instagram Reels, TikTok, and YouTube Shorts 30 minutes from now using Blotato MCP. Draft a viral caption, include relevant hashtags based on 'claude.md', and await my approval on the caption before finalizing the post.
 ```
 
+## Publicación: datos confirmados (Sabrina Ramonov, ~07:35 a 08:45)
+- Blotato soporta Instagram (Reels y carruseles), TikTok, YouTube Shorts y Facebook, y puede extraer contenido de podcasts, PDFs, webs y YouTube para reempaquetarlo.
+- **No tiene plan gratuito**: requiere clave API de pago. Precio mensual y límites de publicaciones: NO están en las fuentes (míralo en su web).
+- Descript MCP también publica, no solo edita: sus tres funciones son importar, editar (Underlord) y publicar. Devuelve un enlace web compartible y un enlace de descarga del MP4. Prompt de referencia (Sam & Teddy, ~12:20): `Okay that looks good Publish it.`
+
+## Checklist humano antes de publicar
+Siempre con aprobación explícita de Juan:
+1. Caption: encaja con `context/voice.md` y sin frases cliché de IA.
+2. Hashtags: coinciden con las reglas de `claude.md` y `context/voice.md`.
+3. Horario: fecha y hora exactas en el calendario de contenidos.
+4. Miniatura: ortografía, rostros sin distorsión y logos bien ubicados (esquina superior izquierda, según Drake).
+
 ## Control de calidad
 Ver `.claude/skills/qc-loop/SKILL.md` y los sub-agentes en `.claude/agents/`.
 
