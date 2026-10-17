@@ -26,3 +26,11 @@ Contradicciones entre los creadores (NotebookLM) y lo que elegimos. Cambiar una 
 - **Demo/MVP:** se usan nuestras claves; en el MVP se añade una pantalla para que cada empresa pegue sus claves (guardadas localmente, nunca en el repo).
 - **Entrega:** desktop primero (Remotion renderiza en local y el export a CapCut escribe archivos locales); versión online después, con render en la nube.
 - **Licencias (música, fuentes como CoolVetica):** se revisan después de que el flujo funcione.
+
+## Integración gráficos / NLE (respuestas de Gonzalo, pendiente confirmar con Carlos)
+- **Composición de capas:** Remotion genera solo gráficos transparentes (ProRes 4444 `.mov` con alfa, 1080x1920, 30 fps). El video del hablante vive en CapCut, que lo recorta o lo oculta según la escena (SPLIT, FULLSCREEN).
+- **Plan B de exportación:** si la versión de CapCut no abre proyectos externos, usar un proyecto vacío de esa instalación como plantilla; si no, FCPXML para DaVinci / Final Cut (EDL pierde demasiada información).
+- **Pendiente de prueba manual:** importar el overlay ProRes 4444 en el CapCut real y abrir el `draft_content.json` generado. Requiere la versión de CapCut y de macOS.
+- **QC loop:** necesita un render plano (video + overlays). Hay que definir cómo se genera una previsualización compuesta para revisar si un gráfico tapa la cara (por ejemplo, composición con FFmpeg).
+- **Caption literal:** la columna `Caption` del beat map debe coincidir con palabras literales de `Speech`.
+- **Fuentes:** Inter y Caveat tienen licencia OFL (libres). CoolVetica sin licencia comercial confirmada: provisionalmente se usa Inter para titulares hasta resolverlo.

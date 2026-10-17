@@ -23,7 +23,7 @@ Tiempos en segundos sobre el video **ya cortado** (`mm:ss.s`). SFX: `tipo` o `ti
 |---|---|---|---|---|---|---|---|---|
 | 1 | 00:00.0 | 00:02.5 | Si editas videos cortos, esto te importa. | CAPTIONS | Hablante a pantalla completa, sin gráficos | cut | riser | importa |
 | 2 | 00:02.5 | 00:05.0 | Tres errores arruinan tus ediciones. | CAPTION_UI | Tarjeta liquid glass con 3 círculos numerados en el tercio inferior | slide-up | pop | Tres |
-| 3 | 00:05.0 | 00:08.0 | Primero: elementos gigantes. Hazlos un veinticinco por ciento más pequeños. | SPLIT | Arriba: icono que se reduce un 25%; abajo: hablante | fade | whoosh | 25% |
+| 3 | 00:05.0 | 00:08.0 | Primero: elementos gigantes. Hazlos un 25% más pequeños. | SPLIT | Arriba: icono que se reduce un 25%; abajo: hablante | fade | whoosh | 25% |
 | 4 | 00:08.0 | 00:10.5 | Segundo: colores puros. Los apagados se ven más premium. | SPLIT | Arriba: tres cajas de color, de saturado a apagado; abajo: hablante | fade | pop | apagados |
 | 5 | 00:10.5 | 00:13.0 | Tercero: texto fuera de la zona segura. | FULLSCREEN | Diagrama 9:16 con zonas de la interfaz marcadas y un texto fuera de zona | zoom-in | whoosh, hit | zona segura |
 | 6 | 00:13.0 | 00:15.0 | Corrige esto y tus videos subirán de nivel. | CAPTIONS | Hablante a pantalla completa, sin gráficos | cut | - | nivel |
@@ -31,4 +31,5 @@ Tiempos en segundos sobre el video **ya cortado** (`mm:ss.s`). SFX: `tipo` o `ti
 ## Notas
 - Cambio de visual aproximadamente cada 1.5 a 3 s (guía, no regla fija).
 - Respeta las zonas seguras y las reglas de `claude.md`.
+- La columna `Caption` debe coincidir literalmente con palabras de `Speech` (el resaltado busca coincidencias con el texto hablado).
 - Transcript de prueba con tiempos por palabra: `pipeline/examples/transcript.fixture.json`.
