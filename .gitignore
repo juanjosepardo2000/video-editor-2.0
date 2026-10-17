@@ -21,3 +21,6 @@ __pycache__/
 # Salida del render (conservar .gitkeep)
 out/*
 !out/.gitkeep
+
+# Frames temporales del QC loop
+pipeline/qc_frames/

@@ -64,7 +64,7 @@ No avances al siguiente paso sin aprobación del usuario sobre el beat map.
 - Tono y reglas detalladas en `context/voice.md`.
 
 ## 9. QC loop (antes de entregar)
-Revisa frames del render (cada 10 fps / cada 10 fotogramas) buscando:
+Usa la skill `qc-loop`: muestrea el render a **10 fps** (1 fps pasa por alto la mayoría de errores) y revisa en paralelo con los sub-agentes de `.claude/agents/`. Busca:
 1. Animaciones repetidas.
 2. Destellos de 1 fotograma.
 3. Texto ilegible por velocidad.
@@ -73,6 +73,9 @@ Revisa frames del render (cada 10 fps / cada 10 fotogramas) buscando:
 6. Desincronización de labios.
 7. Texto fuera de zona segura.
 Si hay fallos, corrige y vuelve a renderizar. Si tras 3 iteraciones persisten, pide ayuda al usuario.
+
+## 9b. Generación con Higgsfield
+Antes de cualquier generación, sigue la skill `higgsfield-budget` (confirmar aspecto, modelo, costo y prompt).
 
 ## 10. Aprendizaje continuo
 Cuando el usuario corrija algo o edite el resultado final:
