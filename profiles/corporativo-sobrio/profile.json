@@ -26,11 +26,11 @@
     "fonts": {
       "primary": "Inter Semibold",
       "headline": "CoolVetica",
-      "accentScript": "TODO"
+      "accentScript": "Caveat"
     }
   },
   "audio": {
-    "music": "assets/music/TODO.mp3",
+    "music": "assets/music/track.mp3",
     "musicDb": -22
   },
   "format": {
