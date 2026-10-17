@@ -79,7 +79,13 @@ try {
   assert.equal(incompleteTranscript.status, 1);
   assert.match(incompleteTranscript.stderr, /existe transcript/);
 
-  console.log("BeatMap tests: 7/7 OK");
+  const nonLiteralCaption = run({
+    markdown: `${header}\n| 1 | 00:00.0 | 00:02.0 | veinticinco por ciento | CAPTIONS | A | cut | - | 25% |\n`,
+  });
+  assert.equal(nonLiteralCaption.status, 1);
+  assert.match(nonLiteralCaption.stderr, /coincidir literalmente/);
+
+  console.log("BeatMap tests: 8/8 OK");
 } finally {
   fs.rmSync(temporary, { recursive: true, force: true });
 }
