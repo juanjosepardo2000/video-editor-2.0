@@ -8,6 +8,7 @@ import { WordByWordCaptions } from "../components/WordByWordCaptions";
 import { generatedBeatMap } from "../beatmap/generated-beatmap";
 import type { BeatMapEntry } from "../beatmap/types";
 import { colors, safeArea, typography } from "../design/tokens";
+import { resolveProfileFont } from "../design/fonts";
 
 const clamp = {
   extrapolateLeft: "clamp" as const,
@@ -25,6 +26,9 @@ const accentByName: Record<string, string> = {
 
 const beatMapAccent = accentByName[generatedBeatMap.config.accent.toLowerCase()] ?? generatedBeatMap.config.accent;
 const beatMapTheme = generatedBeatMap.config.theme.toLowerCase().includes("light") ? "light" : "dark";
+const primaryFontFamily = resolveProfileFont(generatedBeatMap.config.font);
+const headlineFontFamily = resolveProfileFont(generatedBeatMap.config.headlineFont);
+const accentFontFamily = resolveProfileFont(generatedBeatMap.config.accentFont);
 
 const splitHeadline = (text: string) => {
   const words = text.trim().split(/\s+/).filter(Boolean);
@@ -64,6 +68,9 @@ const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat
       wordsPerPage={5}
       accent={beatMapAccent}
       theme={beatMapTheme}
+      captionStyle={generatedBeatMap.config.captionStyle}
+      primaryFontFamily={primaryFontFamily}
+      accentFontFamily={accentFontFamily}
     />
   );
 };
@@ -137,7 +144,7 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
   const style = transitionStyle(beat.transition, frame, duration);
 
   return (
-    <AbsoluteFill style={{ ...style, fontFamily: typography.family }}>
+    <AbsoluteFill style={{ ...style, fontFamily: primaryFontFamily }}>
       {beat.scene === "CAPTIONS" ? <CaptionLayer beat={beat} duration={duration} /> : null}
 
       {beat.scene === "CAPTION_UI" ? (
@@ -191,7 +198,7 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
             <div style={{ color: colors.primary, fontSize: 22, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase" }}>
               Vista complementaria
             </div>
-            <div style={{ marginTop: 24, fontSize: 46, lineHeight: 1.08, fontWeight: 700, letterSpacing: -1.6 }}>
+            <div style={{ marginTop: 24, fontFamily: headlineFontFamily, fontSize: 46, lineHeight: 1.08, fontWeight: 700, letterSpacing: -1.6 }}>
               {beat.visual || "Contenido dividido"}
             </div>
           </div>

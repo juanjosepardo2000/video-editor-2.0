@@ -19,9 +19,7 @@ export const generatedBeatMap = {
     "height": 1920,
     "fps": 30
   },
-  "warnings": [
-    "Beat 3: Caption \"25%\" no coincide con palabras de Speech/transcript."
-  ],
+  "warnings": [],
   "durationInFrames": 450,
   "beats": [
     {
@@ -129,7 +127,7 @@ export const generatedBeatMap = {
       "endSeconds": 8,
       "startFrame": 150,
       "endFrame": 240,
-      "speech": "Primero: elementos gigantes. Hazlos un veinticinco por ciento más pequeños.",
+      "speech": "Primero: elementos gigantes. Hazlos un 25% más pequeños.",
       "scene": "SPLIT",
       "visual": "Arriba: icono que se reduce un 25%; abajo: hablante",
       "transition": "fade",
@@ -142,51 +140,41 @@ export const generatedBeatMap = {
         {
           "text": "Primero:",
           "startFrame": 5,
-          "endFrame": 11
+          "endFrame": 14
         },
         {
           "text": "elementos",
-          "startFrame": 13,
-          "endFrame": 20
+          "startFrame": 14,
+          "endFrame": 23
         },
         {
           "text": "gigantes.",
-          "startFrame": 20,
-          "endFrame": 28
+          "startFrame": 24,
+          "endFrame": 33
         },
         {
           "text": "Hazlos",
-          "startFrame": 29,
-          "endFrame": 35
-        },
-        {
-          "text": "un",
-          "startFrame": 36,
+          "startFrame": 34,
           "endFrame": 43
         },
         {
-          "text": "veinticinco",
+          "text": "un",
           "startFrame": 44,
-          "endFrame": 51
+          "endFrame": 53
         },
         {
-          "text": "por",
-          "startFrame": 52,
-          "endFrame": 59
-        },
-        {
-          "text": "ciento",
-          "startFrame": 60,
-          "endFrame": 67
+          "text": "25%",
+          "startFrame": 54,
+          "endFrame": 63
         },
         {
           "text": "más",
-          "startFrame": 68,
-          "endFrame": 75
+          "startFrame": 64,
+          "endFrame": 73
         },
         {
           "text": "pequeños.",
-          "startFrame": 76,
+          "startFrame": 74,
           "endFrame": 83
         }
       ]

@@ -8,6 +8,7 @@ const readArgument = (name) => process.argv.find((argument) => argument.startsWi
 const beatMapPath = path.resolve(repositoryRoot, readArgument("beatmap") ?? "pipeline/beatmap.md");
 const transcriptPath = path.resolve(repositoryRoot, readArgument("transcript") ?? "pipeline/transcript.json");
 const outputPath = path.resolve(repositoryRoot, readArgument("output") ?? path.relative(repositoryRoot, path.join(scriptDirectory, "generated-beatmap.ts")));
+const validationProfile = readArgument("validation-profile");
 const sceneCodes = new Set(["CAPTIONS", "CAPTION_UI", "SPLIT", "FULLSCREEN"]);
 const transitionCodes = new Set(["cut", "fade", "slide-up", "zoom-in"]);
 const expectedHeaders = ["#", "Inicio", "Fin", "Speech", "Escena", "Visual", "Transición", "SFX", "Caption"];
@@ -35,7 +36,11 @@ const parseConfig = (markdown) => {
   const declared = markdown.match(/^-\s*Perfil:\s*`?([a-z0-9_-]+)`?\s*$/im)?.[1];
   const activePath = path.join(repositoryRoot, "profiles/ACTIVE");
   if (!fs.existsSync(activePath)) throw new Error("No existe profiles/ACTIVE; Juan debe seleccionar un perfil.");
-  const active = fs.readFileSync(activePath, "utf8").trim();
+  const configuredActive = fs.readFileSync(activePath, "utf8").trim();
+  const active = validationProfile ?? configuredActive;
+  if (validationProfile) {
+    console.warn(`Validación aislada: se usa el perfil "${validationProfile}" sin modificar profiles/ACTIVE.`);
+  }
   if (!active || active === "_template") throw new Error("profiles/ACTIVE no contiene un perfil utilizable.");
   if (declared && declared !== active) {
     throw new Error(`El perfil del BeatMap "${declared}" no coincide con profiles/ACTIVE "${active}".`);
@@ -59,6 +64,10 @@ const parseConfig = (markdown) => {
   if (typeof profile.theme?.mode !== "string" || typeof profile.theme?.accent !== "string" || typeof profile.theme?.fonts?.primary !== "string") {
     throw new Error(`profiles/${profileName}/profile.json debe definir theme.mode, theme.accent y theme.fonts.primary.`);
   }
+  const captionStyle = profile.editing?.captionStyle;
+  if (!new Set(["word-by-word", "phrase"]).has(captionStyle)) {
+    throw new Error(`profiles/${profileName}/profile.json debe definir editing.captionStyle como "word-by-word" o "phrase".`);
+  }
   return {
     profile: profileName,
     theme: profile.theme.mode,
@@ -68,7 +77,7 @@ const parseConfig = (markdown) => {
     accentFont: profile.theme.fonts.accentScript ?? profile.theme.fonts.primary,
     textColor: profile.theme.text ?? "#1D1D1F",
     textSecondary: profile.theme.textSecondary ?? "#6E6E73",
-    captionStyle: profile.editing?.captionStyle ?? "word-by-word",
+    captionStyle,
     width,
     height,
     fps,
@@ -144,6 +153,11 @@ const parseTable = (markdown, fps) => {
 
 const normalizeWord = (value) => normalize(value).replace(/\s+/g, "");
 
+const containsPhrase = (haystack, needle) => {
+  if (needle.length === 0 || needle.length > haystack.length) return false;
+  return haystack.some((_, index) => needle.every((word, offset) => haystack[index + offset] === word));
+};
+
 const uniformWords = (beat) => {
   const tokens = beat.speech.split(/\s+/).filter(Boolean);
   const span = beat.endFrame - beat.startFrame;
@@ -194,11 +208,11 @@ try {
       throw new Error(`Beat ${beat.index}: existe transcript, pero no contiene palabras en este intervalo. Regenera el transcript con los tiempos del rough cut.`);
     }
     const words = transcriptWords ? aligned : uniformWords(beat);
-    const speechWords = new Set(words.map((word) => normalizeWord(word.text)));
+    const speechWords = words.map((word) => normalizeWord(word.text));
     for (const keyword of beat.accentKeywords) {
       const keywordWords = keyword.split(/\s+/).map(normalizeWord).filter(Boolean);
-      if (keywordWords.length > 0 && !keywordWords.some((word) => speechWords.has(word))) {
-        parsed.warnings.push(`Beat ${beat.index}: Caption "${keyword}" no coincide con palabras de Speech/transcript.`);
+      if (!containsPhrase(speechWords, keywordWords)) {
+        throw new Error(`Beat ${beat.index}: Caption "${keyword}" debe coincidir literalmente y en orden con Speech/transcript.`);
       }
     }
     return { ...beat, words };

@@ -3,6 +3,42 @@ import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, radii, safeArea, spacing, typography } from "../design/tokens";
 import type { TimedCaptionWord } from "../beatmap/types";
 
+export type CaptionStyle = "word-by-word" | "phrase";
+
+export type CaptionPhrase = {
+  words: readonly TimedCaptionWord[];
+  startFrame: number;
+  endFrame: number;
+};
+
+export const groupCaptionPhrases = (
+  words: readonly TimedCaptionWord[],
+  maximumWords = 7,
+): CaptionPhrase[] => {
+  const phrases: CaptionPhrase[] = [];
+  let current: TimedCaptionWord[] = [];
+  for (const word of words) {
+    current.push(word);
+    const closesPhrase = /[.!?;:]$/.test(word.text) || current.length >= maximumWords;
+    if (closesPhrase) {
+      phrases.push({
+        words: current,
+        startFrame: current[0].startFrame,
+        endFrame: current[current.length - 1].endFrame,
+      });
+      current = [];
+    }
+  }
+  if (current.length > 0) {
+    phrases.push({
+      words: current,
+      startFrame: current[0].startFrame,
+      endFrame: current[current.length - 1].endFrame,
+    });
+  }
+  return phrases;
+};
+
 export type WordByWordCaptionsProps = {
   text: string;
   durationInFrames: number;
@@ -13,6 +49,9 @@ export type WordByWordCaptionsProps = {
   wordsPerPage?: 3 | 4 | 5 | 6;
   position?: "lower" | "center";
   theme?: "light" | "dark";
+  captionStyle?: CaptionStyle;
+  primaryFontFamily?: string;
+  accentFontFamily?: string;
   reducedMotion?: boolean;
 };
 
@@ -31,6 +70,9 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
   wordsPerPage = 5,
   position = "lower",
   theme = "dark",
+  captionStyle = "word-by-word",
+  primaryFontFamily = typography.family,
+  accentFontFamily = typography.family,
   reducedMotion = false,
 }) => {
   const frame = useCurrentFrame();
@@ -46,14 +88,28 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
   if (words.length === 0) return null;
 
   const safeDuration = Math.max(durationInFrames, 12);
-  const currentWordIndex = Math.max(
-    0,
-    words.reduce((latest, word, index) => (frame >= word.startFrame ? index : latest), -1),
+  const currentWordIndex = words.reduce(
+    (latest, word, index) => (frame >= word.startFrame ? index : latest),
+    -1,
   );
-  const pageIndex = Math.floor(currentWordIndex / wordsPerPage);
+  const phrases = groupCaptionPhrases(words);
+  const currentPhraseIndex = phrases.reduce(
+    (latest, phrase, index) => (frame >= phrase.startFrame ? index : latest),
+    -1,
+  );
+  const pageIndex = captionStyle === "phrase"
+    ? Math.max(currentPhraseIndex, 0)
+    : Math.floor(Math.max(currentWordIndex, 0) / wordsPerPage);
   const pageStart = pageIndex * wordsPerPage;
-  const pageWords = words.slice(pageStart, pageStart + wordsPerPage);
-  const visibleWords = reducedMotion ? pageWords : pageWords.filter((word) => frame >= word.startFrame);
+  const pageWords = captionStyle === "phrase"
+    ? phrases[pageIndex]?.words ?? []
+    : words.slice(pageStart, pageStart + wordsPerPage);
+  const captionsStarted = captionStyle === "phrase" ? currentPhraseIndex >= 0 : currentWordIndex >= 0;
+  const visibleWords = !captionsStarted
+    ? []
+    : captionStyle === "phrase" || reducedMotion
+      ? pageWords
+      : pageWords.filter((word) => frame >= word.startFrame);
   const normalizedKeywords = accentKeywords.flatMap((keyword) => keyword.toLocaleLowerCase("es-ES").split(/\s+/)).map((word) => word.replace(/[^\p{L}\p{N}]/gu, ""));
   const exitOpacity = interpolate(frame, [safeDuration - 10, safeDuration - 4], [1, 0], clamp);
   const light = theme === "light";
@@ -69,7 +125,7 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
         display: "flex",
         justifyContent: "center",
         opacity: exitOpacity,
-        fontFamily: typography.family,
+        fontFamily: primaryFontFamily,
       }}
     >
       <div
@@ -98,10 +154,13 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
           const isKeyword = normalizedKeywords.includes(normalizedWord);
           const keywordRank = visibleWords.slice(0, index + 1).filter((candidate) => normalizedKeywords.includes(candidate.text.toLocaleLowerCase("es-ES").replace(/[^\p{L}\p{N}]/gu, ""))).length;
           const isAccented = isKeyword && keywordRank <= accentWordCount;
+          const animationStart = captionStyle === "phrase"
+            ? phrases[pageIndex]?.startFrame ?? word.startFrame
+            : word.startFrame;
           const wordProgress = reducedMotion
             ? 1
             : spring({
-                frame: Math.max(frame - word.startFrame, 0),
+                frame: Math.max(frame - animationStart, 0),
                 fps,
                 durationInFrames: 8,
                 config: { damping: 18, mass: 0.55, stiffness: 150 },
@@ -111,6 +170,7 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
               key={`${pageIndex}-${index}-${word}`}
               style={{
                 color: isAccented ? accent : light ? "#1B2421" : colors.foreground,
+                fontFamily: isAccented ? accentFontFamily : primaryFontFamily,
                 opacity: interpolate(wordProgress, [0, 1], [0, 1]),
                 transform: `translateY(${interpolate(wordProgress, [0, 1], [14, 0])}px) scale(${interpolate(wordProgress, [0, 1], [0.96, 1])})`,
                 textShadow: isAccented ? `0 0 22px ${accent}38` : light ? "none" : "0 2px 12px rgba(0,0,0,0.3)",

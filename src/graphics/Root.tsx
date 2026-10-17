@@ -6,6 +6,7 @@ import { AnimatedSearchDemo, AnimatedSearchOverlay } from "./compositions/Animat
 import { NewsHighlighterDemo, NewsHighlighterOverlay } from "./compositions/NewsHighlighterDemo";
 import { DynamicCounterDemo, DynamicCounterOverlay } from "./compositions/DynamicCounterDemo";
 import { BeatMapComposition, BeatMapComposition4K } from "./compositions/BeatMapComposition";
+import { CompositeReview } from "./compositions/CompositeReview";
 import { generatedBeatMap } from "./beatmap/generated-beatmap";
 import {
   animatedSearchDemo,
@@ -33,6 +34,15 @@ export const RemotionRoot: React.FC = () => {
         fps={generatedBeatMap.fps}
         width={generatedBeatMap.config.width * 2}
         height={generatedBeatMap.config.height * 2}
+      />
+      <Composition
+        id="CompositeReview"
+        component={CompositeReview}
+        durationInFrames={generatedBeatMap.durationInFrames}
+        fps={generatedBeatMap.fps}
+        width={540}
+        height={960}
+        defaultProps={{ speakerFile: "speaker.mp4", overlayFile: "overlay.mov" }}
       />
       <Composition
         id="MainComposition"

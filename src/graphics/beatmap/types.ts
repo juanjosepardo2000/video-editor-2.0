@@ -39,7 +39,7 @@ export type GeneratedBeatMap = {
     accentFont: string;
     textColor: string;
     textSecondary: string;
-    captionStyle: string;
+    captionStyle: "word-by-word" | "phrase";
     width: number;
     height: number;
     fps: number;

@@ -24,6 +24,8 @@
     "validate:overlay": "python src/graphics/quality/validate_media.py out/beatmap-overlay.mov --width=1080 --height=1920 --fps=30 --beatmap=pipeline/beatmap.md --alpha --codec=prores --report=out/qc-overlay.json",
     "validate:4k": "python src/graphics/quality/validate_media.py out/beatmap-overlay-4k-test.png --width=2160 --height=3840 --alpha --report=out/qc-4k.json",
     "validate:10s": "python src/graphics/quality/validate_media.py out/beatmap-overlay-10s.mov --width=1080 --height=1920 --fps=30 --duration=10 --alpha --codec=prores --report=out/qc-10s.json",
+    "validate:profiles": "node src/graphics/quality/validate_profiles.mjs",
+    "preview:composite": "python src/graphics/quality/compose_preview.py --video out/fixtures/rough-cut.mp4 --overlay out/beatmap-overlay.mov --output out/qc/composite-preview.mp4",
     "qc:technical": "npm test && npm run validate:overlay && npm run validate:4k",
     "qc:10s": "npm run render:10s && npm run validate:10s",
     "qc:fixture:10s": "npm run render:fixture:10s && npm run validate:10s",
@@ -49,6 +51,7 @@
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.536",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "^4.0.0"
