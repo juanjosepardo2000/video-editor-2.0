@@ -1,36 +1,49 @@
-# Perfiles
+# Perfiles de edición
 
-Un perfil guarda la identidad de un cliente, marca o sector: voz, estilo visual, música y datos del negocio. El motor (código, skills, reglas de `claude.md`) es el mismo para todos; lo que cambia es el perfil.
+Un perfil es un **estilo de edición** reutilizable: cómo se corta, qué ritmo tiene, qué tipos de escena predominan, cuánto SFX lleva, cómo se ven los subtítulos y qué paleta, fuentes y música usa. El motor (código, skills, `claude.md`) es el mismo; la empresa elige el perfil que quiere aplicar. Cada empresa puede duplicar un perfil y ajustarlo a su marca.
 
-## Estructura
+## Perfiles incluidos
+| Perfil | Para qué sirve |
+|---|---|
+| `viral-dinamico` | Reels/TikTok/Shorts de ritmo rápido y mucho SFX |
+| `corporativo-sobrio` | Institucional: ritmo calmado, poco SFX, colores apagados |
+| `_template` | Plantilla para crear uno nuevo |
+
+Los valores de `editing` de los dos perfiles de ejemplo son **propuestas iniciales** que hay que calibrar con videos reales; las fuentes solo respaldan el estilo viral (cambio visual cada ~1.5 a 3 s).
+
+## Estructura de un perfil
 ```text
-profiles/
-├── ACTIVE                 # nombre del perfil en uso (una línea)
-├── _template/             # copia esta carpeta para crear un perfil nuevo
-└── <nombre>/
-    ├── profile.json       # tema, fuentes, música, formato (lo leen los scripts y Remotion)
-    ├── voice.md           # tono y palabras prohibidas
-    ├── brand.md           # paleta, logos, referencias visuales
-    ├── business_overview.md
-    ├── pov.md
-    └── stories.md
+profiles/<nombre>/
+├── profile.json           # parámetros de edición, tema, música, formato (lo leen los scripts y Remotion)
+├── voice.md               # tono y palabras prohibidas
+├── brand.md               # paleta, logos, referencias visuales
+├── business_overview.md   # contexto de la empresa
+├── pov.md
+└── stories.md
 ```
+
+`profiles/ACTIVE` contiene el nombre del perfil en uso.
+
+## `profile.json`
+- `editing.cutPaddingMs`: padding de corte (rango permitido 20 a 150).
+- `editing.silenceThresholdSec`: silencio mínimo que se elimina.
+- `editing.sceneChangeSec`: cadencia orientativa de cambio visual (guía, no regla fija).
+- `editing.sceneMix`: proporción aproximada de tipos de escena (guía para el beat map).
+- `editing.sfxDensity`: `baja`, `media` o `alta`.
+- `editing.captionStyle`: `word-by-word` o `phrase`.
+- `theme`, `audio`, `format`: lo que usan Remotion y la mezcla de audio.
 
 ## Crear un perfil
 ```bash
-cp -R profiles/_template profiles/mi-cliente && echo "mi-cliente" > profiles/ACTIVE
+cp -R profiles/_template profiles/mi-perfil && echo "mi-perfil" > profiles/ACTIVE
 ```
-Luego llena los archivos. Se puede sobreescribir el perfil activo con `--profile <nombre>` en los scripts o indicándoselo a Claude.
 
 ## Precedencia
-1. Regla absoluta de `claude.md` (no inventar datos): nunca se anula.
-2. El perfil activo (colores, fuentes, música, voz, frases prohibidas adicionales).
+1. Regla absoluta de `claude.md` (no inventar datos) y zonas seguras: nunca se anulan.
+2. Perfil activo.
 3. Valores por defecto de `claude.md`.
 
 ## Quién lee qué
-- Gonzalo (Remotion): `profile.json` > `theme` y `format`.
-- Carlos (audio): `profile.json` > `audio`.
-- Juan / Claude: todos los `.md` del perfil.
-
-## Privacidad
-Un perfil puede incluir historias y datos de negocio de un cliente. Mantén el repo privado y no subas información de clientes que no hayan autorizado.
+- Carlos: `editing.cutPaddingMs`, `editing.silenceThresholdSec` y `audio`.
+- Gonzalo: `theme`, `format` y `editing.captionStyle`.
+- Juan / Claude: `editing.*` y los `.md` al armar el beat map.

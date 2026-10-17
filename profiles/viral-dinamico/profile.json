@@ -1,0 +1,41 @@
+{
+  "name": "viral-dinamico",
+  "description": "Reels/TikTok/Shorts de ritmo rápido: muchos cambios visuales, SFX frecuentes, subtítulos protagonistas.",
+  "language": "es",
+  "editing": {
+    "cutPaddingMs": 20,
+    "silenceThresholdSec": 0.4,
+    "sceneChangeSec": [
+      1.5,
+      2.5
+    ],
+    "sceneMix": {
+      "CAPTIONS": 0.3,
+      "CAPTION_UI": 0.3,
+      "SPLIT": 0.25,
+      "FULLSCREEN": 0.15
+    },
+    "sfxDensity": "alta",
+    "captionStyle": "word-by-word"
+  },
+  "theme": {
+    "mode": "light",
+    "accent": "#F28C28",
+    "text": "#1D1D1F",
+    "textSecondary": "#6E6E73",
+    "fonts": {
+      "primary": "Inter Semibold",
+      "headline": "CoolVetica",
+      "accentScript": "TODO"
+    }
+  },
+  "audio": {
+    "music": "assets/music/TODO.mp3",
+    "musicDb": -22
+  },
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  }
+}

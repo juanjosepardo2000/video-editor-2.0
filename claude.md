@@ -16,7 +16,7 @@ Lee este archivo completo antes de cualquier tarea de edición. Si el usuario te
 | `src/graphics/` | Gonzalo | Componentes Remotion |
 | `src/nle_bridge/` | Gonzalo | Exportador CapCut / DaVinci |
 | `out/` | todos | Renders finales (no se versiona) |
-| `profiles/<activo>/` | Juan | Voz, marca, historias, tema y música del cliente (ver sección 10) |
+| `profiles/<activo>/` | Juan | Perfil de edición: parámetros, tema, música, voz y marca (ver sección 10) |
 
 Orden: rough cut -> beat map (aprobación humana) -> gráficos -> sonido -> QC loop -> export.
 No avances al siguiente paso sin aprobación del usuario sobre el beat map.
@@ -85,7 +85,7 @@ Antes de cualquier generación, sigue la skill `higgsfield-budget` (confirmar as
 
 ## 10. Perfiles (multi-sector)
 - El perfil activo está en `profiles/ACTIVE`; léelo al iniciar y carga `profiles/<activo>/`.
-- Los valores de `profile.json` (acento, fuentes, tema, música, formato) y los `.md` del perfil sobreescriben los valores por defecto de este archivo.
+- Un perfil es un estilo de edición. Los valores de `profile.json` (`editing`, tema, fuentes, música, formato) y los `.md` del perfil sobreescriben los valores por defecto de este archivo.
 - La regla absoluta de la sección 0 y las zonas seguras no se anulan por perfil.
 - Si no hay perfil activo o está vacío (`_template`), pregunta al usuario antes de continuar.
 - Ver `profiles/README.md`.

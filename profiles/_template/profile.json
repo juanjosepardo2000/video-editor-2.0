@@ -1,7 +1,23 @@
 {
   "name": "nombre-del-perfil",
-  "sector": "TODO (ej. salud, educación, e-commerce)",
+  "description": "TODO: para qué tipo de video sirve este perfil",
   "language": "es",
+  "editing": {
+    "cutPaddingMs": 20,
+    "silenceThresholdSec": 0.5,
+    "sceneChangeSec": [
+      1.5,
+      3
+    ],
+    "sceneMix": {
+      "CAPTIONS": 0.4,
+      "CAPTION_UI": 0.25,
+      "SPLIT": 0.2,
+      "FULLSCREEN": 0.15
+    },
+    "sfxDensity": "media",
+    "captionStyle": "word-by-word"
+  },
   "theme": {
     "mode": "light",
     "accent": "#F28C28",
@@ -17,5 +33,9 @@
     "music": "assets/music/TODO.mp3",
     "musicDb": -22
   },
-  "format": { "width": 1080, "height": 1920, "fps": 30 }
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  }
 }

@@ -1,0 +1,41 @@
+{
+  "name": "corporativo-sobrio",
+  "description": "Video institucional o de marca: ritmo calmado, poco SFX, colores apagados, texto limpio.",
+  "language": "es",
+  "editing": {
+    "cutPaddingMs": 120,
+    "silenceThresholdSec": 0.7,
+    "sceneChangeSec": [
+      3,
+      5
+    ],
+    "sceneMix": {
+      "CAPTIONS": 0.55,
+      "CAPTION_UI": 0.3,
+      "SPLIT": 0.1,
+      "FULLSCREEN": 0.05
+    },
+    "sfxDensity": "baja",
+    "captionStyle": "phrase"
+  },
+  "theme": {
+    "mode": "dark",
+    "accent": "#5B7C99",
+    "text": "#E8EAED",
+    "textSecondary": "#9AA0A6",
+    "fonts": {
+      "primary": "Inter Semibold",
+      "headline": "CoolVetica",
+      "accentScript": "TODO"
+    }
+  },
+  "audio": {
+    "music": "assets/music/TODO.mp3",
+    "musicDb": -22
+  },
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  }
+}

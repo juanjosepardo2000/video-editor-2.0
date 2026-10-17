@@ -20,3 +20,9 @@ Contradicciones entre los creadores (NotebookLM) y lo que elegimos. Cambiar una 
 3. Matt Loui, "Claude + CapCut Completely Changes Everything For Editors" (~00:00 a 02:30): Remotion y .draft de CapCut.
 4. AI Foundations (Drake), "FULL Claude + Higgsfield Tutorial" (~16:00 a 17:30): carpeta de contexto (ahora profiles/) y voz.
 5. Alwi Batarilan, "Higgsfield MCP + Claude Is A Credit Trap" (~00:15 a 02:30): permisos y anti credit trap.
+
+## Decisiones de producto (2026-10)
+- **Modelo de uso:** consultoría que entrega la herramienta a empresas; la empresa elige un perfil de edición y paga sus propias APIs.
+- **Demo/MVP:** se usan nuestras claves; en el MVP se añade una pantalla para que cada empresa pegue sus claves (guardadas localmente, nunca en el repo).
+- **Entrega:** desktop primero (Remotion renderiza en local y el export a CapCut escribe archivos locales); versión online después, con render en la nube.
+- **Licencias (música, fuentes como CoolVetica):** se revisan después de que el flujo funcione.
