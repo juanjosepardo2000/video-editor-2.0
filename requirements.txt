@@ -3,3 +3,4 @@ ffmpeg-python
 pandas
 requests
 python-dotenv
+pytest
