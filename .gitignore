@@ -1,0 +1,23 @@
+# Video pesado
+*.mp4
+*.mov
+*.avi
+
+# Node
+node_modules/
+
+# Entornos Python / secretos
+env/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# Temporales
+*.draft
+.DS_Store
+
+# Salida del render (conservar .gitkeep)
+out/*
+!out/.gitkeep
