@@ -1,0 +1,21 @@
+{
+  "name": "nombre-del-perfil",
+  "sector": "TODO (ej. salud, educación, e-commerce)",
+  "language": "es",
+  "theme": {
+    "mode": "light",
+    "accent": "#F28C28",
+    "text": "#1D1D1F",
+    "textSecondary": "#6E6E73",
+    "fonts": {
+      "primary": "Inter Semibold",
+      "headline": "CoolVetica",
+      "accentScript": "TODO"
+    }
+  },
+  "audio": {
+    "music": "assets/music/TODO.mp3",
+    "musicDb": -22
+  },
+  "format": { "width": 1080, "height": 1920, "fps": 30 }
+}

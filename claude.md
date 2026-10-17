@@ -3,7 +3,7 @@
 Lee este archivo completo antes de cualquier tarea de edición. Si el usuario te corrige, actualiza este archivo (ver "Aprendizaje continuo").
 
 ## 0. Regla absoluta
-- Nunca inventes datos, cifras, fechas ni afirmaciones que no estén en `pipeline/transcript.json` o en `context/`.
+- Nunca inventes datos, cifras, fechas ni afirmaciones que no estén en `pipeline/transcript.json` o en el perfil activo (`profiles/<activo>/`).
 - Si falta un dato, pregunta; no lo rellenes.
 
 ## 1. Flujo y contratos de archivos
@@ -16,7 +16,7 @@ Lee este archivo completo antes de cualquier tarea de edición. Si el usuario te
 | `src/graphics/` | Gonzalo | Componentes Remotion |
 | `src/nle_bridge/` | Gonzalo | Exportador CapCut / DaVinci |
 | `out/` | todos | Renders finales (no se versiona) |
-| `context/` | Juan | Voz, marca, historias |
+| `profiles/<activo>/` | Juan | Voz, marca, historias, tema y música del cliente (ver sección 10) |
 
 Orden: rough cut -> beat map (aprobación humana) -> gráficos -> sonido -> QC loop -> export.
 No avances al siguiente paso sin aprobación del usuario sobre el beat map.
@@ -37,7 +37,7 @@ No avances al siguiente paso sin aprobación del usuario sobre el beat map.
 ## 4. Color y estética
 - Colores sobrios y apagados (azules y verdes opacos). Los colores apagados se ven más premium.
 - Evita negros puros, blancos puros y rojos saturados, y amarillos fosforescentes, salvo que se pidan.
-- Tema por defecto: claro estilo Apple con un solo acento (naranja), o paleta oscura sobria si `context/brand.md` lo indica.
+- Tema por defecto: claro estilo Apple con un solo acento (naranja), o la paleta de `profile.json` y `brand.md` del perfil activo.
 - Tarjetas de UI: estilo Apple / liquid glass.
 - LUTs `.cube`: sombras levantadas, luces suaves, tonos peach en altas luces, saturación y contraste bajos, sin teal en sombras; aplicar al ~50%.
 
@@ -67,7 +67,7 @@ No avances al siguiente paso sin aprobación del usuario sobre el beat map.
 
 ## 8. Redacción (anti-slop)
 - Prohibido: "in today's fast-paced world", "in today's digital age", "landscape", "in an era where", "in a world where" y equivalentes en español ("en el mundo acelerado de hoy", "en la era digital").
-- Tono y reglas detalladas en `context/voice.md`.
+- Tono y reglas detalladas en `voice.md` del perfil activo.
 
 ## 9. QC loop (antes de entregar)
 Usa la skill `qc-loop`: muestrea el render a **10 fps** (1 fps pasa por alto la mayoría de errores) y revisa en paralelo con los sub-agentes de `.claude/agents/`. Busca:
@@ -83,7 +83,14 @@ Si hay fallos, corrige solo el segmento afectado y vuelve a renderizar. El bucle
 ## 9b. Generación con Higgsfield
 Antes de cualquier generación, sigue la skill `higgsfield-budget` (confirmar aspecto, modelo, costo y prompt).
 
-## 10. Aprendizaje continuo
+## 10. Perfiles (multi-sector)
+- El perfil activo está en `profiles/ACTIVE`; léelo al iniciar y carga `profiles/<activo>/`.
+- Los valores de `profile.json` (acento, fuentes, tema, música, formato) y los `.md` del perfil sobreescriben los valores por defecto de este archivo.
+- La regla absoluta de la sección 0 y las zonas seguras no se anulan por perfil.
+- Si no hay perfil activo o está vacío (`_template`), pregunta al usuario antes de continuar.
+- Ver `profiles/README.md`.
+
+## 11. Aprendizaje continuo
 Cuando el usuario corrija algo o edite el resultado final:
 1. Identifica la regla que falló o faltó.
 2. **Modifica o reescribe** esa regla aquí (no añadas duplicados; evita el "context bloat").

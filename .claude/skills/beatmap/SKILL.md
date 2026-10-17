@@ -5,7 +5,7 @@ description: Construye pipeline/beatmap.md a partir de pipeline/transcript.json.
 
 # Beat map
 
-Entrada: `pipeline/transcript.json`, `claude.md`, `context/`. Salida: `pipeline/beatmap.md` (formato definido en ese archivo; no cambies sus columnas).
+Entrada: `pipeline/transcript.json`, `claude.md`, perfil activo (`profiles/ACTIVE` y `profiles/<activo>/`). Salida: `pipeline/beatmap.md` (formato definido en ese archivo; no cambies sus columnas).
 
 ## Proceso
 1. Un beat es cada frase hablada junto con lo que debe verse en pantalla mientras se dice (definición de Duncan Rogoff: "a beat map is a list of every sentence you say and what should be on screen while you say it"). Agrupa las palabras en frases y crea un beat por frase, con inicio/fin tomados del transcript.

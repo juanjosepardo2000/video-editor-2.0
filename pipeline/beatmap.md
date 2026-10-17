@@ -4,13 +4,8 @@
 > No cambies los nombres de columna ni los códigos de escena sin avisar a los tres.
 
 ## Configuración global
-- Tema: light Apple
-- Color de acento: orange
-- Fuente principal: Inter Semibold
-- Fuente de acento (script): TODO
-- Colores de texto: TODO (principal / secundario)
-- Formato: 9:16, 1080x1920, 30 fps
-- Música: `assets/music/TODO.mp3` a -22 dB
+- Perfil: `_template` (debe coincidir con `profiles/ACTIVE`)
+- Tema, acento, fuentes, formato y música: salen de `profiles/<perfil>/profile.json` (no se repiten aquí)
 
 ## Códigos de escena
 | Código | Significado |

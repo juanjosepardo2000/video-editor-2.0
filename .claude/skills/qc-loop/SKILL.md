@@ -15,8 +15,8 @@ Entrada: ruta del render (por defecto `out/draft_video.mp4`).
    Para ahorrar tokens, usa hojas de contacto (Jay E | RoboNuggets): `-vf "fps=10,tile=5x4"` y revisa por bloques.
 2. Lanza los sub-agentes revisores (modelo Sonnet), cada uno con la ruta del render y de los frames:
    - `qc-visual-inspector`: los 6 errores críticos visuales.
-   - `qc-voice-style`: texto y audio contra `claude.md` y `context/voice.md`.
-   - `qc-fact-checker`: cifras, fechas y nombres contra `pipeline/transcript.json` y `context/`.
+   - `qc-voice-style`: texto y audio contra `claude.md` y `voice.md` del perfil activo.
+   - `qc-fact-checker`: cifras, fechas y nombres contra `pipeline/transcript.json` y el perfil activo.
 3. Si hay fallos: corrige solo el componente afectado en `src/graphics/` (re-render parcial del segmento, no del video entero), renderiza y repite desde el paso 1.
 4. **Parada:** el bucle termina cuando pasan los 6 chequeos (criterio de Duncan Rogoff); entonces se entrega al usuario para revisión final.
    - Tope de seguridad **nuestro**: máximo 3 iteraciones; si persisten fallos, entrega el reporte con timestamps y pide ayuda. (Drake permite 1 reintento automático en su flujo de validación de datos; las fuentes no fijan un tope para el QC visual.)

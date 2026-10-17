@@ -51,8 +51,8 @@ Schedule the rendered motion graphics video for Instagram Reels, TikTok, and You
 
 ## Checklist humano antes de publicar
 Siempre con aprobación explícita de Juan:
-1. Caption: encaja con `context/voice.md` y sin frases cliché de IA.
-2. Hashtags: coinciden con las reglas de `claude.md` y `context/voice.md`.
+1. Caption: encaja con `voice.md` del perfil activo y sin frases cliché de IA.
+2. Hashtags: coinciden con las reglas de `claude.md` y `voice.md` del perfil activo.
 3. Horario: fecha y hora exactas en el calendario de contenidos.
 4. Miniatura: ortografía, rostros sin distorsión y logos bien ubicados (esquina superior izquierda, según Drake).
 
