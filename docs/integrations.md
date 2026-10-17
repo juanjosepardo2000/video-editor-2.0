@@ -64,3 +64,7 @@ Ver `.claude/skills/qc-loop/SKILL.md` y los sub-agentes en `.claude/agents/`.
 - Costo de referencia: video de 3 min (46 imágenes, 3 miniaturas, 2 character sheets) ~241 créditos (~$9.50 con el plan de 1,000 créditos / $39 al mes). La guía original mencionaba planes de $19 a $47 al mes: verifica el plan vigente.
 - El MCP funciona con plan gratuito y de pago (Alwi Batarilan, ~00:15). Los créditos del plan gratuito NO están en las fuentes: revísalos en tu cuenta.
 - Planes mencionados: desde $19/mes (créditos no especificados); $39/mes = 1,000 créditos (Matt Loui, ~03:15); $47/mes (plan de Drake, créditos no especificados). Verifica precios vigentes en la página de Higgsfield.
+
+## Costo y consumo del QC loop (Duncan Rogoff, ~04:22)
+- Un video completo con bucles de sub-agentes consumió ~1.4 mil millones de tokens (500 M Opus para dirección y planificación, 900 M Sonnet para sub-agentes). Equivalente en API: ~$445.
+- En suscripción (Claude Pro $20 o Max $100 al mes) el costo marginal por video fue de ~$1 a $5 dentro de la cuota (Joseph, ~02:56; Jason Cooperson, ~04:10). Es un caso extremo: vigila tu cuota con Claude Pro.

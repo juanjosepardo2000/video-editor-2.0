@@ -52,7 +52,8 @@ No avances al siguiente paso sin aprobación del usuario sobre el beat map.
 - Regla de los 3 objetos: objeto principal al centro, elementos de apoyo en los bordes, elementos de profundidad alrededor.
 - Fondo detrás de una animación en pantalla: oscurecido y desenfocado.
 - Aparición de tarjetas de texto: ~2 s. Sin parpadeos de 1 fotograma. Texto con velocidad suficiente para leerse.
-- Render: desactiva motion blur salvo que se pida; revisiones en media resolución; render final a 4K (fondo transparente en overlays).
+- Render: desactiva motion blur salvo que se pida; revisiones en media resolución; render final a 4K (fondo transparente en overlays). Renders de sub-agentes en cola (uno por uno), re-render parcial del segmento modificado.
+- Modelos: Opus para planificar, Sonnet para construir y revisar. Pide ajustes con valores numéricos.
 
 ## 7. Audio
 - Música de fondo entre **-20 dB y -23 dB** durante la voz (referencia: -22 dB).
@@ -77,7 +78,7 @@ Usa la skill `qc-loop`: muestrea el render a **10 fps** (1 fps pasa por alto la 
 5. Palabras repetidas no cortadas.
 6. Desincronización de labios.
 7. Texto fuera de zona segura.
-Si hay fallos, corrige y vuelve a renderizar. Si tras 3 iteraciones persisten, pide ayuda al usuario.
+Si hay fallos, corrige solo el segmento afectado y vuelve a renderizar. El bucle termina cuando pasan los chequeos; tope de seguridad de 3 iteraciones, luego pide ayuda al usuario.
 
 ## 9b. Generación con Higgsfield
 Antes de cualquier generación, sigue la skill `higgsfield-budget` (confirmar aspecto, modelo, costo y prompt).
