@@ -24,3 +24,6 @@ out/*
 
 # Frames temporales del QC loop
 pipeline/qc_frames/
+
+# Config local de MCP (cada persona autoriza con su cuenta)
+.mcp.json
