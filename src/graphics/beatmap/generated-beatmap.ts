@@ -20,339 +20,320 @@ export const generatedBeatMap = {
     "fps": 30
   },
   "warnings": [],
-  "durationInFrames": 450,
+  "durationInFrames": 483,
   "beats": [
     {
       "id": "beat-01",
       "index": 1,
       "startSeconds": 0,
-      "endSeconds": 2.5,
+      "endSeconds": 3.2,
       "startFrame": 0,
-      "endFrame": 75,
-      "speech": "Si editas videos cortos, esto te importa.",
+      "endFrame": 96,
+      "speech": "hola este es un test para probar",
       "scene": "CAPTIONS",
       "visual": "Hablante a pantalla completa, sin gráficos",
+      "onScreenText": "",
       "transition": "cut",
-      "sfx": "riser",
-      "caption": "importa",
+      "sfx": "",
+      "caption": "test",
       "accentKeywords": [
-        "importa"
+        "test"
       ],
       "words": [
         {
-          "text": "Si",
-          "startFrame": 5,
-          "endFrame": 13
+          "text": "hola",
+          "startFrame": 1,
+          "endFrame": 10
         },
         {
-          "text": "editas",
-          "startFrame": 14,
-          "endFrame": 22
+          "text": "este",
+          "startFrame": 22,
+          "endFrame": 29
         },
         {
-          "text": "videos",
-          "startFrame": 23,
-          "endFrame": 31
+          "text": "es",
+          "startFrame": 30,
+          "endFrame": 32
         },
         {
-          "text": "cortos,",
-          "startFrame": 32,
-          "endFrame": 41
+          "text": "un",
+          "startFrame": 34,
+          "endFrame": 37
         },
         {
-          "text": "esto",
-          "startFrame": 41,
-          "endFrame": 50
+          "text": "test",
+          "startFrame": 40,
+          "endFrame": 53
         },
         {
-          "text": "te",
-          "startFrame": 51,
-          "endFrame": 59
+          "text": "para",
+          "startFrame": 54,
+          "endFrame": 60
         },
         {
-          "text": "importa.",
-          "startFrame": 60,
-          "endFrame": 68
+          "text": "probar",
+          "startFrame": 65,
+          "endFrame": 82
         }
       ]
     },
     {
       "id": "beat-02",
       "index": 2,
-      "startSeconds": 2.5,
-      "endSeconds": 5,
-      "startFrame": 75,
-      "endFrame": 150,
-      "speech": "Tres errores arruinan tus ediciones.",
+      "startSeconds": 3.2,
+      "endSeconds": 8.3,
+      "startFrame": 96,
+      "endFrame": 249,
+      "speech": "si el editor de vídeos funciona correctamente este ok ya me acordé",
       "scene": "CAPTION_UI",
-      "visual": "Tarjeta liquid glass con 3 círculos numerados en el tercio inferior",
+      "visual": "Tarjeta liquid glass en el tercio inferior con el tema",
+      "onScreenText": "Editor de vídeos",
       "transition": "slide-up",
       "sfx": "pop",
-      "caption": "Tres",
+      "caption": "funciona correctamente",
       "accentKeywords": [
-        "Tres"
+        "funciona correctamente"
       ],
       "words": [
         {
-          "text": "Tres",
-          "startFrame": 4,
-          "endFrame": 16
+          "text": "si",
+          "startFrame": 1,
+          "endFrame": 10
         },
         {
-          "text": "errores",
-          "startFrame": 17,
+          "text": "el",
+          "startFrame": 11,
+          "endFrame": 14
+        },
+        {
+          "text": "editor",
+          "startFrame": 16,
+          "endFrame": 26
+        },
+        {
+          "text": "de",
+          "startFrame": 27,
           "endFrame": 29
         },
         {
-          "text": "arruinan",
-          "startFrame": 30,
-          "endFrame": 42
+          "text": "vídeos",
+          "startFrame": 31,
+          "endFrame": 40
         },
         {
-          "text": "tus",
+          "text": "funciona",
           "startFrame": 43,
-          "endFrame": 55
+          "endFrame": 57
         },
         {
-          "text": "ediciones.",
-          "startFrame": 56,
-          "endFrame": 68
+          "text": "correctamente",
+          "startFrame": 59,
+          "endFrame": 85
+        },
+        {
+          "text": "este",
+          "startFrame": 85,
+          "endFrame": 130
+        },
+        {
+          "text": "ok",
+          "startFrame": 131,
+          "endFrame": 133
+        },
+        {
+          "text": "ya",
+          "startFrame": 135,
+          "endFrame": 138
+        },
+        {
+          "text": "me",
+          "startFrame": 139,
+          "endFrame": 140
+        },
+        {
+          "text": "acordé",
+          "startFrame": 142,
+          "endFrame": 152
         }
       ]
     },
     {
       "id": "beat-03",
       "index": 3,
-      "startSeconds": 5,
-      "endSeconds": 8,
-      "startFrame": 150,
-      "endFrame": 240,
-      "speech": "Primero: elementos gigantes. Hazlos un 25% más pequeños.",
-      "scene": "SPLIT",
-      "visual": "Arriba: icono que se reduce un 25%; abajo: hablante",
-      "transition": "fade",
+      "startSeconds": 8.3,
+      "endSeconds": 11.7,
+      "startFrame": 249,
+      "endFrame": 351,
+      "speech": "si el punto es probar que el asistente de vídeos",
+      "scene": "FULLSCREEN",
+      "visual": "Diagrama simple a pantalla completa del asistente de vídeos",
+      "onScreenText": "Asistente de vídeos",
+      "transition": "zoom-in",
       "sfx": "whoosh",
-      "caption": "25%",
+      "caption": "asistente",
       "accentKeywords": [
-        "25%"
+        "asistente"
       ],
       "words": [
         {
-          "text": "Primero:",
-          "startFrame": 5,
-          "endFrame": 14
+          "text": "si",
+          "startFrame": 0,
+          "endFrame": 5
         },
         {
-          "text": "elementos",
+          "text": "el",
           "startFrame": 14,
-          "endFrame": 23
+          "endFrame": 17
         },
         {
-          "text": "gigantes.",
-          "startFrame": 24,
-          "endFrame": 33
+          "text": "punto",
+          "startFrame": 21,
+          "endFrame": 28
         },
         {
-          "text": "Hazlos",
-          "startFrame": 34,
-          "endFrame": 43
+          "text": "es",
+          "startFrame": 31,
+          "endFrame": 34
         },
         {
-          "text": "un",
-          "startFrame": 44,
-          "endFrame": 53
+          "text": "probar",
+          "startFrame": 36,
+          "endFrame": 47
         },
         {
-          "text": "25%",
-          "startFrame": 54,
-          "endFrame": 63
+          "text": "que",
+          "startFrame": 50,
+          "endFrame": 55
         },
         {
-          "text": "más",
-          "startFrame": 64,
-          "endFrame": 73
+          "text": "el",
+          "startFrame": 56,
+          "endFrame": 60
         },
         {
-          "text": "pequeños.",
-          "startFrame": 74,
-          "endFrame": 83
+          "text": "asistente",
+          "startFrame": 61,
+          "endFrame": 77
+        },
+        {
+          "text": "de",
+          "startFrame": 78,
+          "endFrame": 80
+        },
+        {
+          "text": "vídeos",
+          "startFrame": 82,
+          "endFrame": 98
         }
       ]
     },
     {
       "id": "beat-04",
       "index": 4,
-      "startSeconds": 8,
-      "endSeconds": 10.5,
-      "startFrame": 240,
-      "endFrame": 315,
-      "speech": "Segundo: colores puros. Los apagados se ven más premium.",
+      "startSeconds": 11.7,
+      "endSeconds": 14.9,
+      "startFrame": 351,
+      "endFrame": 447,
+      "speech": "conía funcione tanto con los cambios que hizo Carlos y",
       "scene": "SPLIT",
-      "visual": "Arriba: tres cajas de color, de saturado a apagado; abajo: hablante",
+      "visual": "Arriba: tarjeta con los cambios del equipo; abajo: hablante",
+      "onScreenText": "Cambios de Carlos",
       "transition": "fade",
       "sfx": "pop",
-      "caption": "apagados",
+      "caption": "Carlos",
       "accentKeywords": [
-        "apagados"
+        "Carlos"
       ],
       "words": [
         {
-          "text": "Segundo:",
-          "startFrame": 5,
-          "endFrame": 11
+          "text": "conía",
+          "startFrame": 2,
+          "endFrame": 15
         },
         {
-          "text": "colores",
-          "startFrame": 12,
-          "endFrame": 18
+          "text": "funcione",
+          "startFrame": 18,
+          "endFrame": 35
         },
         {
-          "text": "puros.",
-          "startFrame": 19,
-          "endFrame": 25
+          "text": "tanto",
+          "startFrame": 36,
+          "endFrame": 44
         },
         {
-          "text": "Los",
-          "startFrame": 26,
-          "endFrame": 32
+          "text": "con",
+          "startFrame": 46,
+          "endFrame": 50
         },
         {
-          "text": "apagados",
-          "startFrame": 33,
-          "endFrame": 39
+          "text": "los",
+          "startFrame": 51,
+          "endFrame": 55
         },
         {
-          "text": "se",
-          "startFrame": 40,
-          "endFrame": 47
+          "text": "cambios",
+          "startFrame": 58,
+          "endFrame": 66
         },
         {
-          "text": "ven",
-          "startFrame": 47,
-          "endFrame": 54
-        },
-        {
-          "text": "más",
-          "startFrame": 55,
-          "endFrame": 61
-        },
-        {
-          "text": "premium.",
-          "startFrame": 62,
+          "text": "que",
+          "startFrame": 66,
           "endFrame": 68
+        },
+        {
+          "text": "hizo",
+          "startFrame": 70,
+          "endFrame": 74
+        },
+        {
+          "text": "Carlos",
+          "startFrame": 75,
+          "endFrame": 85
+        },
+        {
+          "text": "y",
+          "startFrame": 86,
+          "endFrame": 87
         }
       ]
     },
     {
       "id": "beat-05",
       "index": 5,
-      "startSeconds": 10.5,
-      "endSeconds": 13,
-      "startFrame": 315,
-      "endFrame": 390,
-      "speech": "Tercero: texto fuera de la zona segura.",
-      "scene": "FULLSCREEN",
-      "visual": "Diagrama 9:16 con zonas de la interfaz marcadas y un texto fuera de zona",
-      "transition": "zoom-in",
-      "sfx": "whoosh, hit",
-      "caption": "zona segura",
-      "accentKeywords": [
-        "zona segura"
-      ],
-      "words": [
-        {
-          "text": "Tercero:",
-          "startFrame": 5,
-          "endFrame": 13
-        },
-        {
-          "text": "texto",
-          "startFrame": 14,
-          "endFrame": 22
-        },
-        {
-          "text": "fuera",
-          "startFrame": 23,
-          "endFrame": 31
-        },
-        {
-          "text": "de",
-          "startFrame": 32,
-          "endFrame": 40
-        },
-        {
-          "text": "la",
-          "startFrame": 41,
-          "endFrame": 50
-        },
-        {
-          "text": "zona",
-          "startFrame": 51,
-          "endFrame": 59
-        },
-        {
-          "text": "segura.",
-          "startFrame": 60,
-          "endFrame": 68
-        }
-      ]
-    },
-    {
-      "id": "beat-06",
-      "index": 6,
-      "startSeconds": 13,
-      "endSeconds": 15,
-      "startFrame": 390,
-      "endFrame": 450,
-      "speech": "Corrige esto y tus videos subirán de nivel.",
+      "startSeconds": 14.9,
+      "endSeconds": 16.1,
+      "startFrame": 447,
+      "endFrame": 483,
+      "speech": "mi persona y Gonzalo.",
       "scene": "CAPTIONS",
-      "visual": "Hablante a pantalla completa, sin gráficos",
+      "visual": "Hablante a pantalla completa, cierre",
+      "onScreenText": "",
       "transition": "cut",
-      "sfx": "",
-      "caption": "nivel",
+      "sfx": "hit",
+      "caption": "Gonzalo.",
       "accentKeywords": [
-        "nivel"
+        "Gonzalo."
       ],
       "words": [
         {
-          "text": "Corrige",
-          "startFrame": 5,
-          "endFrame": 10
+          "text": "mi",
+          "startFrame": 3,
+          "endFrame": 6
         },
         {
-          "text": "esto",
-          "startFrame": 11,
-          "endFrame": 16
+          "text": "persona",
+          "startFrame": 9,
+          "endFrame": 18
         },
         {
           "text": "y",
-          "startFrame": 17,
-          "endFrame": 22
+          "startFrame": 20,
+          "endFrame": 21
         },
         {
-          "text": "tus",
+          "text": "Gonzalo.",
           "startFrame": 23,
-          "endFrame": 28
-        },
-        {
-          "text": "videos",
-          "startFrame": 29,
-          "endFrame": 35
-        },
-        {
-          "text": "subirán",
-          "startFrame": 35,
-          "endFrame": 41
-        },
-        {
-          "text": "de",
-          "startFrame": 42,
-          "endFrame": 47
-        },
-        {
-          "text": "nivel.",
-          "startFrame": 48,
-          "endFrame": 53
+          "endFrame": 34
         }
       ]
     }

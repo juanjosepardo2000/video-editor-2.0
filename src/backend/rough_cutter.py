@@ -13,6 +13,7 @@ TRANSCRIPT_PATH = Path("pipeline/transcript.json")
 PAD_MIN_MS, PAD_MAX_MS, SILENCE_SECONDS = 20, 150, 0.5
 _UNAMBIGUOUS_FILLERS = {"um", "uh", "umm", "uhh", "mmm", "mm", "ehh"}
 MIN_REPEATED_PHRASE_WORDS = 3
+MAX_WORD_SECONDS = 1.5  # el alineador puede estirar una palabra sobre un silencio largo
 
 
 def _normalise(word: str) -> str:
@@ -66,7 +67,8 @@ def build_cut_plan(words: list[dict], pad_ms: int = 20, mode: str = "auto") -> t
     """Return padded ranges and retained words; gaps over 0.5 seconds are removed."""
     if not PAD_MIN_MS <= pad_ms <= PAD_MAX_MS:
         raise ValueError(f"padding must be between {PAD_MIN_MS} and {PAD_MAX_MS} ms")
-    ordered = sorted(words, key=lambda item: float(item["start"]))
+    ordered = [dict(item, end=min(float(item["end"]), float(item["start"]) + MAX_WORD_SECONDS))
+               for item in sorted(words, key=lambda item: float(item["start"]))]
     kept = retained_words(ordered, mode)
     if not kept:
         return [], []
@@ -136,15 +138,18 @@ def main() -> None:
     parser.add_argument("--mode", choices=("auto", "review", "manual"), default="auto")
     args = parser.parse_args()
     transcript = json.loads(args.transcript.read_text(encoding="utf-8"))
+    is_source = args.transcript.name.endswith(".source.json")
+    output_transcript = args.transcript.with_name(args.transcript.name.replace(".source.json", ".json")) if is_source else args.transcript
     if transcript.get("video") == args.output:
         raise SystemExit(f"{args.transcript} ya fue remapeado al rough cut; usa {args.transcript.with_suffix('.source.json')} como --transcript")
-    source_copy = args.transcript.with_suffix(".source.json")
-    if not source_copy.exists():
-        source_copy.write_text(json.dumps(transcript, ensure_ascii=False, indent=2), encoding="utf-8")
+    if not is_source:
+        source_copy = args.transcript.with_suffix(".source.json")
+        if not source_copy.exists():
+            source_copy.write_text(json.dumps(transcript, ensure_ascii=False, indent=2), encoding="utf-8")
     segments, words = build_cut_plan(transcript.get("words", []), args.padding_ms, args.mode)
     cut(args.video, segments, args.output)
     transcript.update(video=args.output, words=remap_words(words, segments))
-    args.transcript.write_text(json.dumps(transcript, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_transcript.write_text(json.dumps(transcript, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ export type BeatMapEntry = {
   speech: string;
   scene: SceneCode;
   visual: string;
+  onScreenText: string;
   transition: string;
   sfx: string;
   caption: string;

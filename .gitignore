@@ -41,3 +41,4 @@ assets/sfx/*
 !assets/raw/.gitkeep
 !assets/music/.gitkeep
 !assets/sfx/.gitkeep
+pipeline/*.m4a

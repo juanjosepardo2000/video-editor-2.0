@@ -101,7 +101,7 @@ const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number }> = ({
         endValue={parsedValue}
         suffix="%"
         trendLabel="Evolución positiva"
-        supportingText={beat.speech || beat.visual}
+        supportingText={beat.speech || beat.onScreenText}
         accent={beatMapAccent}
         renderMode="overlay"
         reducedMotion={reducedMotion}
@@ -115,7 +115,7 @@ const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number }> = ({
         source="Minthy BeatMap"
         timestamp="Ahora"
         headline={splitHeadline(beat.speech || beat.caption || beat.visual)}
-        summary={beat.visual}
+        summary={beat.onScreenText}
         accent={beatMapAccent}
         renderMode="overlay"
         reducedMotion={reducedMotion}
@@ -124,12 +124,12 @@ const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number }> = ({
   }
   return (
     <LiquidGlassCardV2
-      eyebrow="Beat destacado"
-      title={beat.speech || beat.caption || "Momento clave"}
-      description={beat.visual || "Gráfico generado desde el BeatMap."}
-      metric={String(beat.index).padStart(2, "0")}
-      metricLabel="escena del montaje"
-      actionLabel="En pantalla"
+      eyebrow=""
+      title={beat.onScreenText || beat.speech || beat.caption}
+      description=""
+      metric=""
+      metricLabel=""
+      actionLabel=""
       accent={beatMapAccent}
       renderMode="overlay"
       contrast={beatMapTheme}
@@ -159,12 +159,12 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
             }}
           >
             <LiquidGlassCardV2
-              eyebrow="Contexto"
-              title={beat.visual || beat.speech || "Información clave"}
-              description={beat.speech || beat.caption}
-              metric={String(beat.index).padStart(2, "0")}
-              metricLabel="beat activo"
-              actionLabel="Ver"
+              eyebrow=""
+              title={beat.onScreenText || beat.speech}
+              description=""
+              metric=""
+              metricLabel=""
+              actionLabel=""
               accent={beatMapAccent}
               renderMode="overlay"
               contrast={beatMapTheme}
@@ -196,10 +196,10 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
             }}
           >
             <div style={{ color: colors.primary, fontSize: 22, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase" }}>
-              Vista complementaria
+              {""}
             </div>
             <div style={{ marginTop: 24, fontFamily: headlineFontFamily, fontSize: 46, lineHeight: 1.08, fontWeight: 700, letterSpacing: -1.6 }}>
-              {beat.visual || "Contenido dividido"}
+              {beat.onScreenText || beat.speech}
             </div>
           </div>
           <CaptionLayer beat={beat} duration={duration} />

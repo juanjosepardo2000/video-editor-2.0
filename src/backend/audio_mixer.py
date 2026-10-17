@@ -5,6 +5,7 @@ Example: ``python src/backend/audio_mixer.py pipeline/rough_cut.mp4``.
 import argparse
 import logging
 import re
+import subprocess
 from pathlib import Path
 
 import ffmpeg
@@ -12,6 +13,7 @@ import ffmpeg
 SFX_DIR = Path("assets/sfx")
 MUSIC_DIR = Path("assets/music")
 MUSIC_DB_RANGE = (-23, -20)
+AUDIO_SUFFIXES = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"}
 VALID_SFX = {"whoosh", "pop", "click", "draw", "riser", "hit"}
 LOGGER = logging.getLogger(__name__)
 
@@ -64,7 +66,7 @@ def _resolve_sfx(event: dict, sfx_dir: Path | None = None) -> Path:
         if sfx_dir.resolve() not in candidate.resolve().parents or not candidate.is_file():
             raise FileNotFoundError(f"BeatMap requests missing SFX: {candidate}")
         return candidate
-    candidates = sorted(path for path in sfx_dir.iterdir() if path.is_file() and path.stem.lower().startswith(event["type"].lower()))
+    candidates = sorted(path for path in sfx_dir.iterdir() if path.is_file() and path.suffix.lower() in AUDIO_SUFFIXES and path.stem.lower().startswith(event["type"].lower()))
     if not candidates:
         raise FileNotFoundError(f"no SFX file for type {event['type']!r} in {sfx_dir}")
     if len(candidates) > 1:
@@ -83,7 +85,7 @@ def _music_file(beatmap_path: Path, music_dir: Path | None = None) -> Path:
         if candidate.is_file():
             return candidate
         raise FileNotFoundError(f"BeatMap music does not exist: {requested}")
-    candidates = sorted(path for path in music_dir.iterdir() if path.is_file())
+    candidates = sorted(path for path in music_dir.iterdir() if path.is_file() and not path.name.startswith(".") and path.suffix.lower() in AUDIO_SUFFIXES)
     if not candidates:
         raise FileNotFoundError(f"no music file found in {music_dir}")
     if len(candidates) > 1:
@@ -102,12 +104,38 @@ def sfx_fade_out(duration: float, fade_seconds: float = 0.08) -> tuple[float, fl
     return max(0.0, duration - length), length
 
 
+def mean_volume(path: str | Path, seconds: float | None = None) -> float | None:
+    """Mean volume (dB) of the first audio stream via FFmpeg volumedetect; None if unavailable."""
+    command = ["ffmpeg", "-hide_banner", "-nostdin"]
+    if seconds:
+        command += ["-t", str(seconds)]
+    command += ["-i", str(path), "-vn", "-af", "volumedetect", "-f", "null", "-"]
+    output = subprocess.run(command, capture_output=True, text=True).stderr
+    match = re.search(r"mean_volume:\s*(-?\d+(?:\.\d+)?) dB", output)
+    return float(match.group(1)) if match else None
+
+
+def gain_to_target(current: float | None, target: float, low: float = -40.0, high: float = 25.0) -> float:
+    """dB of gain that moves ``current`` to ``target``, clamped; 0 when the level is unknown."""
+    return 0.0 if current is None else max(low, min(high, target - current))
+
+
+MUSIC_GAIN_DB = -22.0         # claude.md: música a -20/-23 dB (referencia -22)
+MUSIC_MIN_HEADROOM_DB = 8.0   # la música nunca debe quedar a menos de 8 dB de la voz
+SFX_BELOW_VOICE_DB = 4.0      # perceptibles sin tapar la voz
+MIN_VOICE_DB = -60.0          # por debajo se considera que no hay voz de referencia
+
+
 def mix(video_path: str, beatmap_path: str = "pipeline/beatmap.md", output_path: str = "pipeline/mixed.mp4") -> None:
     """Mix voice, -22 dB global music, and delayed/reverbed BeatMap SFX into MP4."""
     beatmap = Path(beatmap_path)
     events = parse_beatmap(beatmap)
     video = ffmpeg.input(video_path)
-    music = ffmpeg.input(str(_music_file(beatmap)), stream_loop=-1).audio.filter("volume", "-22dB")
+    music_path = _music_file(beatmap)
+    voice_db = mean_volume(video_path)
+    has_voice = voice_db is not None and voice_db > MIN_VOICE_DB
+    music_gain = min(MUSIC_GAIN_DB, gain_to_target(mean_volume(music_path, 30), voice_db - MUSIC_MIN_HEADROOM_DB)) if has_voice else MUSIC_GAIN_DB
+    music = ffmpeg.input(str(music_path), stream_loop=-1).audio.filter("volume", f"{music_gain:.1f}dB")
     inputs = [video.audio, music]
     for index, event in enumerate(events):
         # ffmpeg-python fusiona nodos idénticos; el mismo SFX repetido rompería el grafo (varias salidas
@@ -115,6 +143,8 @@ def mix(video_path: str, beatmap_path: str = "pipeline/beatmap.md", output_path:
         sfx_path = _resolve_sfx(event)
         fade_start, fade_duration = sfx_fade_out(sfx_duration(sfx_path))
         sound = ffmpeg.input(str(sfx_path), thread_queue_size=512 + index).audio
+        if has_voice:
+            sound = sound.filter("volume", f"{gain_to_target(mean_volume(sfx_path), voice_db - SFX_BELOW_VOICE_DB, -30.0, 10.0):.1f}dB")
         inputs.append(sound.filter("aecho", "0.8", "0.9", "1000", "0.7").filter("afade", t="out", st=fade_start, d=fade_duration).filter("adelay", f"{round(event['time'] * 1000)}:all=1"))
     mixed = ffmpeg.filter(inputs, "amix", inputs=len(inputs), duration="first", normalize=0)
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)

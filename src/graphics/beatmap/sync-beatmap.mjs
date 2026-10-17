@@ -11,7 +11,8 @@ const outputPath = path.resolve(repositoryRoot, readArgument("output") ?? path.r
 const validationProfile = readArgument("validation-profile");
 const sceneCodes = new Set(["CAPTIONS", "CAPTION_UI", "SPLIT", "FULLSCREEN"]);
 const transitionCodes = new Set(["cut", "fade", "slide-up", "zoom-in"]);
-const expectedHeaders = ["#", "Inicio", "Fin", "Speech", "Escena", "Visual", "Transición", "SFX", "Caption"];
+const expectedHeaders = ["#", "Inicio", "Fin", "Speech", "Escena", "Visual", "Texto en pantalla", "Transición", "SFX", "Caption"];
+const legacyHeaders = expectedHeaders.filter((header) => header !== "Texto en pantalla");
 
 const normalize = (value) =>
   value
@@ -93,7 +94,8 @@ const parseTable = (markdown, fps) => {
   if (headerIndex < 0) throw new Error("No se encontró la tabla '## Beats' con columnas Inicio y Fin.");
 
   const rawHeaders = cells(lines[headerIndex]);
-  if (rawHeaders.length !== expectedHeaders.length || rawHeaders.some((header, index) => header !== expectedHeaders[index])) {
+  const matches = (list) => rawHeaders.length === list.length && rawHeaders.every((header, index) => header === list[index]);
+  if (!matches(expectedHeaders) && !matches(legacyHeaders)) {
     throw new Error(`Contrato inválido. Columnas esperadas: ${expectedHeaders.join(" | ")}. Recibidas: ${rawHeaders.join(" | ")}.`);
   }
   const headers = rawHeaders.map(normalize);
@@ -140,6 +142,7 @@ const parseTable = (markdown, fps) => {
       speech,
       scene,
       visual,
+      onScreenText: (row["texto en pantalla"] ?? "").trim() === "-" ? "" : (row["texto en pantalla"] ?? "").trim(),
       transition,
       sfx: row.sfx.trim() === "-" ? "" : row.sfx.trim(),
       caption,

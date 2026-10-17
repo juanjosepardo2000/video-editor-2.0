@@ -1,6 +1,6 @@
 # BeatMap
 
-> **ESTADO: FIXTURE DE PRUEBA, APROBADO por Juan (2026-10-17).** Guion ficticio para validar el pipeline (Remotion, exportador y mezcla). No es contenido de un video real; se reemplaza cuando Carlos entregue un transcript real.
+> **ESTADO: REAL, generado por Claude a partir del transcript de `assets/raw/prueba.mp4` (2026-10-17).** Aprobado por instrucción de Juan ("haz todo el flujo"); revisable.
 > Contrato entre Juan (lo escribe), Gonzalo (lee `Escena`, `Visual`, `Texto en pantalla`, `Transición`, `Caption`) y Carlos (lee `SFX`).
 > Contrato de columnas:
 > - `Speech`: texto completo hablado; fuente de los subtítulos.
@@ -26,15 +26,15 @@ Tiempos en segundos sobre el video **ya cortado** (`mm:ss.s`). SFX: `tipo` o `ti
 
 | # | Inicio | Fin | Speech | Escena | Visual | Texto en pantalla | Transición | SFX | Caption |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | 00:00.0 | 00:02.5 | Si editas videos cortos, esto te importa. | CAPTIONS | Hablante a pantalla completa, sin gráficos | - | cut | riser | importa |
-| 2 | 00:02.5 | 00:05.0 | Tres errores arruinan tus ediciones. | CAPTION_UI | Tarjeta liquid glass con 3 círculos numerados en el tercio inferior | Tres errores | slide-up | pop | Tres |
-| 3 | 00:05.0 | 00:08.0 | Primero: elementos gigantes. Hazlos un 25% más pequeños. | SPLIT | Arriba: icono que se reduce un 25%; abajo: hablante | 25% más pequeños | fade | whoosh | 25% |
-| 4 | 00:08.0 | 00:10.5 | Segundo: colores puros. Los apagados se ven más premium. | SPLIT | Arriba: tres cajas de color, de saturado a apagado; abajo: hablante | Colores apagados | fade | pop | apagados |
-| 5 | 00:10.5 | 00:13.0 | Tercero: texto fuera de la zona segura. | FULLSCREEN | Diagrama 9:16 con zonas de la interfaz marcadas y un texto fuera de zona | Zona segura | zoom-in | whoosh, hit | zona segura |
-| 6 | 00:13.0 | 00:15.0 | Corrige esto y tus videos subirán de nivel. | CAPTIONS | Hablante a pantalla completa, sin gráficos | - | cut | - | nivel |
+| 1 | 00:00.0 | 00:03.2 | hola este es un test para probar | CAPTIONS | Hablante a pantalla completa, sin gráficos | - | cut | - | test |
+| 2 | 00:03.2 | 00:08.3 | si el editor de vídeos funciona correctamente este ok ya me acordé | CAPTION_UI | Tarjeta liquid glass en el tercio inferior con el tema | Editor de vídeos | slide-up | pop | funciona correctamente |
+| 3 | 00:08.3 | 00:11.7 | si el punto es probar que el asistente de vídeos | FULLSCREEN | Diagrama simple a pantalla completa del asistente de vídeos | Asistente de vídeos | zoom-in | whoosh | asistente |
+| 4 | 00:11.7 | 00:14.9 | conía funcione tanto con los cambios que hizo Carlos y | SPLIT | Arriba: tarjeta con los cambios del equipo; abajo: hablante | Cambios de Carlos | fade | pop | Carlos |
+| 5 | 00:14.9 | 00:16.1 | mi persona y Gonzalo. | CAPTIONS | Hablante a pantalla completa, cierre | - | cut | hit | Gonzalo. |
 
 ## Notas
 - Cambio de visual aproximadamente cada 1.5 a 3 s (guía, no regla fija).
 - Respeta las zonas seguras y las reglas de `claude.md`.
 - La columna `Caption` debe coincidir literalmente con palabras de `Speech` (el resaltado busca coincidencias con el texto hablado).
-- Transcript de prueba con tiempos por palabra: `pipeline/examples/transcript.fixture.json`.
+- Sin `riser` en esta prueba: dura ~9 s y taparía la voz del video de 16 s.
+- Fixture anterior (guion ficticio): `pipeline/examples/beatmap.fixture.md`.

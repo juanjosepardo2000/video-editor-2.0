@@ -69,6 +69,10 @@ def parse_beatmap(path: Path) -> list[Beat]:
     if header_index is None:
         raise ValueError("BeatMap: no se encontró la tabla ## Beats con el contrato nuevo")
     header = [part.strip() for part in lines[header_index].strip().strip("|").split("|")]
+    # Contrato con la columna "Texto en pantalla": el exportador no la usa, se descarta al leer.
+    text_column = header.index("Texto en pantalla") if "Texto en pantalla" in header else None
+    if text_column is not None:
+        header.pop(text_column)
     if header != BEAT_HEADER:
         raise ValueError(f"BeatMap: columnas inválidas. Esperadas: {' | '.join(BEAT_HEADER)}")
     beats: list[Beat] = []
@@ -76,6 +80,8 @@ def parse_beatmap(path: Path) -> list[Beat]:
         if not line.strip().startswith("|"):
             break
         cells = [part.strip() for part in line.strip().strip("|").split("|")]
+        if text_column is not None and len(cells) > text_column:
+            cells.pop(text_column)
         if len(cells) != len(BEAT_HEADER):
             raise ValueError(f"BeatMap: fila con {len(cells)} columnas; se esperaban {len(BEAT_HEADER)}")
         start, end = _seconds(cells[1]), _seconds(cells[2])

@@ -159,3 +159,27 @@ def test_sfx_remains_audible_in_the_mix(tmp_path: Path, monkeypatch: pytest.Monk
                             capture_output=True, text=True)
     mean = float([line for line in result.stderr.splitlines() if "mean_volume" in line][0].split(":")[1].split()[0])
     assert mean > -40, f"SFX is almost silent in the mix (mean {mean} dB)"
+
+
+def test_a_word_stretched_over_a_long_silence_does_not_keep_the_silence() -> None:
+    words = [{"word": "hola", "start": 0.0, "end": 0.4}, {"word": "este", "start": 0.5, "end": 7.8},
+             {"word": "adios", "start": 7.9, "end": 8.3}]
+    segments, kept = build_cut_plan(words)
+    total = sum(end - start for start, end in segments)
+    assert total < 4.0, f"kept {total:.1f}s of speech; the stretched word kept the silence"
+
+
+def test_music_selection_ignores_hidden_and_non_audio_files(tmp_path: Path) -> None:
+    from src.backend.audio_mixer import _music_file
+    music = tmp_path / "music"; music.mkdir()
+    (music / ".DS_Store").write_bytes(b"x"); (music / ".gitkeep").write_bytes(b""); (music / "notes.txt").write_text("x")
+    (music / "track.mp3").write_bytes(b"audio")
+    beatmap = tmp_path / "beatmap.md"; beatmap.write_text("sin linea de musica", encoding="utf-8")
+    assert _music_file(beatmap, music).name == "track.mp3"
+
+
+def test_gain_to_target_clamps_and_handles_unknown_levels() -> None:
+    from src.backend.audio_mixer import gain_to_target
+    assert gain_to_target(-20.0, -40.0) == -20.0
+    assert gain_to_target(None, -40.0) == 0.0
+    assert gain_to_target(-5.0, -90.0) == -40.0
