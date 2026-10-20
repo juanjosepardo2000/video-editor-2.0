@@ -10,13 +10,14 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../..");
 const generatedPath = path.join(root, "src/graphics/beatmap/generated-beatmap.ts");
 const syncScript = path.join(root, "src/graphics/beatmap/sync-beatmap.mjs");
-const beatmapPath = path.join(root, "pipeline/beatmap.md");
+const beatmapPath = path.join(root, "pipeline/examples/beatmap.fixture.md");
 const transcriptPath = path.join(root, "pipeline/examples/transcript.fixture.json");
 const outputDirectory = path.join(root, "out/profile-validation");
 const remotionCli = path.join(root, "node_modules/@remotion/cli/remotion-cli.js");
 const profiles = ["viral-dinamico", "corporativo-sobrio"];
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "minthy-profiles-"));
 const originalGenerated = fs.readFileSync(generatedPath, "utf8");
+const { contrastRatio, ensureTextContrast } = await import("../design/contrast.mjs");
 
 const run = (command, args) => {
   const result = spawnSync(command, args, { cwd: root, encoding: "utf8", shell: false });
@@ -55,13 +56,17 @@ try {
     const stillPath = path.join(outputDirectory, `${profileName}.png`);
     run(process.execPath, [remotionCli,
       "still", "src/graphics/index.ts", "BeatMapOverlay", stillPath,
-      "--frame=45", "--image-format=png",
+      "--frame=105", "--image-format=png",
     ]);
+    const captionSurface = config.theme.toLowerCase().includes("light") ? "#F5F8F6" : "#040C0A";
+    const readableAccent = ensureTextContrast(config.accent, captionSurface);
     report.push({
       profile: profileName,
       captionStyle: config.captionStyle,
       theme: config.theme,
       accent: config.accent,
+      readableAccent,
+      accentContrast: Number(contrastRatio(readableAccent, captionSurface).toFixed(2)),
       primaryFont: config.font,
       headlineFontRequested: config.headlineFont,
       headlineFontResolved: "Inter",
@@ -75,6 +80,7 @@ try {
   assert.notEqual(report[0].theme, report[1].theme);
   assert.notEqual(report[0].accent, report[1].accent);
   assert.notEqual(report[0].sha256, report[1].sha256);
+  assert.ok(report.every((profile) => profile.accentContrast >= 4.5));
   fs.writeFileSync(
     path.join(outputDirectory, "report.json"),
     `${JSON.stringify({ valid: true, profiles: report }, null, 2)}\n`,

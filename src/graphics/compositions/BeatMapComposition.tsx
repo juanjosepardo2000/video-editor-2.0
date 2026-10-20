@@ -1,13 +1,15 @@
 import React from "react";
 import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
-import { AnimatedSearchBar } from "../components/AnimatedSearchBar";
-import { DynamicNumberCounter } from "../components/DynamicNumberCounter";
-import { LiquidGlassCardV2 } from "../components/LiquidGlassCardV2";
-import { NewsTextHighlighter } from "../components/NewsTextHighlighter";
+import { BeatGraphic, graphicCanvasSize } from "../components/BeatGraphic";
 import { WordByWordCaptions } from "../components/WordByWordCaptions";
+import { BrollScene } from "../components/BrollScene";
 import { generatedBeatMap } from "../beatmap/generated-beatmap";
+import { generatedLayout } from "../layout/generated-layout";
+import { generatedBroll } from "../broll/generated-broll";
+import type { GeneratedBrollAsset } from "../broll/types";
 import type { BeatMapEntry } from "../beatmap/types";
-import { colors, safeArea, typography } from "../design/tokens";
+import type { LayoutLayer, NormalizedBox } from "../layout/types";
+import { colors } from "../design/tokens";
 import { resolveProfileFont } from "../design/fonts";
 
 const clamp = {
@@ -29,15 +31,32 @@ const beatMapTheme = generatedBeatMap.config.theme.toLowerCase().includes("light
 const primaryFontFamily = resolveProfileFont(generatedBeatMap.config.font);
 const headlineFontFamily = resolveProfileFont(generatedBeatMap.config.headlineFont);
 const accentFontFamily = resolveProfileFont(generatedBeatMap.config.accentFont);
+const brollAssets = generatedBroll.assets as readonly GeneratedBrollAsset[];
+const brollFor = (beat: BeatMapEntry) => brollAssets.find((asset) => asset.beat === beat.index);
 
-const splitHeadline = (text: string) => {
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  const chunkSize = Math.max(1, Math.ceil(words.length / 3));
-  const chunks = [];
-  for (let index = 0; index < words.length; index += chunkSize) {
-    chunks.push({ text: words.slice(index, index + chunkSize).join(" "), highlighted: chunks.length === 1 });
-  }
-  return chunks.slice(0, 3);
+const layerFor = (beat: BeatMapEntry, kind: LayoutLayer["kind"]): LayoutLayer | undefined =>
+  generatedLayout.layers.find((layer) => layer.beat === beat.index && layer.kind === kind);
+
+const boxStyle = (box: NormalizedBox): React.CSSProperties => ({
+  position: "absolute",
+  left: `${box.x * 100}%`,
+  top: `${box.y * 100}%`,
+  width: `${box.w * 100}%`,
+  height: `${box.h * 100}%`,
+  boxSizing: "border-box",
+});
+
+const GraphicInBox: React.FC<{beat: BeatMapEntry; box: NormalizedBox; duration: number; compact?: boolean}> = ({beat, box, duration, compact = false}) => {
+  if (!beat.onScreenText.trim()) return null;
+  const canvas = graphicCanvasSize(beat.visualTag);
+  const targetWidth = box.w * generatedBeatMap.config.width;
+  const targetHeight = box.h * generatedBeatMap.config.height;
+  const scale = Math.min(targetWidth / canvas.width, targetHeight / canvas.height);
+  return <div style={{...boxStyle(box), display: "flex", alignItems: "center", justifyContent: "center", overflow: "visible"}}>
+    <div style={{width: canvas.width, height: canvas.height, display: "flex", alignItems: "center", justifyContent: "center", transform: `scale(${scale})`, flex: "0 0 auto"}}>
+      <BeatGraphic tag={beat.visualTag} text={beat.onScreenText} accent={beatMapAccent} theme={beatMapTheme} fontFamily={headlineFontFamily} accentFontFamily={accentFontFamily} reducedMotion={duration < 100} compact={compact} />
+    </div>
+  </div>;
 };
 
 const transitionStyle = (transition: string, frame: number, duration: number): React.CSSProperties => {
@@ -56,8 +75,11 @@ const transitionStyle = (transition: string, frame: number, duration: number): R
 };
 
 const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat, duration }) => {
+  const layer = layerFor(beat, "caption");
+  if (!layer) return null;
   const keywordWordCount = beat.accentKeywords.flatMap((keyword) => keyword.split(/\s+/)).filter(Boolean).length;
   const accentWordCount = Math.min(3, Math.max(1, keywordWordCount)) as 1 | 2 | 3;
+  const wordsPerPage = Math.min(6, Math.max(1, generatedBeatMap.config.captionWordsPerGroup[1])) as 1 | 2 | 3 | 4 | 5 | 6;
   return (
     <WordByWordCaptions
       text={beat.speech}
@@ -65,76 +87,43 @@ const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat
       accentKeywords={beat.accentKeywords}
       durationInFrames={duration}
       accentWordCount={accentWordCount}
-      wordsPerPage={5}
+      wordsPerPage={wordsPerPage}
       accent={beatMapAccent}
       theme={beatMapTheme}
       captionStyle={generatedBeatMap.config.captionStyle}
       primaryFontFamily={primaryFontFamily}
       accentFontFamily={accentFontFamily}
+      box={layer.box}
+      fontScale={generatedBeatMap.config.captionFontScale}
     />
   );
 };
 
-const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat, duration }) => {
-  const hint = `${beat.visual} ${beat.speech}`.toLowerCase();
-  const reducedMotion = duration < 100;
-  if (hint.includes("busca") || hint.includes("search")) {
-    return (
-      <AnimatedSearchBar
-        label="Búsqueda asistida"
-        mistypedQuery="edicion con ia"
-        correctedQuery="edición con IA"
-        resultLabel="Resultado recomendado"
-        suggestions={["Cortes", "Gráficos", "CapCut"]}
-        accent={beatMapAccent}
-        renderMode="overlay"
-        reducedMotion={reducedMotion}
-      />
-    );
-  }
-  if (hint.includes("contador") || hint.includes("número") || hint.includes("numero") || hint.includes("metric")) {
-    const parsedValue = Number.parseFloat(hint.match(/\d+(?:[.,]\d+)?/)?.[0].replace(",", ".") ?? "38");
-    return (
-      <DynamicNumberCounter
-        label="Dato destacado"
-        startValue={0}
-        endValue={parsedValue}
-        suffix="%"
-        trendLabel="Evolución positiva"
-        supportingText={beat.speech || beat.onScreenText}
-        accent={beatMapAccent}
-        renderMode="overlay"
-        reducedMotion={reducedMotion}
-      />
-    );
-  }
-  if (hint.includes("noticia") || hint.includes("news") || hint.includes("resalt")) {
-    return (
-      <NewsTextHighlighter
-        category="Actualidad"
-        source="Minthy BeatMap"
-        timestamp="Ahora"
-        headline={splitHeadline(beat.speech || beat.caption || beat.visual)}
-        summary={beat.onScreenText}
-        accent={beatMapAccent}
-        renderMode="overlay"
-        reducedMotion={reducedMotion}
-      />
-    );
+const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number; contentStyle: React.CSSProperties }> = ({ beat, duration, contentStyle }) => {
+  const layer = layerFor(beat, "graphic");
+  if (!layer) return null;
+  const broll = brollFor(beat);
+  if (beat.broll.source !== "none" && broll) {
+    return <AbsoluteFill style={{...contentStyle}}>
+      <BrollScene publicFile={broll.publicFile} text={beat.onScreenText} accent={beatMapAccent} textColor="#F7FCFA" fontFamily={headlineFontFamily} />
+    </AbsoluteFill>;
   }
   return (
-    <LiquidGlassCardV2
-      eyebrow=""
-      title={beat.onScreenText || beat.speech || beat.caption}
-      description=""
-      metric=""
-      metricLabel=""
-      actionLabel=""
-      accent={beatMapAccent}
-      renderMode="overlay"
-      contrast={beatMapTheme}
-      reducedMotion={reducedMotion}
-    />
+    <AbsoluteFill
+      style={{
+        backgroundColor: layer.backgroundColor,
+        color: generatedBeatMap.config.textColor,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "160px 96px",
+        boxSizing: "border-box",
+      }}
+    >
+      {beat.onScreenText.trim() ? <div style={{...contentStyle, width: 900, height: 700, display: "flex", alignItems: "center", justifyContent: "center"}}>
+        <BeatGraphic tag={beat.visualTag} text={beat.onScreenText} accent={beatMapAccent} theme={beatMapTheme} fontFamily={headlineFontFamily} accentFontFamily={accentFontFamily} reducedMotion={duration < 100} />
+      </div> : null}
+    </AbsoluteFill>
   );
 };
 
@@ -143,84 +132,44 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
   const duration = beat.endFrame - beat.startFrame;
   const style = transitionStyle(beat.transition, frame, duration);
 
+  if (beat.scene === "FULLSCREEN") {
+    return (
+      <AbsoluteFill style={{fontFamily: primaryFontFamily}}>
+        <FullscreenGraphic beat={beat} duration={duration} contentStyle={style} />
+      </AbsoluteFill>
+    );
+  }
+
   return (
     <AbsoluteFill style={{ ...style, fontFamily: primaryFontFamily }}>
       {beat.scene === "CAPTIONS" ? <CaptionLayer beat={beat} duration={duration} /> : null}
 
       {beat.scene === "CAPTION_UI" ? (
         <>
-          <div
-            style={{
-              position: "absolute",
-              top: safeArea.top + 70,
-              left: safeArea.left + 10,
-              transform: "scale(0.72)",
-              transformOrigin: "top left",
-            }}
-          >
-            <LiquidGlassCardV2
-              eyebrow=""
-              title={beat.onScreenText || beat.speech}
-              description=""
-              metric=""
-              metricLabel=""
-              actionLabel=""
-              accent={beatMapAccent}
-              renderMode="overlay"
-              contrast={beatMapTheme}
-              reducedMotion={duration < 100}
-            />
-          </div>
+          {(() => {
+            const graphicLayer = layerFor(beat, "graphic");
+            if (!graphicLayer || !beat.onScreenText.trim()) return null;
+            return <GraphicInBox beat={beat} box={graphicLayer.box} duration={duration} compact />;
+          })()}
           <CaptionLayer beat={beat} duration={duration} />
         </>
       ) : null}
 
       {beat.scene === "SPLIT" ? (
         <>
-          <div
-            style={{
-              position: "absolute",
-              top: 360,
-              right: safeArea.right,
-              width: 430,
-              minHeight: 640,
-              padding: 36,
-              boxSizing: "border-box",
-              color: colors.foreground,
-              backgroundColor: "rgba(5,15,13,0.9)",
-              border: `2px solid ${colors.border}`,
-              borderRadius: 32,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <div style={{ color: colors.primary, fontSize: 22, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase" }}>
-              {""}
-            </div>
-            <div style={{ marginTop: 24, fontFamily: headlineFontFamily, fontSize: 46, lineHeight: 1.08, fontWeight: 700, letterSpacing: -1.6 }}>
-              {beat.onScreenText || beat.speech}
-            </div>
-          </div>
+          {(() => {
+            const graphicLayer = layerFor(beat, "graphic");
+            if (!graphicLayer) return null;
+            const broll = brollFor(beat);
+            if (beat.broll.source !== "none" && broll) return <div style={{...boxStyle(graphicLayer.box), overflow: "hidden"}}>
+              <BrollScene publicFile={broll.publicFile} text={beat.onScreenText} accent={beatMapAccent} textColor="#F7FCFA" fontFamily={headlineFontFamily} />
+            </div>;
+            return <div style={{...boxStyle(graphicLayer.box), backgroundColor: graphicLayer.backgroundColor}}>
+              <GraphicInBox beat={beat} box={{x: 0, y: 0, w: 1, h: 1}} duration={duration} />
+            </div>;
+          })()}
           <CaptionLayer beat={beat} duration={duration} />
         </>
-      ) : null}
-
-      {beat.scene === "FULLSCREEN" ? (
-        <AbsoluteFill
-          style={{
-            paddingTop: safeArea.top,
-            paddingRight: safeArea.right,
-            paddingBottom: safeArea.bottom,
-            paddingLeft: safeArea.left,
-            boxSizing: "border-box",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <FullscreenGraphic beat={beat} duration={duration} />
-        </AbsoluteFill>
       ) : null}
     </AbsoluteFill>
   );

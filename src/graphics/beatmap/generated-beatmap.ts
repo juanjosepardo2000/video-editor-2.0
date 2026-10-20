@@ -1,6 +1,7 @@
 import type { GeneratedBeatMap } from "./types";
 
 export const generatedBeatMap = {
+  "contractVersion": "v1",
   "fps": 30,
   "source": "pipeline",
   "sourcePath": "pipeline/beatmap.md",
@@ -15,6 +16,17 @@ export const generatedBeatMap = {
     "textColor": "#1D1D1F",
     "textSecondary": "#6E6E73",
     "captionStyle": "word-by-word",
+    "captionAnchorY": 0.65,
+    "captionWordsPerGroup": [
+      1,
+      3
+    ],
+    "captionFontScale": 1,
+    "graphicsMode": "fullscreen-o-inset",
+    "neverOverFace": true,
+    "maxSimultaneousLayers": 1,
+    "minGapBetweenGraphicsSec": 1.5,
+    "graphicsCoverageTarget": 0.35,
     "width": 1080,
     "height": 1920,
     "fps": 30
@@ -23,6 +35,7 @@ export const generatedBeatMap = {
   "durationInFrames": 483,
   "beats": [
     {
+      "contractVersion": "v1",
       "id": "beat-01",
       "index": 1,
       "startSeconds": 0,
@@ -32,7 +45,13 @@ export const generatedBeatMap = {
       "speech": "hola este es un test para probar",
       "scene": "CAPTIONS",
       "visual": "Hablante a pantalla completa, sin gráficos",
+      "visualTag": null,
       "onScreenText": "",
+      "broll": {
+        "source": "none",
+        "value": ""
+      },
+      "zone": "auto",
       "transition": "cut",
       "sfx": "",
       "caption": "test",
@@ -78,6 +97,7 @@ export const generatedBeatMap = {
       ]
     },
     {
+      "contractVersion": "v1",
       "id": "beat-02",
       "index": 2,
       "startSeconds": 3.2,
@@ -87,7 +107,13 @@ export const generatedBeatMap = {
       "speech": "si el editor de vídeos funciona correctamente este ok ya me acordé",
       "scene": "CAPTION_UI",
       "visual": "Tarjeta liquid glass en el tercio inferior con el tema",
+      "visualTag": null,
       "onScreenText": "Editor de vídeos",
+      "broll": {
+        "source": "none",
+        "value": ""
+      },
+      "zone": "auto",
       "transition": "slide-up",
       "sfx": "pop",
       "caption": "funciona correctamente",
@@ -158,6 +184,7 @@ export const generatedBeatMap = {
       ]
     },
     {
+      "contractVersion": "v1",
       "id": "beat-03",
       "index": 3,
       "startSeconds": 8.3,
@@ -167,7 +194,13 @@ export const generatedBeatMap = {
       "speech": "si el punto es probar que el asistente de vídeos",
       "scene": "FULLSCREEN",
       "visual": "Diagrama simple a pantalla completa del asistente de vídeos",
+      "visualTag": null,
       "onScreenText": "Asistente de vídeos",
+      "broll": {
+        "source": "none",
+        "value": ""
+      },
+      "zone": "auto",
       "transition": "zoom-in",
       "sfx": "whoosh",
       "caption": "asistente",
@@ -228,6 +261,7 @@ export const generatedBeatMap = {
       ]
     },
     {
+      "contractVersion": "v1",
       "id": "beat-04",
       "index": 4,
       "startSeconds": 11.7,
@@ -237,7 +271,13 @@ export const generatedBeatMap = {
       "speech": "conía funcione tanto con los cambios que hizo Carlos y",
       "scene": "SPLIT",
       "visual": "Arriba: tarjeta con los cambios del equipo; abajo: hablante",
+      "visualTag": null,
       "onScreenText": "Cambios de Carlos",
+      "broll": {
+        "source": "none",
+        "value": ""
+      },
+      "zone": "auto",
       "transition": "fade",
       "sfx": "pop",
       "caption": "Carlos",
@@ -298,6 +338,7 @@ export const generatedBeatMap = {
       ]
     },
     {
+      "contractVersion": "v1",
       "id": "beat-05",
       "index": 5,
       "startSeconds": 14.9,
@@ -307,7 +348,13 @@ export const generatedBeatMap = {
       "speech": "mi persona y Gonzalo.",
       "scene": "CAPTIONS",
       "visual": "Hablante a pantalla completa, cierre",
+      "visualTag": null,
       "onScreenText": "",
+      "broll": {
+        "source": "none",
+        "value": ""
+      },
+      "zone": "auto",
       "transition": "cut",
       "sfx": "hit",
       "caption": "Gonzalo.",
