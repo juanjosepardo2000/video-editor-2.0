@@ -84,7 +84,7 @@ Si hay fallos, corrige solo el segmento afectado y vuelve a renderizar. El bucle
 Antes de cualquier generación, sigue la skill `higgsfield-budget` (confirmar aspecto, modelo, costo y prompt).
 
 ## 10. Perfiles (multi-sector)
-- El perfil activo está en `profiles/ACTIVE`; léelo al iniciar y carga `profiles/<activo>/`.
+- **Antes de editar cualquier video, pregunta al usuario qué estilo (perfil) usar** (skill `editar-video`), guarda la respuesta en `profiles/ACTIVE` y carga `profiles/<activo>/`. No reutilices el estilo anterior sin preguntar.
 - Un perfil es un estilo de edición. Los valores de `profile.json` (`editing`, tema, fuentes, música, formato) y los `.md` del perfil sobreescriben los valores por defecto de este archivo.
 - La regla absoluta de la sección 0 y las zonas seguras no se anulan por perfil.
 - Si no hay perfil activo o está vacío (`_template`), pregunta al usuario antes de continuar.
