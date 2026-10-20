@@ -1,6 +1,6 @@
 # Contratos entre piezas (fuente única)
 
-Estado: **aprobado por Juan el 2026-10-19**. Si un contrato cambia, se avisa a los tres antes de programar. Coordenadas siempre **normalizadas de 0 a 1** respecto al video **ya rotado** (origen arriba a la izquierda). Tiempos en segundos del video **ya cortado**, salvo que se indique.
+Estado: **aprobado por Juan el 2026-10-19**. Si un contrato cambia, se avisa a los tres antes de programar. Coordenadas siempre **normalizadas de 0 a 1** respecto al video **ya rotado** (origen arriba a la izquierda). Tiempos en segundos del video **ya cortado**, salvo que se indique. En el beat map, formato `mm:ss.s` con **un decimal**; se admiten **hasta tres** cuando el hueco entre dos palabras es menor de 0.1 s y no cabe un límite de un decimal.
 
 ## 1. `pipeline/face_boxes.json` (C1 → G1, G6)
 ```json

@@ -54,13 +54,13 @@ def _uid() -> str:
 
 
 def _seconds(value: str) -> float:
-    match = re.fullmatch(r"(\d{2,}):(\d{2})\.(\d)", value.strip())
+    match = re.fullmatch(r"(\d{2,}):(\d{2})\.(\d{1,3})", value.strip())
     if not match:
-        raise ValueError(f"Tiempo inválido '{value}'; usa mm:ss.s")
-    minutes, seconds, tenths = map(int, match.groups())
+        raise ValueError(f"Tiempo inválido '{value}'; usa mm:ss.s (uno a tres decimales)")
+    minutes, seconds = int(match.group(1)), int(match.group(2))
     if seconds >= 60:
         raise ValueError(f"Tiempo inválido '{value}'; los segundos deben ser < 60")
-    return minutes * 60 + seconds + tenths / 10
+    return minutes * 60 + seconds + float("0." + match.group(3))
 
 
 def parse_beatmap(path: Path) -> list[Beat]:

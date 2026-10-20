@@ -204,3 +204,9 @@ def test_beatmap_v2_to_v1_conversion_drops_only_broll_and_zone() -> None:
     assert "> Contrato: v1" in converted
     rows = [line for line in converted.splitlines() if line.startswith("| ") and line[2].isdigit()]
     assert len(rows) == 5 and all(row.count("|") == header.count("|") for row in rows)
+
+
+def test_capcut_exporter_and_mixer_accept_two_decimal_beatmap_times() -> None:
+    from src.nle_bridge.capcut_exporter import _seconds
+    assert _seconds("00:04.87") == 4.87 and _seconds("01:02.5") == 62.5
+    assert parse_time("00:04.87") == 4.87

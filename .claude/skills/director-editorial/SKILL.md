@@ -11,7 +11,7 @@ Hasta que el lector de Gonzalo acepte v2, convierte a v1 con `python3 scripts/be
 
 ## 1. Segmentar en beats
 - Un beat es una idea o frase con lo que se ve mientras se dice. Duración objetivo: `editing.sceneChangeSec` del perfil (perfil-1: 2 a 4 s); evita beats de menos de 1.4 s y de más de 5 s.
-- Los límites deben caer **entre palabras** del transcript: `Fin` del beat >= fin de su última palabra e `Inicio` del siguiente <= inicio de su primera palabra, con **un decimal** (`mm:ss.s`). Si no existe un límite posible en un hueco, une los beats.
+- Los límites deben caer **entre palabras** del transcript: `Fin` del beat >= fin de su última palabra e `Inicio` del siguiente <= inicio de su primera palabra, con **un decimal** (`mm:ss.s`); si el hueco entre dos palabras es menor de 0.1 s y no cabe uno, usa el punto medio con **dos decimales**. Los lectores aceptan de uno a tres decimales.
 - `Speech` es el texto literal del transcript (misma ortografía y puntuación).
 
 ## 2. Clasificar el mensaje y elegir el recurso
