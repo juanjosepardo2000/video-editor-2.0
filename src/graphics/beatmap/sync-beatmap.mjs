@@ -11,8 +11,12 @@ const outputPath = path.resolve(repositoryRoot, readArgument("output") ?? path.r
 const validationProfile = readArgument("validation-profile");
 const sceneCodes = new Set(["CAPTIONS", "CAPTION_UI", "SPLIT", "FULLSCREEN"]);
 const transitionCodes = new Set(["cut", "fade", "slide-up", "zoom-in"]);
-const expectedHeaders = ["#", "Inicio", "Fin", "Speech", "Escena", "Visual", "Texto en pantalla", "Transición", "SFX", "Caption"];
-const legacyHeaders = expectedHeaders.filter((header) => header !== "Texto en pantalla");
+const zoneCodes = new Set(["arriba", "abajo", "lado", "auto"]);
+const brollSources = new Set(["own", "stock", "ai"]);
+const visualTags = new Set(["contador", "comparacion", "titular", "busqueda", "lista", "cifra", "tarjeta", "interludio", "recuadro", "hablante", "broll"]);
+const v1Headers = ["#", "Inicio", "Fin", "Speech", "Escena", "Visual", "Texto en pantalla", "Transición", "SFX", "Caption"];
+const legacyHeaders = v1Headers.filter((header) => header !== "Texto en pantalla");
+const v2Headers = ["#", "Inicio", "Fin", "Speech", "Escena", "Visual", "Texto en pantalla", "B-roll", "Zona", "Transición", "SFX", "Caption"];
 
 const normalize = (value) =>
   value
@@ -32,6 +36,56 @@ const parseTime = (value, rowNumber, column) => {
 };
 
 const cells = (line) => line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => cell.trim());
+
+const matchingContract = (rawHeaders, markdown) => {
+  const matches = (list) => rawHeaders.length === list.length && rawHeaders.every((header, index) => header === list[index]);
+  const declaredVersion = markdown.match(/Contrato:\s*`?v([12])\b/i)?.[1];
+  const detectedVersion = matches(v2Headers) ? "v2" : matches(v1Headers) || matches(legacyHeaders) ? "v1" : null;
+  if (!detectedVersion) {
+    throw new Error(
+      `Contrato inválido. Columnas v1: ${v1Headers.join(" | ")}. Columnas v2: ${v2Headers.join(" | ")}. Recibidas: ${rawHeaders.join(" | ")}.`,
+    );
+  }
+  if (declaredVersion && `v${declaredVersion}` !== detectedVersion) {
+    throw new Error(`Contrato declarado v${declaredVersion}, pero las columnas corresponden a ${detectedVersion}.`);
+  }
+  if (detectedVersion === "v2" && declaredVersion !== "2") {
+    throw new Error('El contrato v2 debe declarar la línea "Contrato: v2" en el encabezado.');
+  }
+  return detectedVersion;
+};
+
+const parseBroll = (value, rowNumber, contractVersion) => {
+  if (contractVersion === "v1") return { source: "none", value: "" };
+  const raw = String(value ?? "").trim();
+  if (raw === "-") return { source: "none", value: "" };
+  const match = raw.match(/^([a-z]+):(.*)$/i);
+  if (!match || !brollSources.has(match[1].toLowerCase())) {
+    throw new Error(`Fila ${rowNumber}: B-roll debe ser "-" o comenzar con own:, stock: o ai:; recibido "${raw}".`);
+  }
+  const content = match[2].trim();
+  if (!content) throw new Error(`Fila ${rowNumber}: B-roll "${match[1]}:" necesita contenido después del prefijo.`);
+  return { source: match[1].toLowerCase(), value: content };
+};
+
+const parseZone = (value, rowNumber, contractVersion) => {
+  if (contractVersion === "v1") return "auto";
+  const zone = String(value ?? "").trim().toLowerCase();
+  if (!zoneCodes.has(zone)) {
+    throw new Error(`Fila ${rowNumber}: Zona desconocida "${value}". Válidas: ${[...zoneCodes].join(", ")}.`);
+  }
+  return zone;
+};
+
+const parseVisualTag = (visual, rowNumber) => {
+  const match = visual.match(/^\[([^\]]+)\]/);
+  if (!match) return null;
+  const tag = normalize(match[1]).replace(/\s+/g, "");
+  if (!visualTags.has(tag)) {
+    throw new Error(`Fila ${rowNumber}: etiqueta Visual desconocida "[${match[1]}]". Válidas: ${[...visualTags].map((item) => `[${item}]`).join(", ")}.`);
+  }
+  return tag;
+};
 
 const parseConfig = (markdown) => {
   const declared = markdown.match(/^-\s*Perfil:\s*`?([a-z0-9_-]+)`?\s*$/im)?.[1];
@@ -94,10 +148,7 @@ const parseTable = (markdown, fps) => {
   if (headerIndex < 0) throw new Error("No se encontró la tabla '## Beats' con columnas Inicio y Fin.");
 
   const rawHeaders = cells(lines[headerIndex]);
-  const matches = (list) => rawHeaders.length === list.length && rawHeaders.every((header, index) => header === list[index]);
-  if (!matches(expectedHeaders) && !matches(legacyHeaders)) {
-    throw new Error(`Contrato inválido. Columnas esperadas: ${expectedHeaders.join(" | ")}. Recibidas: ${rawHeaders.join(" | ")}.`);
-  }
+  const contractVersion = matchingContract(rawHeaders, markdown);
   const headers = rawHeaders.map(normalize);
   const rows = [];
   for (let lineIndex = headerIndex + 2; lineIndex < lines.length; lineIndex += 1) {
@@ -132,7 +183,10 @@ const parseTable = (markdown, fps) => {
     }
     const caption = row.caption.trim() === "-" ? "" : row.caption.trim();
     const accentKeywords = caption.split(/[,;/]+|\s+en\s+acento$/i).map((value) => value.trim()).filter(Boolean);
+    const broll = parseBroll(row["b roll"], rowNumber, contractVersion);
+    const zone = parseZone(row.zona, rowNumber, contractVersion);
     beats.push({
+      contractVersion,
       id: `beat-${String(index).padStart(2, "0")}`,
       index,
       startSeconds,
@@ -142,7 +196,10 @@ const parseTable = (markdown, fps) => {
       speech,
       scene,
       visual,
+      visualTag: parseVisualTag(visual, rowNumber),
       onScreenText: (row["texto en pantalla"] ?? "").trim() === "-" ? "" : (row["texto en pantalla"] ?? "").trim(),
+      broll,
+      zone,
       transition,
       sfx: row.sfx.trim() === "-" ? "" : row.sfx.trim(),
       caption,
@@ -151,7 +208,7 @@ const parseTable = (markdown, fps) => {
     });
   }
   if (beats.length === 0) throw new Error("La tabla Beats no contiene escenas.");
-  return { beats, warnings };
+  return { contractVersion, beats, warnings };
 };
 
 const normalizeWord = (value) => normalize(value).replace(/\s+/g, "");
@@ -224,6 +281,7 @@ try {
   const durationInFrames = Math.max(...parsed.beats.map((beat) => beat.endFrame), config.fps);
   const relativeSource = path.relative(repositoryRoot, beatMapPath).replaceAll("\\", "/");
   const payload = {
+    contractVersion: parsed.contractVersion,
     fps: config.fps,
     source: "pipeline",
     sourcePath: relativeSource,
