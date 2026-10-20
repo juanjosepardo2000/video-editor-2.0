@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const syncScript = path.join(here, "sync-beatmap.mjs");
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "minthy-beatmap-test-"));
+const repositoryRoot = path.resolve(here, "../../..");
 
 const header = `# BeatMap
 
@@ -44,6 +45,9 @@ try {
   assert.match(aligned.generated, /"accent": "#F28C28"/);
   assert.match(aligned.generated, /"onScreenText": ""/);
   assert.doesNotMatch(aligned.generated, /"onScreenText": "Hablante"/);
+  assert.match(aligned.generated, /"contractVersion": "v1"/);
+  assert.match(aligned.generated, /"source": "none"/);
+  assert.match(aligned.generated, /"zone": "auto"/);
 
   const headerWithScreenText = header.replace("| Visual | Transición", "| Visual | Texto en pantalla | Transición").replace(
     "|---|---|---|---|---|---|---|---|---|",
@@ -99,7 +103,57 @@ try {
   assert.equal(nonLiteralCaption.status, 1);
   assert.match(nonLiteralCaption.stderr, /coincidir literalmente/);
 
-  console.log("BeatMap tests: 9/9 OK");
+  const currentV1 = run({
+    markdown: fs.readFileSync(path.join(repositoryRoot, "pipeline/beatmap.md"), "utf8"),
+    transcript: JSON.parse(fs.readFileSync(path.join(repositoryRoot, "pipeline/examples/transcript.prueba.json"), "utf8")),
+  });
+  assert.equal(currentV1.status, 0, currentV1.stderr);
+  assert.match(currentV1.generated, /^\s*"contractVersion": "v1"/m);
+
+  const v2Example = run({
+    markdown: fs.readFileSync(path.join(repositoryRoot, "pipeline/examples/beatmap.v2.example.md"), "utf8"),
+    transcript: JSON.parse(fs.readFileSync(path.join(repositoryRoot, "pipeline/examples/transcript.prueba.json"), "utf8")),
+  });
+  assert.equal(v2Example.status, 0, v2Example.stderr);
+  assert.match(v2Example.generated, /^\s*"contractVersion": "v2"/m);
+  assert.match(v2Example.generated, /"source": "stock"/);
+  assert.match(v2Example.generated, /"value": "video editing software screen"/);
+  assert.match(v2Example.generated, /"zone": "arriba"/);
+
+  const v2Header = `${header.replace("## Configuración global", "> Contrato: v2\n\n## Configuración global")
+    .replace("| Visual | Transición", "| Visual | Texto en pantalla | B-roll | Zona | Transición")
+    .replace("|---|---|---|---|---|---|---|---|---|", "|---|---|---|---|---|---|---|---|---|---|---|---|")}`;
+  const invalidBroll = run({
+    markdown: `${v2Header}\n| 1 | 00:00.0 | 00:02.0 | hola mundo | CAPTIONS | [hablante] Test | - | youtube:clip | auto | cut | - | hola |\n`,
+  });
+  assert.equal(invalidBroll.status, 1);
+  assert.match(invalidBroll.stderr, /Fila 1: B-roll.*own:.*stock:.*ai:/);
+
+  const emptyBroll = run({
+    markdown: `${v2Header}\n| 1 | 00:00.0 | 00:02.0 | hola mundo | CAPTIONS | [hablante] Test | - | stock: | auto | cut | - | hola |\n`,
+  });
+  assert.equal(emptyBroll.status, 1);
+  assert.match(emptyBroll.stderr, /necesita contenido/);
+
+  const invalidZone = run({
+    markdown: `${v2Header}\n| 1 | 00:00.0 | 00:02.0 | hola mundo | CAPTIONS | [hablante] Test | - | - | centro | cut | - | hola |\n`,
+  });
+  assert.equal(invalidZone.status, 1);
+  assert.match(invalidZone.stderr, /Fila 1: Zona desconocida "centro"/);
+
+  const invalidVisualTag = run({
+    markdown: `${v2Header}\n| 1 | 00:00.0 | 00:02.0 | hola mundo | CAPTIONS | [video] Test | - | - | auto | cut | - | hola |\n`,
+  });
+  assert.equal(invalidVisualTag.status, 1);
+  assert.match(invalidVisualTag.stderr, /etiqueta Visual desconocida/);
+
+  const missingVersion = run({
+    markdown: `${v2Header.replace("> Contrato: v2\n\n", "")}\n| 1 | 00:00.0 | 00:02.0 | hola mundo | CAPTIONS | [hablante] Test | - | - | auto | cut | - | hola |\n`,
+  });
+  assert.equal(missingVersion.status, 1);
+  assert.match(missingVersion.stderr, /debe declarar la línea "Contrato: v2"/);
+
+  console.log("BeatMap tests: 16/16 OK");
 } finally {
   fs.rmSync(temporary, { recursive: true, force: true });
 }
