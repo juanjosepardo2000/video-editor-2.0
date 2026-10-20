@@ -183,3 +183,12 @@ def test_gain_to_target_clamps_and_handles_unknown_levels() -> None:
     assert gain_to_target(-20.0, -40.0) == -20.0
     assert gain_to_target(None, -40.0) == 0.0
     assert gain_to_target(-5.0, -90.0) == -40.0
+
+
+def test_beatmap_v2_with_broll_and_zone_columns_is_parsed_by_the_mixer_and_the_capcut_exporter() -> None:
+    from src.nle_bridge.capcut_exporter import parse_beatmap as parse_for_capcut
+    example = Path("pipeline/examples/beatmap.v2.example.md")
+    events = parse_beatmap(example)
+    assert [event["type"] for event in events] == ["pop", "whoosh", "pop", "hit"]
+    beats = parse_for_capcut(example)
+    assert len(beats) == 5 and beats[2].scene == "FULLSCREEN"

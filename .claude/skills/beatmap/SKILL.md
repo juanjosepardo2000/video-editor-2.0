@@ -15,7 +15,8 @@ Entrada: `pipeline/transcript.json`, `claude.md`, perfil activo (`profiles/ACTIV
    - `SPLIT`: reglas, principios o comparaciones donde se ve el concepto y la cara a la vez.
    - `FULLSCREEN`: explicaciones conceptuales complejas, diagramas, listas de logos o momentos de alto impacto.
 3. Describe el visual concreto (elemento en pantalla, foco de cámara, assets necesarios; es una instrucción interna que nunca se imprime), el **texto en pantalla** (único copy visible en tarjetas y gráficos; solo puede salir de lo dicho en `Speech` o del perfil activo, `-` si no aplica), la transición y el caption (1 a 3 palabras literales de `Speech` en acento).
-   Columnas, en orden: `# | Inicio | Fin | Speech | Escena | Visual | Texto en pantalla | Transición | SFX | Caption`.
+   Contrato v2 (aprobado, con transición v1 y v2): después de `Texto en pantalla` van `B-roll` (`-`, `own:archivo`, `stock:palabras`, `ai:prompt`) y `Zona` (`arriba`, `abajo`, `lado`, `auto`), y el encabezado lleva `Contrato: v2`. Ejemplo: `pipeline/examples/beatmap.v2.example.md`. Hasta que el lector de Gonzalo acepte v2, el beat map que entra a Remotion se mantiene en v1.
+   Columnas v1, en orden: `# | Inicio | Fin | Speech | Escena | Visual | Texto en pantalla | Transición | SFX | Caption`.
 4. Asigna SFX según el vocabulario de `claude.md` sección 7.
 5. Cadencia: un cambio visual cada ~1.5 a 3 s, ajustado al ritmo de la locución. No inventes datos que no estén en el transcript.
 6. **Antes de escribir código gráfico**: muestra el beat map al usuario, haz preguntas aclaratorias ("ask me any clarifying questions": layout, colores, duración de animaciones) y, si lo pide, genera mockups. Iterar el plan en texto es barato; iterar animaciones renderizadas no.

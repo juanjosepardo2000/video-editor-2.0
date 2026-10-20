@@ -31,7 +31,7 @@ Basado en `docs/plan-mejoras.md` y `docs/guia-estilos-y-criterio.md`. Tamaño re
 | **G4** | **Escenas con B-roll**: video de fondo vertical con recorte, oscurecido o desenfoque y movimiento suave, texto encima; lee `pipeline/broll/` y la columna `B-roll` | P2 | M | Componente `BrollScene` | Un beat con `stock:` o `own:` muestra el clip con texto legible |
 | **G5** | **Capas nativas de CapCut**: ampliar `build_capcut_from_template.py` con subtítulos, zooms con fotogramas clave y pistas de audio separadas; requiere la plantilla maestra de Juan | P2 | L | Constructor ampliado | El proyecto abre en CapCut 9.4.0 sin avisos y los subtítulos y zooms son editables |
 | **G6** | **QC de geometría** `qc_geometry.py`: con el recuadro real de cada capa del overlay y `face_boxes.json` calcula solape con el rostro, violaciones de zona segura, contraste y capas superpuestas | P1 | M | `pipeline/qc_geometry.json` | Detecta una tarjeta puesta sobre el rostro a propósito |
-| **G7** | **Parser del beat map** con las columnas nuevas `B-roll` y `Zona` (tras aprobar el contrato), validación estricta y pruebas | P2 | S | Parser actualizado | Rechaza valores inválidos con error claro |
+| **G7** | **Parser del beat map v2** (`sync-beatmap.mjs`): acepta v1 y v2 y las columnas `B-roll` y `Zona`; valida prefijos y valores; prueba con `pipeline/examples/beatmap.v2.example.md` | P1 | S | Parser actualizado | Lee el ejemplo v2 y el beat map v1 actual; rechaza `Zona` o `B-roll` inválidos con error claro |
 | **G8** | Rendimiento y espacio: tiempos de render, no dejar archivos grandes sueltos en `out/` | P3 | S | Informe y limpieza | Render de 60 s en menos de 3 minutos en un Mac sin GPU |
 
 ## 3. Juan (decisiones y materiales)
@@ -57,7 +57,12 @@ Basado en `docs/plan-mejoras.md` y `docs/guia-estilos-y-criterio.md`. Tamaño re
 
 ## 5. Contratos
 1. `pipeline/face_boxes.json`: `{fps, width, height, frames:[{t, boxes:[{x, y, w, h, conf}]}]}`; coordenadas de 0 a 1 respecto al video **ya rotado**; muestreo a 10 fps y suavizado.
-2. Beat map: columnas nuevas **`B-roll`** (`-`, `own:archivo`, `stock:palabras`, `ai:prompt`) y **`Zona`** (`arriba`, `abajo`, `lado`, `auto`) después de `Texto en pantalla`.
+2. **Beat map v2 (aprobado por Juan).** Columnas nuevas después de `Texto en pantalla`: **`B-roll`** (`-`, `own:archivo`, `stock:palabras`, `ai:prompt`) y **`Zona`** (`arriba`, `abajo`, `lado`, `auto`; es una preferencia, el compositor decide). Orden completo: `# | Inicio | Fin | Speech | Escena | Visual | Texto en pantalla | B-roll | Zona | Transición | SFX | Caption`.
+   - **Versión:** línea `Contrato: v2` en el encabezado del archivo.
+   - **Transición:** los lectores aceptan **v1 y v2**; sin `B-roll` se asume `-` y sin `Zona`, `auto`. Se retira v1 cuando los tres hayan migrado.
+   - **Validación:** `B-roll` solo con prefijos `own:`, `stock:` o `ai:`; `Zona` solo con los 4 valores; errores claros.
+   - **Archivo de ejemplo:** `pipeline/examples/beatmap.v2.example.md` (el beat map real sigue en v1 hasta que migren los lectores).
+   - **Estado de los lectores:** exportador de CapCut y mezclador de Carlos ya aceptan v2 (probado); **falta el lector de Gonzalo** (`sync-beatmap.mjs`, tarea G7).
 3. `pipeline/cuts.json`: `[{start, end, reason}]` en tiempos del video original, en segundos.
 4. `profile.json`: campos de `editing` y `broll` ya definidos en `perfil-1`.
 5. `pipeline/qc_media.json`, `pipeline/qc_geometry.json` y el informe final `pipeline/qc_report.json`.
@@ -69,7 +74,7 @@ Semana 2:  C3 (audio)   |  G6 (QC geometría)     | C4 (Pexels)  -> G4 (B-roll) 
 Semana 3:  G3 (componentes) | G7 (parser) | C5, C6 | D3, D4
 Semana 4:  G5 (CapCut nativo, necesita J4) | prueba final de 60 a 90 s con 2 perfiles | D5
 ```
-G1 depende de C1 y del contrato 5.1; G4 depende de C4; G5 depende de J4; G7 depende de J6.
+G1 depende de C1 y del contrato 5.1; G4 depende de C4; G5 depende de J4; G7 ya no espera a J6 (contrato aprobado) y desbloquea a D2 y a G4.
 
 ## 7. Mensajes listos para sus asistentes de código
 **Carlos:** «Lee `docs/tareas-equipo.md`, `docs/guia-estilos-y-criterio.md` y `profiles/perfil-1/`. Empieza por C1 (detector de rostro) en la rama `carlos/c1-face-tracker`. Antes de programar muéstrame el plan, la librería elegida y cómo manejarás la rotación del video. No subas medios ni claves. Entrega pruebas que pasen en Mac y Windows.»
