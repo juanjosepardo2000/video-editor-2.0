@@ -8,6 +8,7 @@ import { DynamicCounterDemo, DynamicCounterOverlay } from "./compositions/Dynami
 import { BeatMapComposition, BeatMapComposition4K } from "./compositions/BeatMapComposition";
 import { CompositeReview } from "./compositions/CompositeReview";
 import { G3ComponentGallery } from "./compositions/G3ComponentGallery";
+import { PerformanceBenchmark, PERFORMANCE_FRAMES } from "./compositions/PerformanceBenchmark";
 import { generatedBeatMap } from "./beatmap/generated-beatmap";
 import {
   animatedSearchDemo,
@@ -20,6 +21,14 @@ import {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="G8PerformanceBenchmark"
+        component={PerformanceBenchmark}
+        durationInFrames={PERFORMANCE_FRAMES}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
       <Composition
         id="G3ComponentGallery"
         component={G3ComponentGallery}

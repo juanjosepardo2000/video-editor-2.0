@@ -12,6 +12,8 @@
     "test:beatmap": "node src/graphics/beatmap/test-beatmap.mjs",
     "test:nle": "node src/nle_bridge/run_python.mjs -m unittest src/nle_bridge/test_capcut_exporter.py src/nle_bridge/test_qc_geometry.py -v",
     "qc:geometry": "node src/nle_bridge/run_python.mjs src/nle_bridge/qc_geometry.py",
+    "benchmark:render": "node src/graphics/quality/benchmark-render.mjs",
+    "clean:generated": "node src/graphics/quality/clean-generated.mjs",
     "test:graphics": "node src/graphics/design/test-contrast.mjs && node src/graphics/components/test-beat-graphic.mjs && node src/graphics/broll/test-broll-sync.mjs && node src/graphics/layout/test-placement.mjs && node src/graphics/layout/test-layout-contract.mjs && node src/graphics/quality/test_render_contract.mjs",
     "test": "npm run test:beatmap && npm run test:graphics && npm run test:nle && tsc --noEmit",
     "prestudio": "npm run sync:graphics",
