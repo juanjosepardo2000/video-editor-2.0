@@ -22,7 +22,7 @@ export const generatedLayout = {
         "h": 0.1
       },
       "textColor": "#1D1D1F",
-      "backgroundColor": "transparent",
+      "backgroundColor": "#F5F8F6",
       "occludesSpeaker": false,
       "keyframes": []
     },
@@ -56,7 +56,7 @@ export const generatedLayout = {
         "h": 0.1
       },
       "textColor": "#1D1D1F",
-      "backgroundColor": "transparent",
+      "backgroundColor": "#F5F8F6",
       "occludesSpeaker": false,
       "keyframes": []
     },
@@ -124,7 +124,7 @@ export const generatedLayout = {
         "h": 0.1
       },
       "textColor": "#1D1D1F",
-      "backgroundColor": "transparent",
+      "backgroundColor": "#F5F8F6",
       "occludesSpeaker": false,
       "keyframes": []
     },
@@ -141,7 +141,7 @@ export const generatedLayout = {
         "h": 0.1
       },
       "textColor": "#1D1D1F",
-      "backgroundColor": "transparent",
+      "backgroundColor": "#F5F8F6",
       "occludesSpeaker": false,
       "keyframes": []
     }

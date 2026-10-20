@@ -42,6 +42,7 @@ const beatMap = readGeneratedBeatMap();
 const faces = readFaces();
 const layers = [];
 const warnings = [];
+const captionBackground = beatMap.config.theme.includes("light") ? "#F5F8F6" : "#040C0A";
 const add = (beat, kind, box, options = {}) => {
   if (!box) return;
   layers.push({
@@ -63,19 +64,19 @@ for (const beat of beatMap.beats) {
   const captionBox = beat.scene === "FULLSCREEN" ? null : chooseCaptionPlacement({faces: beatFaces, anchorY: beatMap.config.captionAnchorY});
   if (beat.scene !== "FULLSCREEN" && !captionBox) warnings.push(`Beat ${beat.index}: no hay una zona sin rostro para subtítulos.`);
 
-  if (beat.scene === "CAPTIONS") add(beat, "caption", captionBox);
+  if (beat.scene === "CAPTIONS") add(beat, "caption", captionBox, {backgroundColor: captionBackground});
   if (beat.scene === "CAPTION_UI") {
     const graphicBox = beat.onScreenText
       ? chooseInsetPlacement({faces: beatFaces, preferredZone: beat.zone, avoid: captionBox ? [captionBox] : []})
       : null;
     if (beat.onScreenText && !graphicBox) warnings.push(`Beat ${beat.index}: se ocultó el gráfico porque ninguna zona evita el rostro.`);
     add(beat, "graphic", graphicBox, {backgroundColor: beatMap.config.theme.includes("light") ? "#F5FCF9" : "#07110F"});
-    add(beat, "caption", captionBox);
+    add(beat, "caption", captionBox, {backgroundColor: captionBackground});
   }
   if (beat.scene === "SPLIT") {
     add(beat, "graphic", {x: 0, y: 0, w: 1, h: 0.5}, {backgroundColor: beatMap.config.theme.includes("light") ? "#F5FCF9" : "#07110F", occludesSpeaker: true});
     add(beat, "speaker", {x: 0, y: 0.5, w: 1, h: 0.5});
-    add(beat, "caption", captionBox);
+    add(beat, "caption", captionBox, {backgroundColor: captionBackground});
   }
   if (beat.scene === "FULLSCREEN") {
     add(beat, "graphic", {x: 0, y: 0, w: 1, h: 1}, {backgroundColor: beatMap.config.theme.includes("light") ? "#F5FCF9" : "#07110F", occludesSpeaker: true});
