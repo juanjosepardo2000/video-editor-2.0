@@ -2,8 +2,11 @@ import React from "react";
 import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
 import { BeatGraphic, graphicCanvasSize } from "../components/BeatGraphic";
 import { WordByWordCaptions } from "../components/WordByWordCaptions";
+import { BrollScene } from "../components/BrollScene";
 import { generatedBeatMap } from "../beatmap/generated-beatmap";
 import { generatedLayout } from "../layout/generated-layout";
+import { generatedBroll } from "../broll/generated-broll";
+import type { GeneratedBrollAsset } from "../broll/types";
 import type { BeatMapEntry } from "../beatmap/types";
 import type { LayoutLayer, NormalizedBox } from "../layout/types";
 import { colors } from "../design/tokens";
@@ -28,6 +31,8 @@ const beatMapTheme = generatedBeatMap.config.theme.toLowerCase().includes("light
 const primaryFontFamily = resolveProfileFont(generatedBeatMap.config.font);
 const headlineFontFamily = resolveProfileFont(generatedBeatMap.config.headlineFont);
 const accentFontFamily = resolveProfileFont(generatedBeatMap.config.accentFont);
+const brollAssets = generatedBroll.assets as readonly GeneratedBrollAsset[];
+const brollFor = (beat: BeatMapEntry) => brollAssets.find((asset) => asset.beat === beat.index);
 
 const layerFor = (beat: BeatMapEntry, kind: LayoutLayer["kind"]): LayoutLayer | undefined =>
   generatedLayout.layers.find((layer) => layer.beat === beat.index && layer.kind === kind);
@@ -97,6 +102,12 @@ const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat
 const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number; contentStyle: React.CSSProperties }> = ({ beat, duration, contentStyle }) => {
   const layer = layerFor(beat, "graphic");
   if (!layer) return null;
+  const broll = brollFor(beat);
+  if (beat.broll.source !== "none" && broll) {
+    return <AbsoluteFill style={{...contentStyle}}>
+      <BrollScene publicFile={broll.publicFile} text={beat.onScreenText} accent={beatMapAccent} textColor="#F7FCFA" fontFamily={headlineFontFamily} />
+    </AbsoluteFill>;
+  }
   return (
     <AbsoluteFill
       style={{
@@ -149,6 +160,10 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
           {(() => {
             const graphicLayer = layerFor(beat, "graphic");
             if (!graphicLayer) return null;
+            const broll = brollFor(beat);
+            if (beat.broll.source !== "none" && broll) return <div style={{...boxStyle(graphicLayer.box), overflow: "hidden"}}>
+              <BrollScene publicFile={broll.publicFile} text={beat.onScreenText} accent={beatMapAccent} textColor="#F7FCFA" fontFamily={headlineFontFamily} />
+            </div>;
             return <div style={{...boxStyle(graphicLayer.box), backgroundColor: graphicLayer.backgroundColor}}>
               <GraphicInBox beat={beat} box={{x: 0, y: 0, w: 1, h: 1}} duration={duration} />
             </div>;
