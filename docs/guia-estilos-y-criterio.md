@@ -8,6 +8,14 @@ Arranca por el **criterio**: antes de mejorar gráficos o audio, el sistema nece
 - **Se imita la técnica, no el video.** Las referencias solo aportan enlaces y métricas; los archivos no se suben al repo.
 - **Regla con respaldo:** cada regla del perfil debe indicar de qué referencias sale. Sin respaldo, queda marcada como provisional.
 
+## 1b. Todo perfil tiene dos bloques de referencias
+| Bloque | Qué aprende | Referencias mínimas |
+|---|---|---|
+| **Narrativo** | Ritmo, hooks, cortes, reacciones y selección de momentos | 5 videos de un creador o de creadores similares |
+| **Visual** | Subtítulos, tarjetas, zooms, SFX y composición 9:16 | 5 videos de edición gráfica profesional |
+
+Un perfil nuevo **no se da por calibrado** hasta tener ambos bloques. Al crearlo, el sistema pide los videos de cada bloque (enlace o archivo), qué le gusta al usuario y qué no copiar. Ejemplo ya hecho: `perfil-1` (narrativo: carpeta «DavoXeneizze»; visual: carpeta «Videos Profesionales»).
+
 ## 2. Flujo para calibrar un perfil
 
 | # | Paso | Responsable | Resultado |

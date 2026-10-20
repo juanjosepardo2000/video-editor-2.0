@@ -1,0 +1,44 @@
+{
+  "kind": "visual",
+  "duration_s": 41.54,
+  "width": 576,
+  "height": 1024,
+  "fps": 30.0,
+  "has_audio": true,
+  "cuts": {
+    "threshold": 0.3,
+    "count": 11,
+    "per_minute": 15.9,
+    "mean_shot_s": 3.46,
+    "median_shot_s": 3.42,
+    "min_shot_s": 0.13,
+    "max_shot_s": 6.6,
+    "times_s": [
+      6.6,
+      6.73,
+      9.7,
+      14.73,
+      16.27,
+      18.9,
+      22.03,
+      27.7,
+      28.67,
+      32.9,
+      37.83
+    ]
+  },
+  "silence": {
+    "noise_db": -35,
+    "min_s": 0.3,
+    "count": 0,
+    "total_s": 0,
+    "percent_of_video": 0.0,
+    "longest_s": 0.0
+  },
+  "loudness": {
+    "integrated_lufs": -18.4,
+    "range_lu": 5.0,
+    "true_peak_dbfs": 0.1,
+    "mean_volume_db": -20.1
+  }
+}

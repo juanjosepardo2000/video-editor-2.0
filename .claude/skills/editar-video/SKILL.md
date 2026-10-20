@@ -12,6 +12,9 @@ description: Punto de entrada para editar un video. SIEMPRE pregunta primero qu�
 4. Escribe el nombre elegido en `profiles/ACTIVE` y léelo de ahí durante todo el flujo.
 5. No asumas el estilo ni reutilices el de la vez anterior sin preguntar.
 
+## Si el usuario quiere un perfil nuevo
+Crea `profiles/<nombre>/` copiando `_template` y pide **ambos bloques de referencias** antes de calibrar: narrativo (ritmo, hooks, cortes, reacciones, selección de momentos; mínimo 5 videos) y visual (subtítulos, tarjetas, zooms, SFX, composición 9:16; mínimo 5). Pide también, por cada video, qué le gusta y qué no copiar. Analiza con `src/backend/style_analyzer.py`, observa fotogramas con la rúbrica de `docs/guia-estilos-y-criterio.md`, borra los videos y guarda solo métricas. Mientras falte un bloque, deja `status: en construccion`.
+
 ## Paso 1: confirmar el video
 Ruta en `assets/raw/`, duración y orientación (revisa la rotación con `ffprobe`; un video vertical puede venir como 1280x720 con giro de 90°).
 

@@ -1,0 +1,44 @@
+{
+  "kind": "narrativo",
+  "duration_s": 29.02,
+  "width": 576,
+  "height": 1024,
+  "fps": 30.0,
+  "has_audio": true,
+  "cuts": {
+    "threshold": 0.3,
+    "count": 1,
+    "per_minute": 2.1,
+    "mean_shot_s": 14.51,
+    "median_shot_s": 14.51,
+    "min_shot_s": 4.02,
+    "max_shot_s": 25.0,
+    "times_s": [
+      25.0
+    ]
+  },
+  "silence": {
+    "noise_db": -35,
+    "min_s": 0.3,
+    "count": 1,
+    "total_s": 2.95,
+    "percent_of_video": 10.2,
+    "longest_s": 2.95
+  },
+  "loudness": {
+    "integrated_lufs": -18.9,
+    "range_lu": 8.1,
+    "true_peak_dbfs": 0.0,
+    "mean_volume_db": -19.8
+  },
+  "speech": {
+    "language": "es",
+    "words": 2,
+    "first_word_s": 18.63,
+    "speaking_span_s": 0.3,
+    "words_per_minute": 395,
+    "pauses_over_0_3s": 0,
+    "longest_pause_s": 0.04,
+    "hook_text": "por favor"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "kind": "narrativo",
+  "duration_s": 37.79,
+  "width": 576,
+  "height": 1024,
+  "fps": 30.0,
+  "has_audio": true,
+  "cuts": {
+    "threshold": 0.3,
+    "count": 4,
+    "per_minute": 6.4,
+    "mean_shot_s": 7.56,
+    "median_shot_s": 2.37,
+    "min_shot_s": 1.1,
+    "max_shot_s": 28.97,
+    "times_s": [
+      1.33,
+      3.7,
+      4.8,
+      33.77
+    ]
+  },
+  "silence": {
+    "noise_db": -35,
+    "min_s": 0.3,
+    "count": 18,
+    "total_s": 11.68,
+    "percent_of_video": 30.9,
+    "longest_s": 2.95
+  },
+  "loudness": {
+    "integrated_lufs": -2.0,
+    "range_lu": 27.8,
+    "true_peak_dbfs": -0.0,
+    "mean_volume_db": -12.9
+  },
+  "speech": {
+    "language": "es",
+    "words": 78,
+    "first_word_s": 0.03,
+    "speaking_span_s": 26.48,
+    "words_per_minute": 177,
+    "pauses_over_0_3s": 5,
+    "longest_pause_s": 8.15,
+    "hook_text": "que me van a parejar un poco nada más. Bueno, vale. Me puedo mutillarse,"
+  }
+}

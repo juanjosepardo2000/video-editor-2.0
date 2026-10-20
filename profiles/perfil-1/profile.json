@@ -1,13 +1,13 @@
 {
   "name": "perfil-1",
-  "description": "Perfil 1: estilo por definir a partir de los videos de referencia (en construcción).",
+  "description": "Perfil 1 (MVP): ritmo narrativo tipo Davo Xeneize + composición gráfica 9:16 profesional. Borrador calibrado con 5+5 videos.",
   "language": "es",
   "editing": {
     "cutPaddingMs": 20,
-    "silenceThresholdSec": 0.4,
+    "silenceThresholdSec": 0.6,
     "sceneChangeSec": [
-      1.5,
-      2.5
+      2,
+      4
     ],
     "sceneMix": {
       "CAPTIONS": 0.3,
@@ -19,8 +19,15 @@
     "captionStyle": "word-by-word",
     "maxSimultaneousLayers": 1,
     "minGapBetweenGraphicsSec": 1.5,
-    "graphicsCoverageTarget": 0.3,
-    "captionFontScale": 1.0
+    "graphicsCoverageTarget": 0.35,
+    "captionFontScale": 1.0,
+    "captionAnchorY": 0.65,
+    "captionWordsPerGroup": [
+      1,
+      3
+    ],
+    "graphicsMode": "fullscreen-o-inset",
+    "neverOverFace": true
   },
   "theme": {
     "mode": "light",
@@ -43,7 +50,7 @@
     "fps": 30
   },
   "status": "en construccion",
-  "version": 0,
+  "version": 1,
   "broll": {
     "policy": [
       "own",
@@ -57,6 +64,34 @@
   "references": {
     "file": "profiles/perfil-1/references.md",
     "minimumVideos": 10,
-    "analyzedVideos": 0
+    "analyzedVideos": 10
+  },
+  "blocks": {
+    "narrativo": {
+      "descripcion": "Ritmo, hooks, cortes, reacciones y selección de momentos.",
+      "referencias": 5,
+      "confianza": "baja",
+      "reglas": {
+        "planoMedioS": "~14 (rango 3 a 24): pocos cortes, el hablante manda",
+        "cortesPorMin": "~3 (vlog: hasta 16)",
+        "habla": "150 a 200 palabras/min",
+        "hook": "empieza a hablar en menos de 1 s",
+        "pausas": "se conservan pausas naturales (silencios 10 a 30% del tiempo)",
+        "momentos": "reacciones, risas y recursos (comentarios, stitch con otro video) se mantienen"
+      }
+    },
+    "visual": {
+      "descripcion": "Subtítulos, tarjetas, zooms, SFX y composición 9:16.",
+      "referencias": 5,
+      "confianza": "baja",
+      "reglas": {
+        "planoMedioS": "~2.8 (rango 2 a 4.7)",
+        "cortesPorMin": "~19 (rango 11 a 30)",
+        "musica": "continua, sin silencios; -14 a -22 LUFS integrados",
+        "subtitulos": "palabra a palabra, 1 a 3 palabras, centrados a ~65% de la altura (pecho), con la palabra clave más grande o en color de acento",
+        "graficos": "interludios a pantalla completa que REEMPLAZAN al hablante, o recuadro pequeño con esquinas redondeadas; nunca una tarjeta sobre la cara",
+        "sfx": "por medir"
+      }
+    }
   }
 }

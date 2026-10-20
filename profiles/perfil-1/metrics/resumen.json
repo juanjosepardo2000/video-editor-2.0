@@ -1,0 +1,61 @@
+{
+  "narrativo": {
+    "videos": 5,
+    "cortes_por_min": {
+      "median": 2.6,
+      "min": 2.0,
+      "max": 15.9
+    },
+    "plano_medio_s": {
+      "median": 14.51,
+      "min": 3.4,
+      "max": 24.35
+    },
+    "silencio_porcentaje": {
+      "median": 22.3,
+      "min": 10.2,
+      "max": 30.9
+    },
+    "palabras_por_min": {
+      "median": 182.5,
+      "min": 149,
+      "max": 200
+    },
+    "primera_palabra_s": {
+      "median": 0.19,
+      "min": 0.03,
+      "max": 18.63
+    },
+    "nota": "n4 excluido de palabras/min: 395 wpm no es fiable (casi sin habla útil)."
+  },
+  "visual": {
+    "videos": 5,
+    "cortes_por_min": {
+      "median": 19.1,
+      "min": 11.2,
+      "max": 29.9
+    },
+    "plano_medio_s": {
+      "median": 2.83,
+      "min": 2.01,
+      "max": 4.68
+    },
+    "silencio_porcentaje": {
+      "median": 0.0,
+      "min": 0.0,
+      "max": 3.5
+    },
+    "lufs": {
+      "median": -15.9,
+      "min": -21.6,
+      "max": -13.7
+    },
+    "pico_real_dbfs": {
+      "median": 1.2,
+      "min": -3.6,
+      "max": 3.4
+    },
+    "nota": "Los SFX no se midieron todavía."
+  },
+  "metodo": "src/backend/style_analyzer.py (FFmpeg: cortes por cambio de escena umbral 0.3, silencios -35 dB/0.3 s, EBU R128, WhisperX para habla). Los videos se borraron tras medirlos."
+}
