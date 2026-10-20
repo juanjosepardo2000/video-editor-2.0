@@ -1,23 +1,25 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, radii, spacing, typography } from "../design/tokens";
+import { ensureTextContrast, readableTextOn } from "../design/contrast.mjs";
 
 export type LiquidGlassRenderMode = "overlay" | "embedded";
 export type LiquidGlassVariant = "regular" | "clear";
 export type LiquidGlassContrast = "dark" | "light";
 
 export type LiquidGlassCardV2Props = {
-  eyebrow: string;
-  title: string;
-  description: string;
-  metric: string;
-  metricLabel: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  metric?: string;
+  metricLabel?: string;
   actionLabel?: string;
   accent?: string;
   renderMode?: LiquidGlassRenderMode;
   variant?: LiquidGlassVariant;
   contrast?: LiquidGlassContrast;
   reducedMotion?: boolean;
+  size?: "regular" | "compact";
 };
 
 type SurfacePalette = {
@@ -84,16 +86,25 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
   description,
   metric,
   metricLabel,
-  actionLabel = "Ver detalle",
+  actionLabel,
   accent = colors.primary,
   renderMode = "overlay",
   variant = "regular",
   contrast = "dark",
   reducedMotion = false,
+  size = "regular",
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const palette = getSurfacePalette(renderMode, variant, contrast);
+  const textSurface = contrast === "dark" ? "#07110F" : "#F5FCF9";
+  const readableAccent = ensureTextContrast(accent, textSurface);
+  const buttonForeground = readableTextOn(accent);
+  const hasHeading = Boolean(eyebrow?.trim() || title?.trim() || description?.trim());
+  const hasMetric = Boolean(metric?.trim() || metricLabel?.trim());
+  const hasFooter = Boolean(hasMetric || actionLabel?.trim());
+
+  if (!hasHeading && !hasFooter) return null;
 
   const entrance = reducedMotion
     ? interpolate(frame, [0, 12], [0, 1], {
@@ -133,14 +144,14 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
     <div
       style={{
         position: "relative",
-        width: 880,
-        minHeight: 560,
+        width: size === "compact" ? 760 : 880,
+        minHeight: size === "compact" ? 300 : 560,
         boxSizing: "border-box",
         overflow: "hidden",
-        padding: spacing.xxl,
+        padding: size === "compact" ? spacing.xl : spacing.xxl,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: hasFooter ? "space-between" : "center",
         color: palette.foreground,
         fontFamily: typography.family,
         backgroundColor: palette.surface,
@@ -205,14 +216,15 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
         }}
       />
 
-      <div style={{ position: "relative", opacity: copyOpacity }}>
+      {hasHeading ? <div style={{ position: "relative", opacity: copyOpacity }}>
+        {eyebrow?.trim() ? (
         <div
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: spacing.sm,
             marginBottom: spacing.lg,
-            color: accent,
+            color: readableAccent,
             fontSize: typography.eyebrow,
             fontWeight: 700,
             letterSpacing: 3,
@@ -224,17 +236,19 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
               width: 12,
               height: 12,
               borderRadius: radii.full,
-              backgroundColor: accent,
+              backgroundColor: readableAccent,
               boxShadow: `0 0 ${18 + ambientPulse * 16}px ${accent}`,
             }}
           />
           {eyebrow}
         </div>
+        ) : null}
 
+        {title?.trim() ? (
         <div
           style={{
             maxWidth: 700,
-            fontSize: typography.title,
+            fontSize: size === "compact" ? 54 : typography.title,
             lineHeight: 1.05,
             fontWeight: 720,
             letterSpacing: -2.2,
@@ -243,6 +257,8 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
         >
           {title}
         </div>
+        ) : null}
+        {description?.trim() ? (
         <div
           style={{
             maxWidth: 720,
@@ -255,8 +271,10 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
         >
           {description}
         </div>
-      </div>
+        ) : null}
+      </div> : null}
 
+      {hasFooter ? (
       <div
         style={{
           position: "relative",
@@ -268,10 +286,11 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
           opacity: copyOpacity,
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: spacing.md }}>
+        {hasMetric ? <div style={{ display: "flex", alignItems: "baseline", gap: spacing.md }}>
+          {metric?.trim() ? (
           <span
             style={{
-              color: accent,
+              color: readableAccent,
               fontSize: typography.metric,
               lineHeight: 0.82,
               fontWeight: 760,
@@ -280,6 +299,8 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
           >
             {metric}
           </span>
+          ) : null}
+          {metricLabel?.trim() ? (
           <span
             style={{
               maxWidth: 220,
@@ -291,12 +312,14 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
           >
             {metricLabel}
           </span>
-        </div>
+          ) : null}
+        </div> : <div />}
 
+        {actionLabel?.trim() ? (
         <div
           style={{
             padding: `${spacing.sm}px ${spacing.md}px`,
-            color: colors.primaryForeground,
+            color: buttonForeground,
             backgroundColor: accent,
             borderRadius: radii.full,
             boxShadow: `0 10px 28px rgba(0,0,0,${0.14 + ambientPulse * 0.08})`,
@@ -306,7 +329,9 @@ export const LiquidGlassCardV2: React.FC<LiquidGlassCardV2Props> = ({
         >
           {actionLabel}
         </div>
+        ) : null}
       </div>
+      ) : null}
     </div>
   );
 };
