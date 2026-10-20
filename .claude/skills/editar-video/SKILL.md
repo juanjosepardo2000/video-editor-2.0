@@ -21,7 +21,7 @@ Ruta en `assets/raw/`, duración y orientación (revisa la rotación con `ffprob
 ## Paso 2: flujo (cada punto con aprobación del usuario donde se indica)
 1. Transcribir y cortar (backend de Carlos; `.venv/bin/python src/backend/transcriber.py` y `rough_cutter.py`). Muestra qué se quitó. **Aprobación.**
 2. Corregir la transcripción solo con certeza (errores evidentes); nunca inventar palabras.
-3. Beat map con la skill `beatmap` aplicando las reglas del perfil activo (`profile.json` > `editing` y `style_guide.md`). **Aprobación.**
+3. Beat map con las skills `director-editorial` y `beatmap` aplicando las reglas del perfil activo (`profile.json` > `editing` y `style_guide.md`). **Aprobación.**
 4. B-roll (ver abajo).
 5. Mezcla de audio, overlay y vista previa compuesta.
 6. Control de calidad con la skill `qc-loop`.

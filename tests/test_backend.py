@@ -192,3 +192,15 @@ def test_beatmap_v2_with_broll_and_zone_columns_is_parsed_by_the_mixer_and_the_c
     assert [event["type"] for event in events] == ["pop", "whoosh", "pop", "hit"]
     beats = parse_for_capcut(example)
     assert len(beats) == 5 and beats[2].scene == "FULLSCREEN"
+
+
+def test_beatmap_v2_to_v1_conversion_drops_only_broll_and_zone() -> None:
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("v2_to_v1", "scripts/beatmap_v2_to_v1.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    converted = module.convert(Path("pipeline/examples/beatmap.v2.example.md").read_text(encoding="utf-8"))
+    header = next(line for line in converted.splitlines() if line.startswith("| # |"))
+    assert "B-roll" not in header and "Zona" not in header and "Texto en pantalla" in header
+    assert "> Contrato: v1" in converted
+    rows = [line for line in converted.splitlines() if line.startswith("| ") and line[2].isdigit()]
+    assert len(rows) == 5 and all(row.count("|") == header.count("|") for row in rows)

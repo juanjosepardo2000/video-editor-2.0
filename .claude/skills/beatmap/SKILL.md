@@ -8,6 +8,8 @@ description: Construye pipeline/beatmap.md a partir de pipeline/transcript.json.
 Entrada: `pipeline/transcript.json`, `claude.md`, perfil activo (`profiles/ACTIVE` y `profiles/<activo>/`). Salida: `pipeline/beatmap.md` (formato definido en ese archivo; no cambies sus columnas).
 
 ## Proceso
+**Antes de nada, aplica la skill `director-editorial`**: ella decide los recursos, la densidad y el B-roll según el perfil activo y produce el beat map v2 con su informe de decisiones. Esta skill describe el formato y el flujo de aprobación; si hay conflicto, manda `director-editorial` en criterio y `docs/contratos.md` en formato.
+
 1. Un beat es cada frase hablada junto con lo que debe verse en pantalla mientras se dice (definición de Duncan Rogoff: "a beat map is a list of every sentence you say and what should be on screen while you say it"). Agrupa las palabras en frases y crea un beat por frase, con inicio/fin tomados del transcript.
 2. Asigna a cada beat un tipo de escena:
    - `CAPTIONS`: hook inicial (mostrar la cara genera confianza) y frases conversacionales o de enlace.
