@@ -27,7 +27,8 @@
       3
     ],
     "graphicsMode": "fullscreen-o-inset",
-    "neverOverFace": true
+    "neverOverFace": true,
+    "keepPauseSec": 0.3
   },
   "theme": {
     "mode": "light",

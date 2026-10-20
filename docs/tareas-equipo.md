@@ -56,6 +56,7 @@ Basado en `docs/plan-mejoras.md` y `docs/guia-estilos-y-criterio.md`. Tamaño re
 - **D6** Revisión y unión de las ramas del equipo.
 
 ## 5. Contratos
+**Fuente única y esquemas completos: `docs/contratos.md`** (rostro, vocabulario de `Visual`, cortes, capas, QC, audio, créditos de B-roll, métricas, rendimiento y portabilidad). Lo de abajo es el resumen.
 1. `pipeline/face_boxes.json`: `{fps, width, height, frames:[{t, boxes:[{x, y, w, h, conf}]}]}`; coordenadas de 0 a 1 respecto al video **ya rotado**; muestreo a 10 fps y suavizado.
 2. **Beat map v2 (aprobado por Juan).** Columnas nuevas después de `Texto en pantalla`: **`B-roll`** (`-`, `own:archivo`, `stock:palabras`, `ai:prompt`) y **`Zona`** (`arriba`, `abajo`, `lado`, `auto`; es una preferencia, el compositor decide). Orden completo: `# | Inicio | Fin | Speech | Escena | Visual | Texto en pantalla | B-roll | Zona | Transición | SFX | Caption`.
    - **Versión:** línea `Contrato: v2` en el encabezado del archivo.
