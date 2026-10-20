@@ -42,6 +42,20 @@ try {
   assert.match(aligned.generated, /"startFrame": 3/);
   assert.match(aligned.generated, /"profile": "viral-dinamico"/);
   assert.match(aligned.generated, /"accent": "#F28C28"/);
+  assert.match(aligned.generated, /"onScreenText": ""/);
+  assert.doesNotMatch(aligned.generated, /"onScreenText": "Hablante"/);
+
+  const headerWithScreenText = header.replace("| Visual | Transición", "| Visual | Texto en pantalla | Transición").replace(
+    "|---|---|---|---|---|---|---|---|---|",
+    "|---|---|---|---|---|---|---|---|---|---|",
+  );
+  const screenCopy = run({
+    markdown: `${headerWithScreenText}\n| 1 | 00:00.0 | 00:02.0 | hola mundo | CAPTION_UI | INSTRUCCION_INTERNA_UNICA | Copy permitido | cut | - | hola |\n`,
+    transcript: { words: [{ word: "hola", start: 0.1, end: 0.5 }, { word: "mundo", start: 0.6, end: 1.1 }] },
+  });
+  assert.equal(screenCopy.status, 0, screenCopy.stderr);
+  assert.match(screenCopy.generated, /"onScreenText": "Copy permitido"/);
+  assert.doesNotMatch(screenCopy.generated, /"onScreenText": "INSTRUCCION_INTERNA_UNICA"/);
 
   const fallback = run({ markdown: valid, transcript: null, transcriptPath: "missing.json" });
   assert.equal(fallback.status, 0, fallback.stderr);
@@ -85,7 +99,7 @@ try {
   assert.equal(nonLiteralCaption.status, 1);
   assert.match(nonLiteralCaption.stderr, /coincidir literalmente/);
 
-  console.log("BeatMap tests: 8/8 OK");
+  console.log("BeatMap tests: 9/9 OK");
 } finally {
   fs.rmSync(temporary, { recursive: true, force: true });
 }

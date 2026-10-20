@@ -1,9 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
-import { AnimatedSearchBar } from "../components/AnimatedSearchBar";
-import { DynamicNumberCounter } from "../components/DynamicNumberCounter";
 import { LiquidGlassCardV2 } from "../components/LiquidGlassCardV2";
-import { NewsTextHighlighter } from "../components/NewsTextHighlighter";
 import { WordByWordCaptions } from "../components/WordByWordCaptions";
 import { generatedBeatMap } from "../beatmap/generated-beatmap";
 import type { BeatMapEntry } from "../beatmap/types";
@@ -29,16 +26,6 @@ const beatMapTheme = generatedBeatMap.config.theme.toLowerCase().includes("light
 const primaryFontFamily = resolveProfileFont(generatedBeatMap.config.font);
 const headlineFontFamily = resolveProfileFont(generatedBeatMap.config.headlineFont);
 const accentFontFamily = resolveProfileFont(generatedBeatMap.config.accentFont);
-
-const splitHeadline = (text: string) => {
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  const chunkSize = Math.max(1, Math.ceil(words.length / 3));
-  const chunks = [];
-  for (let index = 0; index < words.length; index += chunkSize) {
-    chunks.push({ text: words.slice(index, index + chunkSize).join(" "), highlighted: chunks.length === 1 });
-  }
-  return chunks.slice(0, 3);
-};
 
 const transitionStyle = (transition: string, frame: number, duration: number): React.CSSProperties => {
   const normalized = transition.toLowerCase();
@@ -76,64 +63,14 @@ const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat
 };
 
 const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat, duration }) => {
-  const hint = `${beat.visual} ${beat.speech}`.toLowerCase();
-  const reducedMotion = duration < 100;
-  if (hint.includes("busca") || hint.includes("search")) {
-    return (
-      <AnimatedSearchBar
-        label="Búsqueda asistida"
-        mistypedQuery="edicion con ia"
-        correctedQuery="edición con IA"
-        resultLabel="Resultado recomendado"
-        suggestions={["Cortes", "Gráficos", "CapCut"]}
-        accent={beatMapAccent}
-        renderMode="overlay"
-        reducedMotion={reducedMotion}
-      />
-    );
-  }
-  if (hint.includes("contador") || hint.includes("número") || hint.includes("numero") || hint.includes("metric")) {
-    const parsedValue = Number.parseFloat(hint.match(/\d+(?:[.,]\d+)?/)?.[0].replace(",", ".") ?? "38");
-    return (
-      <DynamicNumberCounter
-        label="Dato destacado"
-        startValue={0}
-        endValue={parsedValue}
-        suffix="%"
-        trendLabel="Evolución positiva"
-        supportingText={beat.speech || beat.onScreenText}
-        accent={beatMapAccent}
-        renderMode="overlay"
-        reducedMotion={reducedMotion}
-      />
-    );
-  }
-  if (hint.includes("noticia") || hint.includes("news") || hint.includes("resalt")) {
-    return (
-      <NewsTextHighlighter
-        category="Actualidad"
-        source="Minthy BeatMap"
-        timestamp="Ahora"
-        headline={splitHeadline(beat.speech || beat.caption || beat.visual)}
-        summary={beat.onScreenText}
-        accent={beatMapAccent}
-        renderMode="overlay"
-        reducedMotion={reducedMotion}
-      />
-    );
-  }
+  if (!beat.onScreenText.trim()) return null;
   return (
     <LiquidGlassCardV2
-      eyebrow=""
-      title={beat.onScreenText || beat.speech || beat.caption}
-      description=""
-      metric=""
-      metricLabel=""
-      actionLabel=""
+      title={beat.onScreenText}
       accent={beatMapAccent}
       renderMode="overlay"
       contrast={beatMapTheme}
-      reducedMotion={reducedMotion}
+      reducedMotion={duration < 100}
     />
   );
 };
@@ -149,35 +86,29 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
 
       {beat.scene === "CAPTION_UI" ? (
         <>
-          <div
+          {beat.onScreenText.trim() ? <div
             style={{
               position: "absolute",
-              top: safeArea.top + 70,
-              left: safeArea.left + 10,
-              transform: "scale(0.72)",
-              transformOrigin: "top left",
+              left: safeArea.left + 30,
+              bottom: safeArea.bottom + 150,
             }}
           >
             <LiquidGlassCardV2
-              eyebrow=""
-              title={beat.onScreenText || beat.speech}
-              description=""
-              metric=""
-              metricLabel=""
-              actionLabel=""
+              title={beat.onScreenText}
               accent={beatMapAccent}
               renderMode="overlay"
               contrast={beatMapTheme}
               reducedMotion={duration < 100}
+              size="compact"
             />
-          </div>
+          </div> : null}
           <CaptionLayer beat={beat} duration={duration} />
         </>
       ) : null}
 
       {beat.scene === "SPLIT" ? (
         <>
-          <div
+          {beat.onScreenText.trim() ? <div
             style={{
               position: "absolute",
               top: 360,
@@ -199,9 +130,9 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
               {""}
             </div>
             <div style={{ marginTop: 24, fontFamily: headlineFontFamily, fontSize: 46, lineHeight: 1.08, fontWeight: 700, letterSpacing: -1.6 }}>
-              {beat.onScreenText || beat.speech}
+              {beat.onScreenText}
             </div>
-          </div>
+          </div> : null}
           <CaptionLayer beat={beat} duration={duration} />
         </>
       ) : null}

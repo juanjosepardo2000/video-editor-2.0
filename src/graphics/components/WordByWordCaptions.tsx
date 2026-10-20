@@ -2,6 +2,7 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, radii, safeArea, spacing, typography } from "../design/tokens";
 import type { TimedCaptionWord } from "../beatmap/types";
+import { ensureTextContrast } from "../design/contrast.mjs";
 
 export type CaptionStyle = "word-by-word" | "phrase";
 
@@ -113,6 +114,8 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
   const normalizedKeywords = accentKeywords.flatMap((keyword) => keyword.toLocaleLowerCase("es-ES").split(/\s+/)).map((word) => word.replace(/[^\p{L}\p{N}]/gu, ""));
   const exitOpacity = interpolate(frame, [safeDuration - 10, safeDuration - 4], [1, 0], clamp);
   const light = theme === "light";
+  const captionSurface = light ? "#F5F8F6" : "#040C0A";
+  const readableAccent = ensureTextContrast(accent, captionSurface);
 
   return (
     <div
@@ -169,11 +172,11 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
             <span
               key={`${pageIndex}-${index}-${word}`}
               style={{
-                color: isAccented ? accent : light ? "#1B2421" : colors.foreground,
+                color: isAccented ? readableAccent : light ? "#1B2421" : colors.foreground,
                 fontFamily: isAccented ? accentFontFamily : primaryFontFamily,
                 opacity: interpolate(wordProgress, [0, 1], [0, 1]),
                 transform: `translateY(${interpolate(wordProgress, [0, 1], [14, 0])}px) scale(${interpolate(wordProgress, [0, 1], [0.96, 1])})`,
-                textShadow: isAccented ? `0 0 22px ${accent}38` : light ? "none" : "0 2px 12px rgba(0,0,0,0.3)",
+                textShadow: isAccented ? `0 0 22px ${readableAccent}38` : light ? "none" : "0 2px 12px rgba(0,0,0,0.3)",
               }}
             >
               {word.text}
