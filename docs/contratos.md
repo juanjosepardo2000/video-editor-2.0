@@ -67,7 +67,10 @@ Objetivos: mezcla -14 LUFS (±1), pico real <= -1 dBFS, música al menos 8 dB po
 ```
 
 ## 8. Métricas de estilo (C5)
-Esquema actual de `style_analyzer.py` más un bloque nuevo `sfx`: `{"count": 0, "per_minute": 0.0, "onsets_s": []}` y `music_voice`: `{"music_present_percent": 0, "voice_present_percent": 0}`. Compatible hacia atrás.
+Esquema actual de `style_analyzer.py` más bloques nuevos, compatibles hacia atrás:
+- `sfx`: `{"count": 0, "per_minute": 0.0, "events": [{"t": 3.2, "duration_s": 0.4, "kind": "whoosh|pop|click|hit|riser|other", "conf": 0.6}]}`. El tipo es una **clasificación aproximada**: si no hay confianza suficiente, `kind: "other"`.
+- `music_voice`: `{"music_present_percent": 0, "voice_present_percent": 0}`.
+- **Dónde se guardan:** el análisis escribe en `profiles/<perfil>/metrics/`. Excepción a la regla «no tocar profiles/»: **Carlos puede añadir archivos solo en esa subcarpeta**; Juan o Claude revisan antes de unir.
 
 ## 9. Informe de rendimiento (G8)
 `pipeline/perf_report.json`: `{"video_s": 60, "render_s": 150, "ratio": 2.5, "machine": "Mac arm64 CPU", "frames": 1800, "disk_used_mb": 140}`.
@@ -77,4 +80,11 @@ Esquema actual de `style_analyzer.py` más un bloque nuevo `sfx`: `{"count": 0, 
 **Regla de corte (resuelve «pausas naturales» frente a 0.5 s):** se eliminan los silencios mayores que `silenceThresholdSec`, pero se conserva `keepPauseSec` de cada uno.
 
 ## 11. Portabilidad Python (Mac/Windows)
-Los scripts de `package.json` usan un envoltorio (`scripts/py.mjs`) que elige `python3`, `python` o `py -3`, el primero disponible.
+El envoltorio que elige `python3`, `python` o `py -3` (el primero disponible) vive en **`src/nle_bridge/run_python.mjs`** (decisión del 2026-10-19: el alcance de Gonzalo no incluye `scripts/`, que es de Juan y Claude). `package.json` lo usa; los scripts de Python de Carlos no lo necesitan.
+
+## 12. Conjunto de desarrollo pareado (`pipeline/examples/`)
+`pipeline/transcript.json`, `face_boxes.json` y los videos son **artefactos locales de cada persona** (Git los ignora): nunca se mezclan con un beat map ajeno. Para desarrollar y probar todos usan el mismo conjunto pareado, versionado:
+- `pipeline/beatmap.md` (v1) y `pipeline/examples/beatmap.v2.example.md` / `beatmap.perfil1.propuesta.v2.md` (v2)
+- `pipeline/examples/transcript.prueba.json`: transcript del **mismo** video que `pipeline/beatmap.md` (`prueba.mp4` de Juan, 16.1 s)
+- `pipeline/examples/face_boxes.fixture.json`: rostro **sintético** (no detectado) para que G1 y G6 arranquen sin esperar a C1
+Ejemplo: `npm run sync:beatmap -- --beatmap=pipeline/beatmap.md --transcript=pipeline/examples/transcript.prueba.json`.
