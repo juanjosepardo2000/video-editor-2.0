@@ -7,6 +7,7 @@ import { NewsHighlighterDemo, NewsHighlighterOverlay } from "./compositions/News
 import { DynamicCounterDemo, DynamicCounterOverlay } from "./compositions/DynamicCounterDemo";
 import { BeatMapComposition, BeatMapComposition4K } from "./compositions/BeatMapComposition";
 import { CompositeReview } from "./compositions/CompositeReview";
+import { G3ComponentGallery } from "./compositions/G3ComponentGallery";
 import { generatedBeatMap } from "./beatmap/generated-beatmap";
 import {
   animatedSearchDemo,
@@ -19,6 +20,14 @@ import {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="G3ComponentGallery"
+        component={G3ComponentGallery}
+        durationInFrames={420}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
       <Composition
         id="BeatMapOverlay"
         component={BeatMapComposition}

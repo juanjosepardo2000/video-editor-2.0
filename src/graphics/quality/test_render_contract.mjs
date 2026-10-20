@@ -12,7 +12,7 @@ assert.doesNotMatch(composition, /beat\.speech\s*\|\|\s*beat\.onScreenText/);
 assert.doesNotMatch(composition, /Búsqueda asistida|Dato destacado|Evolución positiva|Actualidad|Minthy BeatMap/);
 assert.match(composition, /generatedLayout\.layers\.find/);
 assert.match(composition, /backgroundColor:\s*layer\.backgroundColor/);
-assert.match(composition, /<FullscreenGraphic beat=\{beat\} contentStyle=\{style\}/);
+assert.match(composition, /<FullscreenGraphic beat=\{beat\} duration=\{duration\} contentStyle=\{style\}/);
 assert.match(card, /actionLabel,\s*\n/);
 assert.doesNotMatch(card, /actionLabel\s*=\s*["']Ver detalle["']/);
 

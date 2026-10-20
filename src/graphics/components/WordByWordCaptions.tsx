@@ -182,6 +182,8 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
               style={{
                 color: isAccented ? readableAccent : light ? "#1B2421" : colors.foreground,
                 fontFamily: isAccented ? accentFontFamily : primaryFontFamily,
+                fontSize: isAccented ? "1.12em" : "1em",
+                fontWeight: isAccented ? 750 : 600,
                 opacity: interpolate(wordProgress, [0, 1], [0, 1]),
                 transform: `translateY(${interpolate(wordProgress, [0, 1], [14, 0])}px) scale(${interpolate(wordProgress, [0, 1], [0.96, 1])})`,
                 textShadow: isAccented ? `0 0 22px ${readableAccent}38` : light ? "none" : "0 2px 12px rgba(0,0,0,0.3)",

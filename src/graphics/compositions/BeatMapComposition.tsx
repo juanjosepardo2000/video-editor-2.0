@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
-import { LiquidGlassCardV2 } from "../components/LiquidGlassCardV2";
+import { BeatGraphic, graphicCanvasSize } from "../components/BeatGraphic";
 import { WordByWordCaptions } from "../components/WordByWordCaptions";
 import { generatedBeatMap } from "../beatmap/generated-beatmap";
 import { generatedLayout } from "../layout/generated-layout";
@@ -40,6 +40,19 @@ const boxStyle = (box: NormalizedBox): React.CSSProperties => ({
   height: `${box.h * 100}%`,
   boxSizing: "border-box",
 });
+
+const GraphicInBox: React.FC<{beat: BeatMapEntry; box: NormalizedBox; duration: number; compact?: boolean}> = ({beat, box, duration, compact = false}) => {
+  if (!beat.onScreenText.trim()) return null;
+  const canvas = graphicCanvasSize(beat.visualTag);
+  const targetWidth = box.w * generatedBeatMap.config.width;
+  const targetHeight = box.h * generatedBeatMap.config.height;
+  const scale = Math.min(targetWidth / canvas.width, targetHeight / canvas.height);
+  return <div style={{...boxStyle(box), display: "flex", alignItems: "center", justifyContent: "center", overflow: "visible"}}>
+    <div style={{width: canvas.width, height: canvas.height, display: "flex", alignItems: "center", justifyContent: "center", transform: `scale(${scale})`, flex: "0 0 auto"}}>
+      <BeatGraphic tag={beat.visualTag} text={beat.onScreenText} accent={beatMapAccent} theme={beatMapTheme} fontFamily={headlineFontFamily} accentFontFamily={accentFontFamily} reducedMotion={duration < 100} compact={compact} />
+    </div>
+  </div>;
+};
 
 const transitionStyle = (transition: string, frame: number, duration: number): React.CSSProperties => {
   const normalized = transition.toLowerCase();
@@ -81,7 +94,7 @@ const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat
   );
 };
 
-const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; contentStyle: React.CSSProperties }> = ({ beat, contentStyle }) => {
+const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number; contentStyle: React.CSSProperties }> = ({ beat, duration, contentStyle }) => {
   const layer = layerFor(beat, "graphic");
   if (!layer) return null;
   return (
@@ -96,11 +109,9 @@ const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; contentStyle: React.CSSP
         boxSizing: "border-box",
       }}
     >
-      {beat.onScreenText.trim() ? (
-        <div style={{...contentStyle, maxWidth: 880, textAlign: "center", fontFamily: headlineFontFamily, fontSize: 84, lineHeight: 1.04, fontWeight: 700, letterSpacing: -2.6}}>
-          {beat.onScreenText}
-        </div>
-      ) : null}
+      {beat.onScreenText.trim() ? <div style={{...contentStyle, width: 900, height: 700, display: "flex", alignItems: "center", justifyContent: "center"}}>
+        <BeatGraphic tag={beat.visualTag} text={beat.onScreenText} accent={beatMapAccent} theme={beatMapTheme} fontFamily={headlineFontFamily} accentFontFamily={accentFontFamily} reducedMotion={duration < 100} />
+      </div> : null}
     </AbsoluteFill>
   );
 };
@@ -113,7 +124,7 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
   if (beat.scene === "FULLSCREEN") {
     return (
       <AbsoluteFill style={{fontFamily: primaryFontFamily}}>
-        <FullscreenGraphic beat={beat} contentStyle={style} />
+        <FullscreenGraphic beat={beat} duration={duration} contentStyle={style} />
       </AbsoluteFill>
     );
   }
@@ -127,22 +138,7 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
           {(() => {
             const graphicLayer = layerFor(beat, "graphic");
             if (!graphicLayer || !beat.onScreenText.trim()) return null;
-            const scale = Math.min(
-              (graphicLayer.box.w * generatedBeatMap.config.width) / 760,
-              (graphicLayer.box.h * generatedBeatMap.config.height) / 300,
-            );
-            return <div style={{...boxStyle(graphicLayer.box), overflow: "visible"}}>
-              <div style={{transform: `scale(${scale})`, transformOrigin: "top left"}}>
-                <LiquidGlassCardV2
-                  title={beat.onScreenText}
-                  accent={beatMapAccent}
-                  renderMode="overlay"
-                  contrast={beatMapTheme}
-                  reducedMotion={duration < 100}
-                  size="compact"
-                />
-              </div>
-            </div>;
+            return <GraphicInBox beat={beat} box={graphicLayer.box} duration={duration} compact />;
           })()}
           <CaptionLayer beat={beat} duration={duration} />
         </>
@@ -153,18 +149,8 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
           {(() => {
             const graphicLayer = layerFor(beat, "graphic");
             if (!graphicLayer) return null;
-            return <div style={{
-              ...boxStyle(graphicLayer.box),
-              padding: 72,
-              color: generatedBeatMap.config.textColor,
-              backgroundColor: graphicLayer.backgroundColor,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              {beat.onScreenText.trim() ? <div style={{maxWidth: 820, textAlign: "center", fontFamily: headlineFontFamily, fontSize: 64, lineHeight: 1.06, fontWeight: 700, letterSpacing: -2}}>
-                {beat.onScreenText}
-              </div> : null}
+            return <div style={{...boxStyle(graphicLayer.box), backgroundColor: graphicLayer.backgroundColor}}>
+              <GraphicInBox beat={beat} box={{x: 0, y: 0, w: 1, h: 1}} duration={duration} />
             </div>;
           })()}
           <CaptionLayer beat={beat} duration={duration} />
