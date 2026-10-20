@@ -16,6 +16,17 @@ export const generatedBeatMap = {
     "textColor": "#1D1D1F",
     "textSecondary": "#6E6E73",
     "captionStyle": "word-by-word",
+    "captionAnchorY": 0.65,
+    "captionWordsPerGroup": [
+      1,
+      3
+    ],
+    "captionFontScale": 1,
+    "graphicsMode": "fullscreen-o-inset",
+    "neverOverFace": true,
+    "maxSimultaneousLayers": 1,
+    "minGapBetweenGraphicsSec": 1.5,
+    "graphicsCoverageTarget": 0.35,
     "width": 1080,
     "height": 1920,
     "fps": 30

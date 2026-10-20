@@ -2,6 +2,7 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, radii, safeArea, spacing, typography } from "../design/tokens";
 import type { TimedCaptionWord } from "../beatmap/types";
+import type { NormalizedBox } from "../layout/types";
 import { ensureTextContrast } from "../design/contrast.mjs";
 
 export type CaptionStyle = "word-by-word" | "phrase";
@@ -47,13 +48,15 @@ export type WordByWordCaptionsProps = {
   accentKeywords?: readonly string[];
   accent?: string;
   accentWordCount?: 1 | 2 | 3;
-  wordsPerPage?: 3 | 4 | 5 | 6;
+  wordsPerPage?: 1 | 2 | 3 | 4 | 5 | 6;
   position?: "lower" | "center";
   theme?: "light" | "dark";
   captionStyle?: CaptionStyle;
   primaryFontFamily?: string;
   accentFontFamily?: string;
   reducedMotion?: boolean;
+  box?: NormalizedBox;
+  fontScale?: number;
 };
 
 const clamp = {
@@ -75,6 +78,8 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
   primaryFontFamily = typography.family,
   accentFontFamily = typography.family,
   reducedMotion = false,
+  box,
+  fontScale = 1,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -121,11 +126,14 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
     <div
       style={{
         position: "absolute",
-        left: safeArea.left,
-        right: safeArea.right,
-        bottom: position === "lower" ? safeArea.bottom + 36 : undefined,
-        top: position === "center" ? "45%" : undefined,
+        left: box ? `${box.x * 100}%` : safeArea.left,
+        right: box ? undefined : safeArea.right,
+        top: box ? `${box.y * 100}%` : position === "center" ? "45%" : undefined,
+        bottom: box ? undefined : position === "lower" ? safeArea.bottom + 36 : undefined,
+        width: box ? `${box.w * 100}%` : undefined,
+        height: box ? `${box.h * 100}%` : undefined,
         display: "flex",
+        alignItems: "center",
         justifyContent: "center",
         opacity: exitOpacity,
         fontFamily: primaryFontFamily,
@@ -145,7 +153,7 @@ export const WordByWordCaptions: React.FC<WordByWordCaptionsProps> = ({
           borderRadius: radii.md,
           boxShadow: "0 20px 54px rgba(0,0,0,0.34)",
           backdropFilter: "blur(14px)",
-          fontSize: 48,
+          fontSize: 48 * fontScale,
           lineHeight: 1.16,
           fontWeight: 600,
           letterSpacing: -1.3,

@@ -69,6 +69,14 @@ export type GeneratedBeatMap = {
     textColor: string;
     textSecondary: string;
     captionStyle: "word-by-word" | "phrase";
+    captionAnchorY: number;
+    captionWordsPerGroup: readonly [number, number];
+    captionFontScale: number;
+    graphicsMode: string;
+    neverOverFace: boolean;
+    maxSimultaneousLayers: number;
+    minGapBetweenGraphicsSec: number;
+    graphicsCoverageTarget: number;
     width: number;
     height: number;
     fps: number;

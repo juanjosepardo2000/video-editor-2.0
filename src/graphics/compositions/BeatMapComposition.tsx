@@ -3,8 +3,10 @@ import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
 import { LiquidGlassCardV2 } from "../components/LiquidGlassCardV2";
 import { WordByWordCaptions } from "../components/WordByWordCaptions";
 import { generatedBeatMap } from "../beatmap/generated-beatmap";
+import { generatedLayout } from "../layout/generated-layout";
 import type { BeatMapEntry } from "../beatmap/types";
-import { colors, safeArea, typography } from "../design/tokens";
+import type { LayoutLayer, NormalizedBox } from "../layout/types";
+import { colors } from "../design/tokens";
 import { resolveProfileFont } from "../design/fonts";
 
 const clamp = {
@@ -27,6 +29,18 @@ const primaryFontFamily = resolveProfileFont(generatedBeatMap.config.font);
 const headlineFontFamily = resolveProfileFont(generatedBeatMap.config.headlineFont);
 const accentFontFamily = resolveProfileFont(generatedBeatMap.config.accentFont);
 
+const layerFor = (beat: BeatMapEntry, kind: LayoutLayer["kind"]): LayoutLayer | undefined =>
+  generatedLayout.layers.find((layer) => layer.beat === beat.index && layer.kind === kind);
+
+const boxStyle = (box: NormalizedBox): React.CSSProperties => ({
+  position: "absolute",
+  left: `${box.x * 100}%`,
+  top: `${box.y * 100}%`,
+  width: `${box.w * 100}%`,
+  height: `${box.h * 100}%`,
+  boxSizing: "border-box",
+});
+
 const transitionStyle = (transition: string, frame: number, duration: number): React.CSSProperties => {
   const normalized = transition.toLowerCase();
   if (normalized === "cut") return { opacity: 1 };
@@ -43,8 +57,11 @@ const transitionStyle = (transition: string, frame: number, duration: number): R
 };
 
 const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat, duration }) => {
+  const layer = layerFor(beat, "caption");
+  if (!layer) return null;
   const keywordWordCount = beat.accentKeywords.flatMap((keyword) => keyword.split(/\s+/)).filter(Boolean).length;
   const accentWordCount = Math.min(3, Math.max(1, keywordWordCount)) as 1 | 2 | 3;
+  const wordsPerPage = Math.min(6, Math.max(1, generatedBeatMap.config.captionWordsPerGroup[1])) as 1 | 2 | 3 | 4 | 5 | 6;
   return (
     <WordByWordCaptions
       text={beat.speech}
@@ -52,26 +69,39 @@ const CaptionLayer: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat
       accentKeywords={beat.accentKeywords}
       durationInFrames={duration}
       accentWordCount={accentWordCount}
-      wordsPerPage={5}
+      wordsPerPage={wordsPerPage}
       accent={beatMapAccent}
       theme={beatMapTheme}
       captionStyle={generatedBeatMap.config.captionStyle}
       primaryFontFamily={primaryFontFamily}
       accentFontFamily={accentFontFamily}
+      box={layer.box}
+      fontScale={generatedBeatMap.config.captionFontScale}
     />
   );
 };
 
-const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; duration: number }> = ({ beat, duration }) => {
-  if (!beat.onScreenText.trim()) return null;
+const FullscreenGraphic: React.FC<{ beat: BeatMapEntry; contentStyle: React.CSSProperties }> = ({ beat, contentStyle }) => {
+  const layer = layerFor(beat, "graphic");
+  if (!layer) return null;
   return (
-    <LiquidGlassCardV2
-      title={beat.onScreenText}
-      accent={beatMapAccent}
-      renderMode="overlay"
-      contrast={beatMapTheme}
-      reducedMotion={duration < 100}
-    />
+    <AbsoluteFill
+      style={{
+        backgroundColor: layer.backgroundColor,
+        color: generatedBeatMap.config.textColor,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "160px 96px",
+        boxSizing: "border-box",
+      }}
+    >
+      {beat.onScreenText.trim() ? (
+        <div style={{...contentStyle, maxWidth: 880, textAlign: "center", fontFamily: headlineFontFamily, fontSize: 84, lineHeight: 1.04, fontWeight: 700, letterSpacing: -2.6}}>
+          {beat.onScreenText}
+        </div>
+      ) : null}
+    </AbsoluteFill>
   );
 };
 
@@ -80,78 +110,65 @@ const BeatLayer: React.FC<{ beat: BeatMapEntry }> = ({ beat }) => {
   const duration = beat.endFrame - beat.startFrame;
   const style = transitionStyle(beat.transition, frame, duration);
 
+  if (beat.scene === "FULLSCREEN") {
+    return (
+      <AbsoluteFill style={{fontFamily: primaryFontFamily}}>
+        <FullscreenGraphic beat={beat} contentStyle={style} />
+      </AbsoluteFill>
+    );
+  }
+
   return (
     <AbsoluteFill style={{ ...style, fontFamily: primaryFontFamily }}>
       {beat.scene === "CAPTIONS" ? <CaptionLayer beat={beat} duration={duration} /> : null}
 
       {beat.scene === "CAPTION_UI" ? (
         <>
-          {beat.onScreenText.trim() ? <div
-            style={{
-              position: "absolute",
-              left: safeArea.left + 30,
-              bottom: safeArea.bottom + 150,
-            }}
-          >
-            <LiquidGlassCardV2
-              title={beat.onScreenText}
-              accent={beatMapAccent}
-              renderMode="overlay"
-              contrast={beatMapTheme}
-              reducedMotion={duration < 100}
-              size="compact"
-            />
-          </div> : null}
+          {(() => {
+            const graphicLayer = layerFor(beat, "graphic");
+            if (!graphicLayer || !beat.onScreenText.trim()) return null;
+            const scale = Math.min(
+              (graphicLayer.box.w * generatedBeatMap.config.width) / 760,
+              (graphicLayer.box.h * generatedBeatMap.config.height) / 300,
+            );
+            return <div style={{...boxStyle(graphicLayer.box), overflow: "visible"}}>
+              <div style={{transform: `scale(${scale})`, transformOrigin: "top left"}}>
+                <LiquidGlassCardV2
+                  title={beat.onScreenText}
+                  accent={beatMapAccent}
+                  renderMode="overlay"
+                  contrast={beatMapTheme}
+                  reducedMotion={duration < 100}
+                  size="compact"
+                />
+              </div>
+            </div>;
+          })()}
           <CaptionLayer beat={beat} duration={duration} />
         </>
       ) : null}
 
       {beat.scene === "SPLIT" ? (
         <>
-          {beat.onScreenText.trim() ? <div
-            style={{
-              position: "absolute",
-              top: 360,
-              right: safeArea.right,
-              width: 430,
-              minHeight: 640,
-              padding: 36,
-              boxSizing: "border-box",
-              color: colors.foreground,
-              backgroundColor: "rgba(5,15,13,0.9)",
-              border: `2px solid ${colors.border}`,
-              borderRadius: 32,
+          {(() => {
+            const graphicLayer = layerFor(beat, "graphic");
+            if (!graphicLayer) return null;
+            return <div style={{
+              ...boxStyle(graphicLayer.box),
+              padding: 72,
+              color: generatedBeatMap.config.textColor,
+              backgroundColor: graphicLayer.backgroundColor,
               display: "flex",
-              flexDirection: "column",
+              alignItems: "center",
               justifyContent: "center",
-            }}
-          >
-            <div style={{ color: colors.primary, fontSize: 22, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase" }}>
-              {""}
-            </div>
-            <div style={{ marginTop: 24, fontFamily: headlineFontFamily, fontSize: 46, lineHeight: 1.08, fontWeight: 700, letterSpacing: -1.6 }}>
-              {beat.onScreenText}
-            </div>
-          </div> : null}
+            }}>
+              {beat.onScreenText.trim() ? <div style={{maxWidth: 820, textAlign: "center", fontFamily: headlineFontFamily, fontSize: 64, lineHeight: 1.06, fontWeight: 700, letterSpacing: -2}}>
+                {beat.onScreenText}
+              </div> : null}
+            </div>;
+          })()}
           <CaptionLayer beat={beat} duration={duration} />
         </>
-      ) : null}
-
-      {beat.scene === "FULLSCREEN" ? (
-        <AbsoluteFill
-          style={{
-            paddingTop: safeArea.top,
-            paddingRight: safeArea.right,
-            paddingBottom: safeArea.bottom,
-            paddingLeft: safeArea.left,
-            boxSizing: "border-box",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <FullscreenGraphic beat={beat} duration={duration} />
-        </AbsoluteFill>
       ) : null}
     </AbsoluteFill>
   );

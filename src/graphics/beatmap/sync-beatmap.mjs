@@ -123,6 +123,19 @@ const parseConfig = (markdown) => {
   if (!new Set(["word-by-word", "phrase"]).has(captionStyle)) {
     throw new Error(`profiles/${profileName}/profile.json debe definir editing.captionStyle como "word-by-word" o "phrase".`);
   }
+  const captionAnchorY = Number(profile.editing?.captionAnchorY ?? 0.65);
+  const rawWordsPerGroup = profile.editing?.captionWordsPerGroup ?? [1, 3];
+  const captionWordsPerGroup = Array.isArray(rawWordsPerGroup) ? rawWordsPerGroup.map(Number) : [];
+  const captionFontScale = Number(profile.editing?.captionFontScale ?? 1);
+  if (!(captionAnchorY > 0 && captionAnchorY < 1)) {
+    throw new Error(`profiles/${profileName}/profile.json: editing.captionAnchorY debe estar entre 0 y 1.`);
+  }
+  if (captionWordsPerGroup.length !== 2 || !captionWordsPerGroup.every((value) => Number.isInteger(value) && value >= 1 && value <= 6) || captionWordsPerGroup[0] > captionWordsPerGroup[1]) {
+    throw new Error(`profiles/${profileName}/profile.json: editing.captionWordsPerGroup debe ser [mínimo, máximo] entre 1 y 6.`);
+  }
+  if (!(captionFontScale > 0 && captionFontScale <= 2)) {
+    throw new Error(`profiles/${profileName}/profile.json: editing.captionFontScale debe ser mayor que 0 y menor o igual a 2.`);
+  }
   return {
     profile: profileName,
     theme: profile.theme.mode,
@@ -133,6 +146,14 @@ const parseConfig = (markdown) => {
     textColor: profile.theme.text ?? "#1D1D1F",
     textSecondary: profile.theme.textSecondary ?? "#6E6E73",
     captionStyle,
+    captionAnchorY,
+    captionWordsPerGroup,
+    captionFontScale,
+    graphicsMode: profile.editing?.graphicsMode ?? "fullscreen-o-inset",
+    neverOverFace: profile.editing?.neverOverFace ?? true,
+    maxSimultaneousLayers: Number(profile.editing?.maxSimultaneousLayers ?? 1),
+    minGapBetweenGraphicsSec: Number(profile.editing?.minGapBetweenGraphicsSec ?? 1.5),
+    graphicsCoverageTarget: Number(profile.editing?.graphicsCoverageTarget ?? 0.35),
     width,
     height,
     fps,
