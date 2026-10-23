@@ -10,28 +10,51 @@
 @media (prefers-color-scheme:dark){:root{--bg:#1C1C1E;--card:#2A2A2D;--ink:#EBEBF0;--mut:#9A9AA2;--line:#3A3A3E;--acc-soft:#4A3626;--ok-soft:#24382F;--warn-soft:#3F3624;--bad-soft:#412B2A}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}
 header{display:flex;align-items:center;gap:16px;padding:12px 24px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5;flex-wrap:wrap}
-h1{font-size:16px;margin:0;font-weight:650}h2{font-size:15px;margin:0 0 10px}h3{font-size:13px;margin:14px 0 6px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+h1{font-size:16px;margin:0;font-weight:650}h2{font-size:17px;margin:0 0 4px}h3{font-size:12px;margin:14px 0 6px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 nav{display:flex;gap:4px;flex-wrap:wrap}nav button{border:0;background:transparent;padding:7px 14px;border-radius:8px;font:inherit;color:var(--mut);cursor:pointer}
 nav button.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
-main{max-width:1180px;margin:0 auto;padding:20px 24px 60px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+main{max-width:1200px;margin:0 auto;padding:22px 24px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
 label{display:block;font-size:12px;color:var(--mut);margin:0 0 3px}
 input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%}
 .row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.row>div{flex:1;min-width:180px}.row>.fix{flex:0 0 auto;min-width:0}
-button.p,button.s{font:inherit;border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid var(--acc)}
-button.p{background:var(--acc);color:#fff}button.s{background:transparent;color:var(--acc)}button:disabled{opacity:.5;cursor:wait}
+button.p,button.s{font:inherit;border-radius:9px;padding:9px 16px;cursor:pointer;border:1px solid var(--acc)}
+button.p{background:var(--acc);color:#fff;font-weight:600}button.s{background:transparent;color:var(--acc)}button:disabled{opacity:.45;cursor:not-allowed}
 button.mini{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer}
-.mut{color:var(--mut)}.small{font-size:12px}
+.mut{color:var(--mut)}.small{font-size:12px}.hide{display:none!important}
 .sem{display:inline-block;width:12px;height:12px;border-radius:50%;flex:none}
 .sem.verde,.pill.pass{background:var(--ok)}.sem.amarillo,.pill.warn{background:var(--warn)}.sem.rojo,.pill.fail{background:var(--bad)}
 .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;margin:0 4px 4px 0;border:1px solid var(--line)}
 .tag.pass{background:var(--ok-soft)}.tag.warn{background:var(--warn-soft)}.tag.fail{background:var(--bad-soft)}
-.cnt{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 12px}.cnt .box{flex:1;min-width:110px;border-radius:10px;padding:10px 14px;border:1px solid var(--line);cursor:pointer}
-.cnt .box b{font-size:24px;display:block}.cnt .box.on{outline:2px solid var(--acc)}
-.verde.box{background:var(--ok-soft)}.amarillo.box{background:var(--warn-soft)}.rojo.box{background:var(--bad-soft)}
-.toma{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:var(--card)}
-.toma:hover{border-color:var(--acc)}.toma .sem{margin-top:4px;width:14px;height:14px}.toma .mt{flex:1;min-width:0}.toma .nm{font-weight:600}
-pre.log{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:190px;overflow:auto;font-size:12px;margin:10px 0 0;white-space:pre-wrap}
+.hero{padding:6px 0 18px}.hero p{color:var(--mut);margin:2px 0 0;font-size:15px}
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.big{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:20px;cursor:pointer;position:relative;transition:.15s}
+.big:hover{border-color:var(--acc);transform:translateY(-1px)}.big .ic{font-size:30px}.big b{display:block;font-size:16px;margin:8px 0 4px}
+.big .badge{position:absolute;top:14px;right:14px;font-size:11px;background:var(--acc);color:#fff;border-radius:99px;padding:2px 10px}
+.need{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:8px}
+.need div{display:flex;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}.need .n{width:24px;height:24px;border-radius:50%;background:var(--acc-soft);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.step{display:flex;gap:14px}.step .num{width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.step.done .num{background:var(--ok)}.step .body{flex:1;min-width:0}
+.dz{border:2px dashed var(--line);border-radius:14px;padding:22px;text-align:center;background:var(--bg);cursor:pointer;transition:.15s}
+.dz.over{border-color:var(--acc);background:var(--acc-soft)}.dz .ic{font-size:30px}.dz b{display:block;margin-top:4px}
+.files{margin-top:10px}.file{display:flex;align-items:center;gap:10px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:5px;background:var(--card);font-size:13px}
+.file .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file .bar{width:120px;height:6px;border-radius:4px;background:var(--line);overflow:hidden}.file .bar i{display:block;height:100%;background:var(--acc);width:0}
+.file.err{border-color:var(--bad)}
+.crits{display:flex;flex-wrap:wrap;gap:6px}.crits span{background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:3px 11px;font-size:12px}
+.crits span em{font-style:normal;color:var(--mut)}
+.prog{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:10px 0 4px}.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .4s}
+pre.log{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:170px;overflow:auto;font-size:12px;margin:8px 0 0;white-space:pre-wrap}
+.sumbar{display:flex;height:12px;border-radius:7px;overflow:hidden;margin:8px 0 14px;background:var(--line)}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-items:start}
+.col{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:140px}
+.col.over{outline:2px solid var(--acc)}.col h3{margin:0 0 10px;display:flex;align-items:center;gap:8px;color:var(--ink);font-size:14px;text-transform:none;letter-spacing:0}
+.col.verde{border-top:4px solid var(--ok)}.col.amarillo{border-top:4px solid var(--warn)}.col.rojo{border-top:4px solid var(--bad)}
+.col h3 .c{margin-left:auto;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:0 9px}
+.tc{display:flex;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:8px;cursor:grab}
+.tc:hover{border-color:var(--acc)}.tc img{width:64px;height:84px;object-fit:cover;border-radius:7px;background:#2b2b2e;flex:none}
+.tc .t{min-width:0}.tc .t b{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tc .m{font-size:12px;color:var(--mut);margin:2px 0 4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dots{display:flex;gap:3px}.dots i{width:9px;height:9px;border-radius:50%;display:block}
+.dots i.pass{background:var(--ok)}.dots i.warn{background:var(--warn)}.dots i.fail{background:var(--bad)}
 table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-weight:600;font-size:12px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow:auto;z-index:20}
 .modal.on{display:flex}.modal .in{background:var(--card);border-radius:14px;max-width:980px;width:100%;padding:20px;border:1px solid var(--line)}
@@ -43,44 +66,76 @@ video{width:100%;max-height:420px;background:#2b2b2e;border-radius:10px}
 .tl{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px 4px}
 .tl .lane{position:relative;height:30px;margin:6px 0;border-radius:6px;background:repeating-linear-gradient(90deg,transparent 0,transparent 49px,var(--line) 49px,var(--line) 50px)}
 .tl .lab{font-size:11px;color:var(--mut);margin-top:6px}
-.bar{position:absolute;top:2px;height:26px;border-radius:5px;background:var(--blue);color:#fff;font-size:11px;padding:4px 6px;overflow:hidden;white-space:nowrap;opacity:.92}
-.bar.low{background:var(--warn);color:#2a2a2a}.bar.man{background:var(--bad)}
+.bar2{position:absolute;top:2px;height:26px;border-radius:5px;background:var(--blue);color:#fff;font-size:11px;padding:4px 6px;overflow:hidden;white-space:nowrap;opacity:.92}
+.bar2.low{background:var(--warn);color:#2a2a2a}.bar2.man{background:var(--bad)}
 .exp{background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:8px;max-height:220px;overflow:auto;margin-top:6px}
 .exp div{padding:3px 6px;cursor:pointer;border-radius:5px}.exp div:hover{background:var(--acc-soft)}
 .kpi{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.kpi div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:120px}.kpi b{font-size:20px;display:block}
-.hide{display:none}
+a.lnk{color:var(--acc);cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
 <header>
   <h1>Control de tomas</h1>
   <nav id="nav">
-    <button data-t="clas" class="on">1 · Clasificador</button>
+    <button data-t="inicio" class="on">Inicio</button>
+    <button data-t="clas">1 · Control de tomas</button>
     <button data-t="multi">2 · Multicámara</button>
     <button data-t="maq">3 · Maquetado</button>
     <button data-t="acerca">Criterios</button>
   </nav>
   <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
     <span class="mut small">Proyecto</span>
-    <input id="proy" list="proys" style="width:200px" value="demo">
+    <input id="proy" list="proys" style="width:190px" value="demo">
     <datalist id="proys"></datalist>
   </div>
 </header>
 <main>
 
-<section id="t-clas">
+<section id="t-inicio">
+  <div class="hero"><h2 style="font-size:24px">¿Qué quieres hacer hoy?</h2><p>Empecemos por el control de tomas: subes tus videos y el sistema los reparte en carpetas según los criterios de la productora.</p></div>
+  <div class="cards3">
+    <div class="big" onclick="ir('clas')"><span class="badge">Empieza aquí</span><div class="ic">🎬</div><b>Control de tomas</b><span class="mut">Sube varias tomas. Las clasifica en Buenas, Por revisar y Malas, con el motivo de cada decisión.</span></div>
+    <div class="big" onclick="ir('multi')"><div class="ic">🎥</div><b>Orden multicámara</b><span class="mut">Sube los clips de varias cámaras, en desorden. Los sincroniza por el sonido y arma la línea de tiempo.</span></div>
+    <div class="big" onclick="ir('maq')"><div class="ic">✂️</div><b>Maquetado</b><span class="mut">Sube tomas largas y el guion. Deja la mejor toma de cada frase y corta muletillas y silencios.</span></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2>Para el control de tomas necesito</h2>
+    <div class="need">
+      <div><span class="n">1</span><span><b>Tus tomas</b><br><span class="mut small">Videos MP4, MOV o AVI. Puedes subir varios a la vez, o usar una carpeta de tu Mac sin copiar nada.</span></span></div>
+      <div><span class="n">2</span><span><b>El guion</b> <span class="mut small">(opcional, recomendado)</span><br><span class="mut small">Archivo .txt, .docx o .csv. Sirve para comprobar si cada toma dice lo que debe.</span></span></div>
+      <div><span class="n">3</span><span><b>Unos minutos de espera</b><br><span class="mut small">Cada toma se analiza en imagen, audio y voz. Verás el avance en vivo.</span></span></div>
+    </div>
+    <div class="small mut" style="margin-top:10px" id="disco"></div>
+  </div>
+</section>
+
+<section id="t-clas" class="hide">
   <div class="card">
-    <h2>Clasificar tomas</h2>
-    <div class="row">
-      <div><label>Carpeta con las tomas</label><div class="row" style="gap:6px"><input id="c-carpeta" placeholder="/Users/…/Movies/mi-evento"><button class="s fix" onclick="explorar('c-carpeta',true)">Elegir…</button></div></div>
-      <div><label>Guion (.txt, .docx o .csv)</label><div class="row" style="gap:6px"><input id="c-guion" placeholder="opcional pero recomendado"><button class="s fix" onclick="explorar('c-guion',false)">Elegir…</button></div></div>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <div class="fix"><label>Modelo de voz</label><select id="c-modelo"><option value="tiny">tiny (rápido)</option><option value="base">base</option><option value="small" selected>small (mejor)</option></select></div>
-      <div class="fix"><label>Juez de fidelidad al guion</label><select id="c-juez"><option value="difuso">Local (sin internet)</option><option value="claude">Claude (necesita clave)</option></select></div>
-      <div class="fix"><button class="p" id="c-go" onclick="lanzar('clasificar',{carpeta:v('c-carpeta'),guion:v('c-guion'),modelo:v('c-modelo'),juez:v('c-juez')},'c-log',cargar)">Analizar tomas</button></div>
-    </div>
-    <pre class="log hide" id="c-log"></pre>
+    <div class="step" id="st1"><div class="num">1</div><div class="body">
+      <h2>Sube tus tomas</h2><div class="mut small">Arrastra los videos aquí o elígelos. Se guardan en este proyecto para analizarlos.</div>
+      <div style="margin-top:10px" id="dz-tomas"></div>
+      <div class="small mut" style="margin-top:8px">¿Ya están en una carpeta de tu Mac? <a class="lnk" onclick="explorar('c-carpeta',true)">Usar esa carpeta sin copiar</a> <span id="c-carpeta-txt" class="mut"></span><input id="c-carpeta" type="hidden"></div>
+    </div></div>
+  </div>
+  <div class="card">
+    <div class="step" id="st2"><div class="num">2</div><div class="body">
+      <h2>Sube el guion <span class="mut small" style="font-weight:400">(opcional)</span></h2><div class="mut small">Con el guion el sistema comprueba si cada toma dice lo mismo (aunque cambien palabras u orden).</div>
+      <div style="margin-top:10px" id="dz-guion"></div>
+      <input id="c-guion" type="hidden">
+    </div></div>
+  </div>
+  <div class="card">
+    <div class="step" id="st3"><div class="num">3</div><div class="body">
+      <h2>Qué se va a revisar</h2><div class="mut small">Los criterios de la productora. Lo dudoso va a «Por revisar» para que lo decidas tú.</div>
+      <div class="crits" id="crit-chips" style="margin:10px 0"></div>
+      <div class="row">
+        <div class="fix"><label>Modelo de voz</label><select id="c-modelo"><option value="tiny">tiny (rápido)</option><option value="base">base</option><option value="small" selected>small (mejor)</option></select></div>
+        <div class="fix"><label>Juez del guion</label><select id="c-juez"><option value="difuso">Local (sin internet)</option><option value="claude">Claude (necesita clave)</option></select></div>
+        <div class="fix"><button class="p" id="c-go" onclick="analizar()">Analizar y clasificar en carpetas</button></div>
+      </div>
+      <div id="c-prog" class="hide"><div class="prog"><i id="c-bar"></i></div><div class="small mut" id="c-prog-txt"></div><pre class="log hide" id="c-log"></pre></div>
+    </div></div>
   </div>
   <div id="c-res"></div>
 </section>
@@ -88,9 +143,10 @@ video{width:100%;max-height:420px;background:#2b2b2e;border-radius:10px}
 <section id="t-multi" class="hide">
   <div class="card">
     <h2>Ordenar clips de varias cámaras</h2>
-    <p class="mut small" style="margin-top:0">Pon cada cámara en su subcarpeta (CamA, CamB…) o deja los clips juntos: se separan por el prefijo del nombre. Se sincronizan por el sonido de la voz; los clips sin audio quedan marcados para colocarlos a mano.</p>
-    <div class="row">
-      <div><label>Carpeta con los clips del evento</label><div class="row" style="gap:6px"><input id="m-carpeta"><button class="s fix" onclick="explorar('m-carpeta',true)">Elegir…</button></div></div>
+    <p class="mut small" style="margin-top:0">Sube los clips de todas las cámaras (o elige una carpeta; con subcarpetas por cámara es más fácil). Se sincronizan por el sonido de la voz; los clips sin audio quedan marcados para colocarlos a mano.</p>
+    <div id="dz-multicam"></div>
+    <div class="row" style="margin-top:10px">
+      <div><label>…o carpeta de tu Mac</label><div class="row" style="gap:6px"><input id="m-carpeta"><button class="s fix" onclick="explorar('m-carpeta',true)">Elegir…</button></div></div>
       <div class="fix"><button class="p" id="m-go" onclick="lanzar('multicam',{carpeta:v('m-carpeta')},'m-log',cargar)">Ordenar</button></div>
     </div>
     <pre class="log hide" id="m-log"></pre>
@@ -102,15 +158,16 @@ video{width:100%;max-height:420px;background:#2b2b2e;border-radius:10px}
   <div class="card">
     <h2>Maquetar tomas largas con el guion</h2>
     <p class="mut small" style="margin-top:0">Se conserva la mejor toma de cada línea del guion y se cortan muletillas, silencios, reinicios y respiraciones fuertes, dejando una pausa corta entre frases. Sin transiciones ni efectos.</p>
-    <div class="row">
-      <div><label>Video(s) con las tomas largas</label><div class="row" style="gap:6px"><input id="q-carpeta"><button class="s fix" onclick="explorar('q-carpeta',true)">Elegir…</button></div></div>
-      <div><label>Guion</label><div class="row" style="gap:6px"><input id="q-guion"><button class="s fix" onclick="explorar('q-guion',false)">Elegir…</button></div></div>
+    <div class="row"><div><h3 style="margin-top:0">Videos</h3><div id="dz-maquetado"></div></div><div><h3 style="margin-top:0">Guion</h3><div id="dz-guion2"></div></div></div>
+    <div class="row" style="margin-top:10px">
+      <div><label>…o carpeta con los videos</label><div class="row" style="gap:6px"><input id="q-carpeta"><button class="s fix" onclick="explorar('q-carpeta',true)">Elegir…</button></div></div>
+      <div><label>…o archivo de guion</label><div class="row" style="gap:6px"><input id="q-guion"><button class="s fix" onclick="explorar('q-guion',false)">Elegir…</button></div></div>
     </div>
     <div class="row" style="margin-top:10px">
       <div class="fix"><label>Pausa entre frases (s)</label><input id="q-pausa" type="number" step="0.05" value="0.35" style="width:110px"></div>
       <div class="fix"><label>Cortar silencios de más de (s)</label><input id="q-sil" type="number" step="0.05" value="0.40" style="width:110px"></div>
       <div class="fix"><label>Modelo de voz</label><select id="q-modelo"><option value="tiny">tiny</option><option value="base">base</option><option value="small" selected>small</option></select></div>
-      <div class="fix"><button class="p" id="q-go" onclick="lanzar('maquetar',{carpeta:v('q-carpeta'),guion:v('q-guion'),pausa_frase:+v('q-pausa'),silencio_max:+v('q-sil'),modelo:v('q-modelo')},'q-log',cargar)">Maquetar</button></div>
+      <div class="fix"><button class="p" id="q-go" onclick="maquetar()">Maquetar</button></div>
     </div>
     <pre class="log hide" id="q-log"></pre>
   </div>
@@ -129,36 +186,88 @@ video{width:100%;max-height:420px;background:#2b2b2e;border-radius:10px}
 const $=id=>document.getElementById(id), v=id=>$(id).value.trim();
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=t=>{t=+t;const m=Math.floor(t/60);return String(m).padStart(2,'0')+':'+(t-m*60).toFixed(1).padStart(4,'0')};
-let D={}, E={}, filtro='todos', CR={};
+const mb=b=>b>=1e9?(b/1e9).toFixed(2)+' GB':(b/1e6).toFixed(1)+' MB';
+let D={}, E={}, CR={};
 const api=async(u,b)=>{const r=await fetch(u,b?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}:{});return r.json()};
-const proy=()=>v('proy')||'demo';
+const slug=s=>(s||'demo').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'demo';
+const proy=()=>slug($('proy').value);
 
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
-  ['clas','multi','maq','acerca'].forEach(t=>$('t-'+t).classList.toggle('hide',t!==b.dataset.t));
-});
+function ir(t){document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
+  ['inicio','clas','multi','maq','acerca'].forEach(x=>$('t-'+x).classList.toggle('hide',x!==t))}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>ir(b.dataset.t));
 function cerrar(id){$(id).classList.remove('on')}
 
-async function init(){
-  E=await api('/api/estado'); CR=Object.fromEntries(E.criterios.map(c=>[c.id,c]));
-  $('proys').innerHTML=E.proyectos.map(p=>`<option value="${esc(p)}">`).join('');
-  if(E.proyectos.length && !E.proyectos.includes($('proy').value)) $('proy').value=E.proyectos[0];
-  if(!E.juez_claude) [...$('c-juez').options].forEach(o=>{if(o.value==='claude')o.disabled=true});
-  $('crit').innerHTML='<h2>Criterios de la productora</h2><table><tr><th>Criterio</th><th>Qué decide</th><th>Importancia</th><th>Regla</th></tr>'+
-    E.criterios.map(c=>`<tr><td><b>${esc(c.nombre)}</b></td><td>${c.decide}</td><td>${c.importancia}</td><td>${esc(c.regla)}</td></tr>`).join('')+'</table><p class="mut small">Los umbrales están en <code>src/tomas/config/criterios.json</code> y son provisionales: se ajustan con las tomas que la productora ya clasificó.</p>';
-  $('proy').onchange=cargar; await cargar();
+/* ---------- subida de archivos ---------- */
+const ACEPTA={tomas:'video/*,.mov,.mp4,.avi,.mkv,.mts',multicam:'video/*,.mov,.mp4,.avi,.mkv,.mts',maquetado:'video/*,.mov,.mp4,.avi,.mkv,.mts',guion:'.txt,.md,.csv,.docx'};
+function montaDz(id,tipo,titulo,multi){
+  const el=$(id); el.innerHTML=`<div class="dz"><div class="ic">${tipo==='guion'?'📄':'⬆️'}</div><b>${titulo}</b><span class="mut small">Arrastra aquí o haz clic para elegir</span></div><div class="files"></div>
+    <input type="file" class="hide" ${multi?'multiple':''} accept="${ACEPTA[tipo]}">`;
+  const dz=el.querySelector('.dz'), inp=el.querySelector('input'), lista=el.querySelector('.files');
+  el._tipo=tipo; el._lista=lista; refrescaLista(el);
+  dz.onclick=()=>inp.click();
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')}; dz.ondragleave=()=>dz.classList.remove('over');
+  dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');subir(el,[...e.dataTransfer.files])};
+  inp.onchange=()=>{subir(el,[...inp.files]);inp.value=''};
 }
+async function refrescaLista(el){
+  const r=await api(`/api/subidos?proyecto=${proy()}&tipo=${el._tipo}`);
+  [...el._lista.querySelectorAll('.file:not(.sube)')].forEach(x=>x.remove());
+  (r.archivos||[]).forEach(a=>{const d=document.createElement('div');d.className='file';
+    d.innerHTML=`<span style="color:var(--ok)">✓</span><span class="nm">${esc(a.nombre)}</span><span class="mut small">${mb(a.bytes)}</span><button class="mini" title="Quitar">✕</button>`;
+    d.querySelector('button').onclick=async()=>{await api('/api/quitar',{proyecto:proy(),tipo:el._tipo,nombre:a.nombre});refrescaLista(el)};
+    el._lista.appendChild(d)});
+  el._n=(r.archivos||[]).length; el._carpeta=r.carpeta; el._primero=(r.archivos||[])[0]?.nombre; alCambiarSubidas();
+}
+async function subir(el,files){
+  for(const f of files){
+    const d=document.createElement('div'); d.className='file sube';
+    d.innerHTML=`<span>⏳</span><span class="nm">${esc(f.name)}</span><span class="mut small">${mb(f.size)}</span><span class="bar"><i></i></span>`;
+    el._lista.appendChild(d);
+    await new Promise(res=>{const x=new XMLHttpRequest();
+      x.open('POST',`/api/subir?proyecto=${proy()}&tipo=${el._tipo}&nombre=${encodeURIComponent(f.name)}`);
+      x.upload.onprogress=e=>{if(e.lengthComputable)d.querySelector('i').style.width=(100*e.loaded/e.total)+'%'};
+      x.onload=()=>{let r={};try{r=JSON.parse(x.responseText)}catch(e){}; if(x.status!==200||r.error){d.classList.add('err');d.firstChild.textContent='✗';d.querySelector('.bar').outerHTML='<span class="small" style="color:var(--bad)">'+esc(r.error||'error')+'</span>'}else{d.remove()} res()};
+      x.onerror=()=>{d.classList.add('err');d.firstChild.textContent='✗';res()};
+      x.send(f)});
+  }
+  await refrescaLista(el); E=await api('/api/estado'); pintaDisco();
+}
+function alCambiarSubidas(){
+  const t=$('dz-tomas'), g=$('dz-guion');
+  if(t&&t._n!==undefined){$('st1').classList.toggle('done',t._n>0||!!v('c-carpeta'));$('c-go').disabled=!(t._n>0||v('c-carpeta'))}
+  if(g&&g._n!==undefined)$('st2').classList.toggle('done',g._n>0);
+  const m=$('dz-multicam'); if(m&&m._n&&m._carpeta)$('m-carpeta').value=m._carpeta;
+  const q=$('dz-maquetado'); if(q&&q._n&&q._carpeta)$('q-carpeta').value=q._carpeta;
+  const g2=$('dz-guion2'); if(g2&&g2._n&&g2._carpeta)$('q-guion').value=g2._carpeta+'/'+g2._primero;
+}
+function pintaDisco(){ $('disco').textContent=E.libre_gb!==undefined?`Espacio libre en tu Mac: ${E.libre_gb} GB. Subir un video lo copia al proyecto; si pesa mucho, usa «carpeta de tu Mac» para no copiarlo.`:'' }
 
+/* ---------- arranque ---------- */
+async function init(){
+  E=await api('/api/estado'); CR=Object.fromEntries(E.criterios.map(c=>[c.id,c])); pintaDisco();
+  $('proys').innerHTML=E.proyectos.map(p=>`<option value="${esc(p)}">`).join('');
+  if(!E.juez_claude) [...$('c-juez').options].forEach(o=>{if(o.value==='claude')o.disabled=true});
+  $('crit-chips').innerHTML=E.criterios.map(c=>`<span>${esc(c.nombre)} <em>· ${c.importancia}</em></span>`).join('');
+  $('crit').innerHTML='<h2>Criterios de la productora</h2><table><tr><th>Criterio</th><th>Qué decide</th><th>Importancia</th><th>Regla</th></tr>'+
+    E.criterios.map(c=>`<tr><td><b>${esc(c.nombre)}</b></td><td>${c.decide}</td><td>${c.importancia}</td><td>${esc(c.regla)}</td></tr>`).join('')+'</table><p class="mut small">Umbrales en <code>src/tomas/config/criterios.json</code>: provisionales, se ajustan con las tomas que la productora ya clasificó.</p>';
+  montaDz('dz-tomas','tomas','Suelta aquí tus tomas',true);
+  montaDz('dz-guion','guion','Suelta aquí el guion',false);
+  montaDz('dz-multicam','multicam','Suelta aquí los clips de todas las cámaras',true);
+  montaDz('dz-maquetado','maquetado','Suelta aquí las tomas largas',true);
+  montaDz('dz-guion2','guion','Suelta aquí el guion',false);
+  $('proy').onchange=async()=>{['dz-tomas','dz-guion','dz-multicam','dz-maquetado','dz-guion2'].forEach(i=>refrescaLista($(i)));await cargar()};
+  await cargar();
+}
 async function cargar(){
   D=await api('/api/proyecto?nombre='+encodeURIComponent(proy()));
   const c=D.cfg||{};
-  if(c.carpeta_tomas&&!v('c-carpeta'))$('c-carpeta').value=c.carpeta_tomas;
-  if(c.guion){if(!v('c-guion'))$('c-guion').value=c.guion;if(!v('q-guion'))$('q-guion').value=c.guion}
   if(c.carpeta_multicam&&!v('m-carpeta'))$('m-carpeta').value=c.carpeta_multicam;
   if(c.carpeta_maquetado&&!v('q-carpeta'))$('q-carpeta').value=c.carpeta_maquetado;
-  pintaClas(); pintaMulti(); pintaMaq();
+  if(c.guion&&!v('q-guion'))$('q-guion').value=c.guion;
+  pintaClas(); pintaMulti(); pintaMaq(); alCambiarSubidas();
 }
 
+/* ---------- trabajos ---------- */
 async function lanzar(serv,body,logId,despues){
   const btn=event.target; btn.disabled=true; const lg=$(logId); lg.classList.remove('hide'); lg.textContent='Iniciando…';
   const r=await api('/api/'+serv,{proyecto:proy(),...body});
@@ -169,29 +278,55 @@ async function lanzar(serv,body,logId,despues){
       lg.textContent+= j.estado==='error'?'\n✗ '+j.error:`\n✓ Listo en ${j.segundos} s`; await despues()}
   },1200);
 }
+function maquetar(){lanzar('maquetar',{carpeta:v('q-carpeta'),guion:v('q-guion'),pausa_frase:+v('q-pausa'),silencio_max:+v('q-sil'),modelo:v('q-modelo')},'q-log',cargar)}
 
-/* ---------- Clasificador ---------- */
-const SEMT={verde:'Buena',amarillo:'Por revisar',rojo:'Mala'};
+/* ---------- control de tomas ---------- */
+const SEMT={verde:'Buenas',amarillo:'Por revisar',rojo:'Malas'};
 function semFinal(t){return (D.revision||{})[t.nombre]?.semaforo||t.semaforo}
+async function analizar(){
+  const btn=$('c-go'); btn.disabled=true;
+  const body={proyecto:proy(),modelo:v('c-modelo'),juez:v('c-juez')};
+  if(v('c-carpeta'))body.carpeta=v('c-carpeta');
+  $('c-prog').classList.remove('hide'); $('c-bar').style.width='2%'; $('c-prog-txt').textContent='Preparando…';
+  const r=await api('/api/clasificar',body);
+  if(r.error){$('c-prog-txt').textContent='✗ '+r.error;btn.disabled=false;return}
+  const lg=$('c-log'); lg.classList.remove('hide');
+  const t=setInterval(async()=>{
+    const j=await api('/api/job?id='+r.job); lg.textContent=j.log.slice(-10).join('\n'); lg.scrollTop=1e9;
+    const m=[...j.log].reverse().map(l=>l.match(/^\[(\d+)\/(\d+)\]\s*(.*)/)).find(x=>x);
+    if(m){$('c-bar').style.width=Math.max(4,100*(m[1]-1)/m[2])+'%';$('c-prog-txt').textContent=`Analizando toma ${m[1]} de ${m[2]}: ${m[3]}`}
+    if(j.estado==='terminado'||j.estado==='error'){clearInterval(t);btn.disabled=false;
+      if(j.estado==='error')$('c-prog-txt').textContent='✗ '+j.error; else {$('c-bar').style.width='100%';$('c-prog-txt').textContent=`✓ Listo en ${j.segundos} s: las tomas ya están en sus carpetas, abajo.`}
+      await cargar(); $('c-res').scrollIntoView({behavior:'smooth'})}
+  },1200);
+}
+function tarjeta(t,i){
+  const dots=Object.entries(t.criterios).map(([k,c])=>`<i class="${c.estado}" title="${esc(CR[k]?.nombre||k)}: ${esc(c.motivo)}"></i>`).join('');
+  return `<div class="tc" draggable="true" ondragstart="event.dataTransfer.setData('text/plain',${i})" onclick="detalle(${i})">
+    <img loading="lazy" src="/api/miniatura?ruta=${encodeURIComponent(t.archivo)}" onerror="this.style.visibility='hidden'">
+    <div class="t"><b title="${esc(t.nombre)}">${esc(t.nombre)}</b><div class="small mut">${t.tipo==='paso'?'toma de paso · ':''}${t.duracion}s${(D.revision||{})[t.nombre]?' · movida por ti':''}</div>
+    <div class="m">${esc(t.motivo)}</div><div class="dots">${dots}</div></div></div>`;
+}
 function pintaClas(){
   const cl=D.clasificacion, el=$('c-res');
   if(!cl){el.innerHTML='';return}
   const ts=cl.tomas, n={verde:0,amarillo:0,rojo:0}; ts.forEach(t=>n[semFinal(t)]++);
   const conc=D.concordancia||{};
-  let h=`<div class="card"><div class="cnt">${['todos','verde','amarillo','rojo'].map(k=>`<div class="box ${k} ${filtro===k?'on':''}" onclick="filtro='${k}';pintaClas()"><b>${k==='todos'?ts.length:n[k]}</b>${k==='todos'?'Tomas':SEMT[k]}</div>`).join('')}</div>
-    <div class="row"><button class="s fix" onclick="crearCarpetas()">Crear carpetas buenas / malas / por revisar</button>
-    <span class="mut small" id="c-carp"></span><span class="mut small" style="margin-left:auto">${conc.revisadas?`Tu criterio coincide con la IA en ${conc.coinciden} de ${conc.revisadas} tomas revisadas (${conc.pct}%)`:'Corrige el semáforo en cada toma para medir la coincidencia'}</span></div></div>`;
-  h+=ts.filter(t=>filtro==='todos'||semFinal(t)===filtro).map(t=>{
-    const i=ts.indexOf(t), sf=semFinal(t), ch=(D.revision||{})[t.nombre];
-    return `<div class="toma" onclick="detalle(${i})"><span class="sem ${sf}"></span><div class="mt"><div class="nm">${esc(t.nombre)} <span class="mut small">· ${t.tipo==='paso'?'toma de paso · ':''}${t.duracion}s ${ch?'· corregida por ti':''}</span></div>
-      <div class="small" style="margin:2px 0 6px">${esc(t.motivo)}</div>
-      ${Object.entries(t.criterios).map(([k,c])=>`<span class="tag ${c.estado}">${esc(CR[k]?.nombre||k)}</span>`).join('')}</div></div>`}).join('');
-  el.innerHTML=h;
+  el.innerHTML=`<div class="card"><h2>Tus tomas, en carpetas</h2><div class="mut small">${ts.length} tomas analizadas. Arrastra una tarjeta a otra carpeta si no estás de acuerdo; haz clic para ver el video y el detalle de cada criterio.</div>
+    <div class="sumbar"><i style="width:${100*n.verde/ts.length}%;background:var(--ok)"></i><i style="width:${100*n.amarillo/ts.length}%;background:var(--warn)"></i><i style="width:${100*n.rojo/ts.length}%;background:var(--bad)"></i></div>
+    <div class="board">${['verde','amarillo','rojo'].map(k=>`<div class="col ${k}" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="soltar(event,'${k}')">
+      <h3><span class="sem ${k}"></span>${SEMT[k]}<span class="c">${n[k]}</span></h3>${ts.map((t,i)=>semFinal(t)===k?tarjeta(t,i):'').join('')||'<div class="small mut">Vacía</div>'}</div>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="p fix" onclick="crearCarpetas()">Guardar en carpetas de mi Mac</button><button class="s fix hide" id="c-abrir">Abrir carpeta</button>
+    <span class="mut small" id="c-carp"></span><span class="mut small" style="margin-left:auto">${conc.revisadas?`Tu criterio coincide con la IA en ${conc.coinciden} de ${conc.revisadas} tomas movidas o revisadas (${conc.pct}%)`:'Al mover tarjetas se mide cuánto coincide la IA con tu criterio'}</span></div></div>`;
 }
-async function crearCarpetas(){const r=await api('/api/carpetas',{proyecto:proy()});$('c-carp').textContent=`✓ ${r.buenas} buenas · ${r.malas} malas · ${r.por_revisar} por revisar → ${r.destino}`}
+async function soltar(e,k){e.preventDefault();const i=+e.dataTransfer.getData('text/plain');const t=D.clasificacion.tomas[i];
+  if(t&&semFinal(t)!==k){await api('/api/revision',{proyecto:proy(),nombre:t.nombre,semaforo:k});await cargar()}}
+async function crearCarpetas(){const r=await api('/api/carpetas',{proyecto:proy()});
+  $('c-carp').textContent=`✓ ${r.buenas} buenas · ${r.malas} malas · ${r.por_revisar} por revisar → ${r.destino}`;
+  const b=$('c-abrir');b.classList.remove('hide');b.onclick=()=>api('/api/abrir',{ruta:r.destino})}
 function detalle(i){
   const t=D.clasificacion.tomas[i], sf=semFinal(t);
-  $('det').innerHTML=`<div class="row" style="justify-content:space-between"><h2><span class="sem ${sf}" style="margin-right:8px"></span>${esc(t.nombre)}</h2><button class="mini" onclick="cerrar('det-m')">Cerrar</button></div>
+  $('det').innerHTML=`<div class="row" style="justify-content:space-between"><h2><span class="sem ${sf}" style="margin-right:8px"></span>${esc(t.nombre)}</h2><button class="mini" onclick="cerrar('det-m');$('det').innerHTML=''">Cerrar</button></div>
   <div class="grid2"><div><video id="vid" controls src="/api/video?ruta=${encodeURIComponent(t.archivo)}"></video>
     <h3>Marcadores en la línea de tiempo</h3><div style="max-height:200px;overflow:auto">${t.marcadores.map(m=>`<div class="mk" onclick="$('vid').currentTime=${m.t};$('vid').play()"><b>${fmt(m.t)}</b><span>${esc(m.tipo)} · ${esc(m.texto)}</span></div>`).join('')||'<span class="mut small">Sin marcadores</span>'}</div>
     <h3>Lo que se dijo</h3><div class="small">${esc(t.texto)||'<span class="mut">sin habla detectada</span>'}</div></div>
@@ -203,35 +338,32 @@ function detalle(i){
 }
 async function revisar(i,s){const t=D.clasificacion.tomas[i];await api('/api/revision',{proyecto:proy(),nombre:t.nombre,semaforo:s});await cargar();detalle(i)}
 
-/* ---------- Multicámara ---------- */
+/* ---------- multicámara ---------- */
 function pintaMulti(){
   const m=D.multicam, el=$('m-res'); if(!m){el.innerHTML='';return}
   const tot=Math.max(m.resumen.duracion_total,1), r=m.resumen;
-  let h=`<div class="card"><div class="kpi"><div><b>${r.clips}</b>clips</div><div><b>${r.camaras}</b>cámaras</div><div><b>${r.sincronizados_por_audio}</b>sincronizados por audio</div><div><b>${r.estimados+r.manual}</b>por revisar a mano</div><div><b>${fmt(r.duracion_total)}</b>duración total</div></div>
-  <div class="tl">${m.camaras.map(c=>`<div class="lab">${esc(c)}</div><div class="lane">${m.clips.filter(x=>x.camara===c).map(x=>`<div class="bar ${x.metodo.startsWith('audio (conf')||x.metodo.startsWith('estim')?'low':x.metodo.startsWith('sin')?'man':''}" title="${esc(x.nombre)} · ${esc(x.metodo)}" style="left:${x.inicio/tot*100}%;width:${Math.max(x.duracion/tot*100,1.5)}%">${esc(x.nombre)}</div>`).join('')}</div>`).join('')}</div>
+  el.innerHTML=`<div class="card"><div class="kpi"><div><b>${r.clips}</b>clips</div><div><b>${r.camaras}</b>cámaras</div><div><b>${r.sincronizados_por_audio}</b>sincronizados por audio</div><div><b>${r.estimados+r.manual}</b>por revisar a mano</div><div><b>${fmt(r.duracion_total)}</b>duración total</div></div>
+  <div class="tl">${m.camaras.map(c=>`<div class="lab">${esc(c)}</div><div class="lane">${m.clips.filter(x=>x.camara===c).map(x=>`<div class="bar2 ${x.metodo.startsWith('audio (conf')||x.metodo.startsWith('estim')?'low':x.metodo.startsWith('sin')?'man':''}" title="${esc(x.nombre)} · ${esc(x.metodo)}" style="left:${x.inicio/tot*100}%;width:${Math.max(x.duracion/tot*100,1.5)}%">${esc(x.nombre)}</div>`).join('')}</div>`).join('')}</div>
   <div class="row" style="margin-top:10px"><button class="s fix" onclick="aCapcut('multicam','m-log')">Crear proyecto de CapCut con una pista por cámara</button></div>
   <div class="small mut" style="margin-top:6px">Azul: sincronizado por audio · Ámbar: confianza media o estimado · Rojo: colocar a mano (sin audio o sin solape)</div>
   <h3>Orden lógico</h3><table><tr><th>#</th><th>Clip</th><th>Cámara</th><th>Inicio</th><th>Fin</th><th>Cómo se ubicó</th></tr>
   ${m.clips.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.nombre)}</td><td>${esc(x.camara)}</td><td>${fmt(x.inicio)}</td><td>${fmt(x.fin)}</td><td>${esc(x.metodo)}${x.confianza&&x.confianza<99?` <span class="mut small">(confianza ${x.confianza})</span>`:''}</td></tr>`).join('')}</table></div>`;
-  el.innerHTML=h;
 }
 
-/* ---------- Maquetado ---------- */
+/* ---------- maquetado ---------- */
 function pintaMaq(){
   const m=D.maquetado, el=$('q-res'); if(!m){el.innerHTML='';return}
   const r=m.resumen, pv=(D.previews||[]);
-  let h=`<div class="card"><div class="kpi"><div><b>${fmt(r.duracion_original)}</b>material original</div><div><b>${fmt(r.duracion_final)}</b>resultado</div><div><b>${r.ahorro_pct}%</b>menos</div><div><b>${r.lineas_ok}/${r.lineas_total}</b>líneas del guion cubiertas</div>
+  el.innerHTML=`<div class="card"><div class="kpi"><div><b>${fmt(r.duracion_original)}</b>material original</div><div><b>${fmt(r.duracion_final)}</b>resultado</div><div><b>${r.ahorro_pct}%</b>menos</div><div><b>${r.lineas_ok}/${r.lineas_total}</b>líneas del guion cubiertas</div>
   <div><b>${r.muletillas_cortadas}</b>muletillas</div><div><b>${r.silencios_cortados}</b>silencios</div><div><b>${r.respiraciones_cortadas}</b>respiraciones</div><div><b>${r.repeticiones_cortadas}</b>repeticiones</div></div>
   ${pv.includes('maquetado_preview.mp4')?`<video controls src="/api/preview?proyecto=${encodeURIComponent(proy())}&archivo=maquetado_preview.mp4&t=${Date.now()}" style="max-height:320px"></video>`:''}
-  <div class="row" style="margin-top:8px"><button class="s fix" id="q-fin" onclick="lanzar('render',{calidad:'final'},'q-log',cargar)">Render en calidad original</button><button class="s fix" onclick="aCapcut('maquetado','q-log')">Crear proyecto de CapCut con los cortes</button><span class="mut small">${pv.includes('maquetado_final.mp4')?'Ya hay un render final en tomas_data/'+esc(proy())+'/maquetado/':''}</span></div></div>
+  <div class="row" style="margin-top:8px"><button class="s fix" onclick="lanzar('render',{calidad:'final'},'q-log',cargar)">Render en calidad original</button><button class="s fix" onclick="aCapcut('maquetado','q-log')">Crear proyecto de CapCut con los cortes</button></div></div>
   <div class="card"><h2>Toma elegida para cada línea del guion</h2><table><tr><th>#</th><th>Guion</th><th>Estado</th><th>Toma elegida</th></tr>
   ${m.lineas.map(l=>`<tr><td>${l.n}${l.escena?`<div class="mut small">esc. ${esc(l.escena)}</div>`:''}</td><td>${esc(l.guion)}</td>
    <td><span class="tag ${l.estado==='ok'?'pass':l.estado==='incompleta'?'warn':'fail'}">${esc(l.estado)}</span></td>
    <td class="small">${l.clip?`<b>${esc(l.clip)}</b> ${fmt(l.inicio)}–${fmt(l.fin)} · ${esc(l.motivo)}<div class="mut">«${esc(l.dicho)}»</div>`:esc(l.motivo)}</td></tr>`).join('')}</table></div>
   <div class="card"><h2>Cortes realizados (${m.cortes.length})</h2><div style="max-height:240px;overflow:auto"><table>${m.cortes.map(c=>`<tr><td>${esc(c.motivo)}</td><td class="mut">${esc(m.clips[c.clip]?.split('/').pop())} · ${fmt(c.start)}–${fmt(c.end)}</td></tr>`).join('')||'<tr><td class="mut">Sin cortes internos</td></tr>'}</table></div></div>`;
-  el.innerHTML=h;
 }
-
 async function aCapcut(servicio,logId){
   const btn=event.target; btn.disabled=true; const lg=$(logId); lg.classList.remove('hide'); lg.textContent='Creando proyecto de CapCut…';
   const r=await api('/api/capcut',{proyecto:proy(),servicio,nombre:''});
@@ -239,15 +371,17 @@ async function aCapcut(servicio,logId){
     if(j.estado==='terminado'||j.estado==='error'){clearInterval(t);btn.disabled=false;
       lg.textContent+= j.estado==='error'?'\n✗ '+j.error:'\n✓ Listo. Cierra CapCut y ejecuta en la terminal:\n'+j.resultado.instalar+'\nLuego abre CapCut: el proyecto aparece en la lista.'}},1000)}
 
-/* ---------- Explorador de carpetas ---------- */
+/* ---------- explorador de carpetas ---------- */
 let expDestino=null, expDir=null, expSoloDir=false;
-async function explorar(id,soloDir){expDestino=id;expSoloDir=soloDir;$('exp-usar').style.display=soloDir?'':'none';$('exp-m').classList.add('on');await ir(v(id)||E.home)}
-async function ir(r){const j=await api('/api/explorar?ruta='+encodeURIComponent(r)); if(j.error){$('exp-l').innerHTML='<div class="small">'+esc(j.error)+'</div>';return}
+async function explorar(id,soloDir){expDestino=id;expSoloDir=soloDir;$('exp-usar').style.display=soloDir?'':'none';$('exp-m').classList.add('on');await ir2(v(id)||E.home)}
+async function ir2(r){const j=await api('/api/explorar?ruta='+encodeURIComponent(r)); if(j.error){$('exp-l').innerHTML='<div class="small">'+esc(j.error)+'</div>';return}
   expDir=j.ruta; $('exp-ruta').textContent=j.ruta; window._padre=j.padre;
   $('exp-l').innerHTML=j.items.map(x=>`<div data-r="${esc(x.ruta)}" data-d="${x.dir?1:0}">${x.dir?'📁':'🎬'} ${esc(x.nombre)}</div>`).join('')||'<div class="mut">Vacía</div>';
-  $('exp-l').querySelectorAll('div[data-r]').forEach(d=>d.onclick=()=>{d.dataset.d==='1'?ir(d.dataset.r):(!expSoloDir&&elegir(d.dataset.r))})}
-function irPadre(){ir(window._padre)} function usarRuta(){elegir(expDir)}
-function elegir(r){$(expDestino).value=r;cerrar('exp-m')}
+  $('exp-l').querySelectorAll('div[data-r]').forEach(d=>d.onclick=()=>{d.dataset.d==='1'?ir2(d.dataset.r):(!expSoloDir&&elegir(d.dataset.r))})}
+function irPadre(){ir2(window._padre)} function usarRuta(){elegir(expDir)}
+function elegir(r){$(expDestino).value=r;cerrar('exp-m');
+  if(expDestino==='c-carpeta')$('c-carpeta-txt').textContent='→ '+r;
+  alCambiarSubidas()}
 init();
 </script>
 </body>

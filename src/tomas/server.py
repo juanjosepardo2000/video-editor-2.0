@@ -6,6 +6,7 @@ Sin dependencias externas: usa la biblioteca estándar y los módulos de este pa
 import json
 import mimetypes
 import re
+import shutil
 import subprocess
 import threading
 import time
@@ -13,7 +14,7 @@ import traceback
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from . import capcut, clasificador, maquetado, multicam
 from .util import CONFIG, DATA, REPO, VIDEO_EXT, list_clips, read_json, write_json
@@ -66,6 +67,32 @@ def _proyecto_cfg(nombre: str) -> dict:
 def _guardar_cfg(nombre: str, **kw) -> None:
     cfg = {**_proyecto_cfg(nombre), **kw}
     write_json(DATA / nombre / "proyecto.json", cfg)
+
+
+def _slug(txt: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", txt).strip("._") or "proyecto"
+
+
+def _subidos(proyecto: str, tipo: str) -> Path:
+    if tipo not in ("tomas", "guion", "multicam", "maquetado"):
+        raise KeyError("tipo")
+    return DATA / _slug(proyecto) / "subidos" / tipo
+
+
+def _lista_subidos(proyecto: str, tipo: str) -> list[dict]:
+    d = _subidos(proyecto, tipo)
+    return [{"nombre": x.name, "bytes": x.stat().st_size} for x in sorted(d.glob("*")) if x.is_file() and not x.name.startswith(".")] if d.exists() else []
+
+
+def _miniatura(p: Path) -> Path:
+    d = DATA / "proxy" / "miniaturas"
+    d.mkdir(parents=True, exist_ok=True)
+    out = d / (re.sub(r"[^A-Za-z0-9._-]+", "_", f"{p.parent.name}_{p.stem}") + f"_{int(p.stat().st_mtime)}.jpg")
+    if not out.exists():
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", "1", "-i", str(p), "-frames:v", "1", "-vf", "scale=360:-2", "-q:v", "5", str(out)], capture_output=True)
+        if not out.exists():   # clips de menos de 1 s
+            subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(p), "-frames:v", "1", "-vf", "scale=360:-2", "-q:v", "5", str(out)], capture_output=True)
+    return out
 
 
 def _proxy(p: Path) -> Path:
@@ -130,6 +157,7 @@ class H(BaseHTTPRequestHandler):
         if u.path == "/api/estado":
             proys = sorted(p.name for p in DATA.iterdir() if p.is_dir() and not p.name.startswith(("_", "proxy"))) if DATA.exists() else []
             return self._json({"proyectos": proys, "criterios": CONFIG["criterios"], "home": str(HOME),
+                               "libre_gb": round(shutil.disk_usage(HOME).free / 1e9, 1),
                                "juez_claude": bool(__import__("os").environ.get("ANTHROPIC_API_KEY"))})
         if u.path == "/api/proyecto":
             n = q["nombre"]
@@ -160,21 +188,77 @@ class H(BaseHTTPRequestHandler):
             if p.suffix.lower() not in (".mp4", ".m4v"):
                 p = _proxy(p)
             return self._archivo(p, "video/mp4")
+        if u.path == "/api/subidos":
+            return self._json({"archivos": _lista_subidos(q["proyecto"], q["tipo"]), "carpeta": str(_subidos(q["proyecto"], q["tipo"]))})
+        if u.path == "/api/miniatura":
+            p = _ruta(q["ruta"])
+            if not _permitida(p) and not str(p.resolve()).startswith(str(DATA.resolve())):
+                return self._json({"error": "ruta no permitida"}, 403)
+            m = _miniatura(p)
+            return self._archivo(m, "image/jpeg") if m.exists() else self._json({"error": "sin miniatura"}, 404)
         if u.path == "/api/preview":
             return self._archivo(DATA / q["proyecto"] / "maquetado" / Path(q["archivo"]).name, "video/mp4")
         self._json({"error": "no encontrado"}, 404)
 
+    def _subir(self, q: dict):
+        """Guarda el cuerpo de la petición (el archivo) por trozos: sirve para videos de varios GB."""
+        n = int(self.headers.get("Content-Length") or 0)
+        nombre = _slug(Path(unquote(q.get("nombre", "archivo"))).name)
+        dest_dir = _subidos(q["proyecto"], q["tipo"])
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        libre = shutil.disk_usage(dest_dir).free
+        if n > libre - 300_000_000:
+            self.rfile.read(0)
+            return self._json({"error": f"No hay espacio: el archivo pesa {n/1e9:.1f} GB y quedan {libre/1e9:.1f} GB"}, 507)
+        tmp = dest_dir / f".{nombre}.part"
+        left = n
+        with tmp.open("wb") as f:
+            while left > 0:
+                chunk = self.rfile.read(min(1 << 20, left))
+                if not chunk:
+                    break
+                f.write(chunk)
+                left -= len(chunk)
+        if left:
+            tmp.unlink(missing_ok=True)
+            return self._json({"error": "La subida se cortó"}, 400)
+        tmp.replace(dest_dir / nombre)
+        self._json({"ok": True, "nombre": nombre, "archivos": _lista_subidos(q["proyecto"], q["tipo"])})
+
     def do_POST(self):
+        pu = urlparse(self.path)
+        if pu.path == "/api/subir":
+            try:
+                return self._subir({k: v[0] for k, v in parse_qs(pu.query).items()})
+            except KeyError as e:
+                return self._json({"error": f"Falta el dato {e}"}, 400)
         n = int(self.headers.get("Content-Length") or 0)
         d = json.loads(self.rfile.read(n) or b"{}")
-        u = urlparse(self.path).path
+        u = pu.path
         try:
+            if u == "/api/quitar":
+                (_subidos(d["proyecto"], d["tipo"]) / Path(d["nombre"]).name).unlink(missing_ok=True)
+                return self._json({"archivos": _lista_subidos(d["proyecto"], d["tipo"])})
+            if u == "/api/abrir":
+                p = _ruta(d["ruta"])
+                if not _permitida(p) and not str(p.resolve()).startswith(str(DATA.resolve())):
+                    return self._json({"error": "ruta no permitida"}, 403)
+                subprocess.run(["open", str(p)])
+                return self._json({"ok": True})
             if u == "/api/clasificar":
-                carpeta, guion = _ruta(d["carpeta"]), (_ruta(d["guion"]) if d.get("guion") else None)
+                carpeta = _ruta(d["carpeta"]) if d.get("carpeta") else _subidos(d["proyecto"], "tomas")
+                guion = _ruta(d["guion"]) if d.get("guion") else next(iter(sorted(_subidos(d["proyecto"], "guion").glob("*"))), None) \
+                    if _subidos(d["proyecto"], "guion").exists() else None
                 if not carpeta.is_dir() or not list_clips(carpeta):
                     return self._json({"error": f"No hay videos en {carpeta}"}, 400)
                 _guardar_cfg(d["proyecto"], carpeta_tomas=str(carpeta), guion=str(guion) if guion else None)
-                return self._json({"job": _job(clasificador.clasificar_carpeta, d["proyecto"], carpeta, guion,
+                def tarea_clas(proyecto, carpeta, guion, opts, log):
+                    r = clasificador.clasificar_carpeta(proyecto, carpeta, guion, opts, log)
+                    log("Preparando miniaturas…")
+                    for t in r["tomas"]:
+                        _miniatura(Path(t["archivo"]))
+                    return {"tomas": len(r["tomas"])}
+                return self._json({"job": _job(tarea_clas, d["proyecto"], carpeta, guion,
                                                {"modelo": d.get("modelo", "small"), "juez": d.get("juez", "difuso")})})
             if u == "/api/revision":
                 return self._json(clasificador.aplicar_revision(d["proyecto"], d["nombre"], d["semaforo"], d.get("nota", "")))
