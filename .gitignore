@@ -42,3 +42,6 @@ assets/sfx/*
 !assets/music/.gitkeep
 !assets/sfx/.gitkeep
 pipeline/*.m4a
+
+# Prototipo de control de tomas: datos de trabajo (fichas, proxies, salidas)
+tomas_data/

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control de tomas</title>
+<style>
+:root{--bg:#F5F5F7;--card:#FBFBFD;--ink:#1D1D1F;--mut:#6E6E73;--line:#E0E0E5;--acc:#D9772B;--acc-soft:#F6E6D8;
+--ok:#4E9F7D;--warn:#D9A441;--bad:#C85A54;--ok-soft:#E1F0EA;--warn-soft:#F7ECD3;--bad-soft:#F4DEDC;--blue:#5B7C99}
+@media (prefers-color-scheme:dark){:root{--bg:#1C1C1E;--card:#2A2A2D;--ink:#EBEBF0;--mut:#9A9AA2;--line:#3A3A3E;--acc-soft:#4A3626;--ok-soft:#24382F;--warn-soft:#3F3624;--bad-soft:#412B2A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:12px 24px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+h1{font-size:16px;margin:0;font-weight:650}h2{font-size:15px;margin:0 0 10px}h3{font-size:13px;margin:14px 0 6px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+nav{display:flex;gap:4px;flex-wrap:wrap}nav button{border:0;background:transparent;padding:7px 14px;border-radius:8px;font:inherit;color:var(--mut);cursor:pointer}
+nav button.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
+main{max-width:1180px;margin:0 auto;padding:20px 24px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+label{display:block;font-size:12px;color:var(--mut);margin:0 0 3px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%}
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.row>div{flex:1;min-width:180px}.row>.fix{flex:0 0 auto;min-width:0}
+button.p,button.s{font:inherit;border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid var(--acc)}
+button.p{background:var(--acc);color:#fff}button.s{background:transparent;color:var(--acc)}button:disabled{opacity:.5;cursor:wait}
+button.mini{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer}
+.mut{color:var(--mut)}.small{font-size:12px}
+.sem{display:inline-block;width:12px;height:12px;border-radius:50%;flex:none}
+.sem.verde,.pill.pass{background:var(--ok)}.sem.amarillo,.pill.warn{background:var(--warn)}.sem.rojo,.pill.fail{background:var(--bad)}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;margin:0 4px 4px 0;border:1px solid var(--line)}
+.tag.pass{background:var(--ok-soft)}.tag.warn{background:var(--warn-soft)}.tag.fail{background:var(--bad-soft)}
+.cnt{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 12px}.cnt .box{flex:1;min-width:110px;border-radius:10px;padding:10px 14px;border:1px solid var(--line);cursor:pointer}
+.cnt .box b{font-size:24px;display:block}.cnt .box.on{outline:2px solid var(--acc)}
+.verde.box{background:var(--ok-soft)}.amarillo.box{background:var(--warn-soft)}.rojo.box{background:var(--bad-soft)}
+.toma{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:var(--card)}
+.toma:hover{border-color:var(--acc)}.toma .sem{margin-top:4px;width:14px;height:14px}.toma .mt{flex:1;min-width:0}.toma .nm{font-weight:600}
+pre.log{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:190px;overflow:auto;font-size:12px;margin:10px 0 0;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-weight:600;font-size:12px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow:auto;z-index:20}
+.modal.on{display:flex}.modal .in{background:var(--card);border-radius:14px;max-width:980px;width:100%;padding:20px;border:1px solid var(--line)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px}@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+video{width:100%;max-height:420px;background:#2b2b2e;border-radius:10px}
+.mk{display:flex;gap:8px;padding:4px 0;cursor:pointer;border-bottom:1px dashed var(--line);font-size:12px}.mk:hover{color:var(--acc)}.mk b{min-width:50px;font-variant-numeric:tabular-nums}
+.crit{border-left:4px solid var(--line);padding:5px 10px;margin:5px 0;border-radius:4px;background:var(--bg)}
+.crit.pass{border-color:var(--ok)}.crit.warn{border-color:var(--warn)}.crit.fail{border-color:var(--bad)}
+.tl{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px 4px}
+.tl .lane{position:relative;height:30px;margin:6px 0;border-radius:6px;background:repeating-linear-gradient(90deg,transparent 0,transparent 49px,var(--line) 49px,var(--line) 50px)}
+.tl .lab{font-size:11px;color:var(--mut);margin-top:6px}
+.bar{position:absolute;top:2px;height:26px;border-radius:5px;background:var(--blue);color:#fff;font-size:11px;padding:4px 6px;overflow:hidden;white-space:nowrap;opacity:.92}
+.bar.low{background:var(--warn);color:#2a2a2a}.bar.man{background:var(--bad)}
+.exp{background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:8px;max-height:220px;overflow:auto;margin-top:6px}
+.exp div{padding:3px 6px;cursor:pointer;border-radius:5px}.exp div:hover{background:var(--acc-soft)}
+.kpi{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.kpi div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:120px}.kpi b{font-size:20px;display:block}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Control de tomas</h1>
+  <nav id="nav">
+    <button data-t="clas" class="on">1 · Clasificador</button>
+    <button data-t="multi">2 · Multicámara</button>
+    <button data-t="maq">3 · Maquetado</button>
+    <button data-t="acerca">Criterios</button>
+  </nav>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <span class="mut small">Proyecto</span>
+    <input id="proy" list="proys" style="width:200px" value="demo">
+    <datalist id="proys"></datalist>
+  </div>
+</header>
+<main>
+
+<section id="t-clas">
+  <div class="card">
+    <h2>Clasificar tomas</h2>
+    <div class="row">
+      <div><label>Carpeta con las tomas</label><div class="row" style="gap:6px"><input id="c-carpeta" placeholder="/Users/…/Movies/mi-evento"><button class="s fix" onclick="explorar('c-carpeta',true)">Elegir…</button></div></div>
+      <div><label>Guion (.txt, .docx o .csv)</label><div class="row" style="gap:6px"><input id="c-guion" placeholder="opcional pero recomendado"><button class="s fix" onclick="explorar('c-guion',false)">Elegir…</button></div></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div class="fix"><label>Modelo de voz</label><select id="c-modelo"><option value="tiny">tiny (rápido)</option><option value="base">base</option><option value="small" selected>small (mejor)</option></select></div>
+      <div class="fix"><label>Juez de fidelidad al guion</label><select id="c-juez"><option value="difuso">Local (sin internet)</option><option value="claude">Claude (necesita clave)</option></select></div>
+      <div class="fix"><button class="p" id="c-go" onclick="lanzar('clasificar',{carpeta:v('c-carpeta'),guion:v('c-guion'),modelo:v('c-modelo'),juez:v('c-juez')},'c-log',cargar)">Analizar tomas</button></div>
+    </div>
+    <pre class="log hide" id="c-log"></pre>
+  </div>
+  <div id="c-res"></div>
+</section>
+
+<section id="t-multi" class="hide">
+  <div class="card">
+    <h2>Ordenar clips de varias cámaras</h2>
+    <p class="mut small" style="margin-top:0">Pon cada cámara en su subcarpeta (CamA, CamB…) o deja los clips juntos: se separan por el prefijo del nombre. Se sincronizan por el sonido de la voz; los clips sin audio quedan marcados para colocarlos a mano.</p>
+    <div class="row">
+      <div><label>Carpeta con los clips del evento</label><div class="row" style="gap:6px"><input id="m-carpeta"><button class="s fix" onclick="explorar('m-carpeta',true)">Elegir…</button></div></div>
+      <div class="fix"><button class="p" id="m-go" onclick="lanzar('multicam',{carpeta:v('m-carpeta')},'m-log',cargar)">Ordenar</button></div>
+    </div>
+    <pre class="log hide" id="m-log"></pre>
+  </div>
+  <div id="m-res"></div>
+</section>
+
+<section id="t-maq" class="hide">
+  <div class="card">
+    <h2>Maquetar tomas largas con el guion</h2>
+    <p class="mut small" style="margin-top:0">Se conserva la mejor toma de cada línea del guion y se cortan muletillas, silencios, reinicios y respiraciones fuertes, dejando una pausa corta entre frases. Sin transiciones ni efectos.</p>
+    <div class="row">
+      <div><label>Video(s) con las tomas largas</label><div class="row" style="gap:6px"><input id="q-carpeta"><button class="s fix" onclick="explorar('q-carpeta',true)">Elegir…</button></div></div>
+      <div><label>Guion</label><div class="row" style="gap:6px"><input id="q-guion"><button class="s fix" onclick="explorar('q-guion',false)">Elegir…</button></div></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div class="fix"><label>Pausa entre frases (s)</label><input id="q-pausa" type="number" step="0.05" value="0.35" style="width:110px"></div>
+      <div class="fix"><label>Cortar silencios de más de (s)</label><input id="q-sil" type="number" step="0.05" value="0.40" style="width:110px"></div>
+      <div class="fix"><label>Modelo de voz</label><select id="q-modelo"><option value="tiny">tiny</option><option value="base">base</option><option value="small" selected>small</option></select></div>
+      <div class="fix"><button class="p" id="q-go" onclick="lanzar('maquetar',{carpeta:v('q-carpeta'),guion:v('q-guion'),pausa_frase:+v('q-pausa'),silencio_max:+v('q-sil'),modelo:v('q-modelo')},'q-log',cargar)">Maquetar</button></div>
+    </div>
+    <pre class="log hide" id="q-log"></pre>
+  </div>
+  <div id="q-res"></div>
+</section>
+
+<section id="t-acerca" class="hide"><div class="card" id="crit"></div></section>
+</main>
+
+<div class="modal" id="exp-m"><div class="in" style="max-width:640px"><h2>Elegir en tu Mac</h2><div class="small mut" id="exp-ruta"></div>
+  <div class="row" style="margin:8px 0"><button class="mini" onclick="irPadre()">↑ Subir</button><button class="mini" id="exp-usar" onclick="usarRuta()">Usar esta carpeta</button><button class="mini" onclick="cerrar('exp-m')">Cancelar</button></div>
+  <div class="exp" id="exp-l"></div></div></div>
+<div class="modal" id="det-m"><div class="in" id="det"></div></div>
+
+<script>
+const $=id=>document.getElementById(id), v=id=>$(id).value.trim();
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=t=>{t=+t;const m=Math.floor(t/60);return String(m).padStart(2,'0')+':'+(t-m*60).toFixed(1).padStart(4,'0')};
+let D={}, E={}, filtro='todos', CR={};
+const api=async(u,b)=>{const r=await fetch(u,b?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}:{});return r.json()};
+const proy=()=>v('proy')||'demo';
+
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
+  ['clas','multi','maq','acerca'].forEach(t=>$('t-'+t).classList.toggle('hide',t!==b.dataset.t));
+});
+function cerrar(id){$(id).classList.remove('on')}
+
+async function init(){
+  E=await api('/api/estado'); CR=Object.fromEntries(E.criterios.map(c=>[c.id,c]));
+  $('proys').innerHTML=E.proyectos.map(p=>`<option value="${esc(p)}">`).join('');
+  if(E.proyectos.length && !E.proyectos.includes($('proy').value)) $('proy').value=E.proyectos[0];
+  if(!E.juez_claude) [...$('c-juez').options].forEach(o=>{if(o.value==='claude')o.disabled=true});
+  $('crit').innerHTML='<h2>Criterios de la productora</h2><table><tr><th>Criterio</th><th>Qué decide</th><th>Importancia</th><th>Regla</th></tr>'+
+    E.criterios.map(c=>`<tr><td><b>${esc(c.nombre)}</b></td><td>${c.decide}</td><td>${c.importancia}</td><td>${esc(c.regla)}</td></tr>`).join('')+'</table><p class="mut small">Los umbrales están en <code>src/tomas/config/criterios.json</code> y son provisionales: se ajustan con las tomas que la productora ya clasificó.</p>';
+  $('proy').onchange=cargar; await cargar();
+}
+
+async function cargar(){
+  D=await api('/api/proyecto?nombre='+encodeURIComponent(proy()));
+  const c=D.cfg||{};
+  if(c.carpeta_tomas&&!v('c-carpeta'))$('c-carpeta').value=c.carpeta_tomas;
+  if(c.guion){if(!v('c-guion'))$('c-guion').value=c.guion;if(!v('q-guion'))$('q-guion').value=c.guion}
+  if(c.carpeta_multicam&&!v('m-carpeta'))$('m-carpeta').value=c.carpeta_multicam;
+  if(c.carpeta_maquetado&&!v('q-carpeta'))$('q-carpeta').value=c.carpeta_maquetado;
+  pintaClas(); pintaMulti(); pintaMaq();
+}
+
+async function lanzar(serv,body,logId,despues){
+  const btn=event.target; btn.disabled=true; const lg=$(logId); lg.classList.remove('hide'); lg.textContent='Iniciando…';
+  const r=await api('/api/'+serv,{proyecto:proy(),...body});
+  if(r.error){lg.textContent='✗ '+r.error;btn.disabled=false;return}
+  const t=setInterval(async()=>{
+    const j=await api('/api/job?id='+r.job); lg.textContent=j.log.slice(-14).join('\n'); lg.scrollTop=1e9;
+    if(j.estado==='terminado'||j.estado==='error'){clearInterval(t);btn.disabled=false;
+      lg.textContent+= j.estado==='error'?'\n✗ '+j.error:`\n✓ Listo en ${j.segundos} s`; await despues()}
+  },1200);
+}
+
+/* ---------- Clasificador ---------- */
+const SEMT={verde:'Buena',amarillo:'Por revisar',rojo:'Mala'};
+function semFinal(t){return (D.revision||{})[t.nombre]?.semaforo||t.semaforo}
+function pintaClas(){
+  const cl=D.clasificacion, el=$('c-res');
+  if(!cl){el.innerHTML='';return}
+  const ts=cl.tomas, n={verde:0,amarillo:0,rojo:0}; ts.forEach(t=>n[semFinal(t)]++);
+  const conc=D.concordancia||{};
+  let h=`<div class="card"><div class="cnt">${['todos','verde','amarillo','rojo'].map(k=>`<div class="box ${k} ${filtro===k?'on':''}" onclick="filtro='${k}';pintaClas()"><b>${k==='todos'?ts.length:n[k]}</b>${k==='todos'?'Tomas':SEMT[k]}</div>`).join('')}</div>
+    <div class="row"><button class="s fix" onclick="crearCarpetas()">Crear carpetas buenas / malas / por revisar</button>
+    <span class="mut small" id="c-carp"></span><span class="mut small" style="margin-left:auto">${conc.revisadas?`Tu criterio coincide con la IA en ${conc.coinciden} de ${conc.revisadas} tomas revisadas (${conc.pct}%)`:'Corrige el semáforo en cada toma para medir la coincidencia'}</span></div></div>`;
+  h+=ts.filter(t=>filtro==='todos'||semFinal(t)===filtro).map(t=>{
+    const i=ts.indexOf(t), sf=semFinal(t), ch=(D.revision||{})[t.nombre];
+    return `<div class="toma" onclick="detalle(${i})"><span class="sem ${sf}"></span><div class="mt"><div class="nm">${esc(t.nombre)} <span class="mut small">· ${t.tipo==='paso'?'toma de paso · ':''}${t.duracion}s ${ch?'· corregida por ti':''}</span></div>
+      <div class="small" style="margin:2px 0 6px">${esc(t.motivo)}</div>
+      ${Object.entries(t.criterios).map(([k,c])=>`<span class="tag ${c.estado}">${esc(CR[k]?.nombre||k)}</span>`).join('')}</div></div>`}).join('');
+  el.innerHTML=h;
+}
+async function crearCarpetas(){const r=await api('/api/carpetas',{proyecto:proy()});$('c-carp').textContent=`✓ ${r.buenas} buenas · ${r.malas} malas · ${r.por_revisar} por revisar → ${r.destino}`}
+function detalle(i){
+  const t=D.clasificacion.tomas[i], sf=semFinal(t);
+  $('det').innerHTML=`<div class="row" style="justify-content:space-between"><h2><span class="sem ${sf}" style="margin-right:8px"></span>${esc(t.nombre)}</h2><button class="mini" onclick="cerrar('det-m')">Cerrar</button></div>
+  <div class="grid2"><div><video id="vid" controls src="/api/video?ruta=${encodeURIComponent(t.archivo)}"></video>
+    <h3>Marcadores en la línea de tiempo</h3><div style="max-height:200px;overflow:auto">${t.marcadores.map(m=>`<div class="mk" onclick="$('vid').currentTime=${m.t};$('vid').play()"><b>${fmt(m.t)}</b><span>${esc(m.tipo)} · ${esc(m.texto)}</span></div>`).join('')||'<span class="mut small">Sin marcadores</span>'}</div>
+    <h3>Lo que se dijo</h3><div class="small">${esc(t.texto)||'<span class="mut">sin habla detectada</span>'}</div></div>
+  <div><div class="small" style="margin-bottom:6px"><b>${SEMT[t.semaforo]}</b> según la IA (confianza ${Math.round(t.confianza*100)}%)</div>
+    ${Object.entries(t.criterios).map(([k,c])=>`<div class="crit ${c.estado}"><b>${esc(CR[k]?.nombre||k)}</b> <span class="mut small">· ${CR[k]?.decide||''} · importancia ${CR[k]?.importancia||''}</span><div class="small">${esc(c.motivo)}</div></div>`).join('')}
+    <h3>Tu decisión</h3><div class="row" style="gap:6px"><button class="mini" onclick="revisar(${i},'verde')">● Buena</button><button class="mini" onclick="revisar(${i},'amarillo')">● Por revisar</button><button class="mini" onclick="revisar(${i},'rojo')">● Mala</button></div>
+    <div class="small mut" style="margin-top:6px">Cada corrección se guarda para calibrar los umbrales con el criterio de la productora.</div></div></div>`;
+  $('det-m').classList.add('on');
+}
+async function revisar(i,s){const t=D.clasificacion.tomas[i];await api('/api/revision',{proyecto:proy(),nombre:t.nombre,semaforo:s});await cargar();detalle(i)}
+
+/* ---------- Multicámara ---------- */
+function pintaMulti(){
+  const m=D.multicam, el=$('m-res'); if(!m){el.innerHTML='';return}
+  const tot=Math.max(m.resumen.duracion_total,1), r=m.resumen;
+  let h=`<div class="card"><div class="kpi"><div><b>${r.clips}</b>clips</div><div><b>${r.camaras}</b>cámaras</div><div><b>${r.sincronizados_por_audio}</b>sincronizados por audio</div><div><b>${r.estimados+r.manual}</b>por revisar a mano</div><div><b>${fmt(r.duracion_total)}</b>duración total</div></div>
+  <div class="tl">${m.camaras.map(c=>`<div class="lab">${esc(c)}</div><div class="lane">${m.clips.filter(x=>x.camara===c).map(x=>`<div class="bar ${x.metodo.startsWith('audio (conf')||x.metodo.startsWith('estim')?'low':x.metodo.startsWith('sin')?'man':''}" title="${esc(x.nombre)} · ${esc(x.metodo)}" style="left:${x.inicio/tot*100}%;width:${Math.max(x.duracion/tot*100,1.5)}%">${esc(x.nombre)}</div>`).join('')}</div>`).join('')}</div>
+  <div class="row" style="margin-top:10px"><button class="s fix" onclick="aCapcut('multicam','m-log')">Crear proyecto de CapCut con una pista por cámara</button></div>
+  <div class="small mut" style="margin-top:6px">Azul: sincronizado por audio · Ámbar: confianza media o estimado · Rojo: colocar a mano (sin audio o sin solape)</div>
+  <h3>Orden lógico</h3><table><tr><th>#</th><th>Clip</th><th>Cámara</th><th>Inicio</th><th>Fin</th><th>Cómo se ubicó</th></tr>
+  ${m.clips.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.nombre)}</td><td>${esc(x.camara)}</td><td>${fmt(x.inicio)}</td><td>${fmt(x.fin)}</td><td>${esc(x.metodo)}${x.confianza&&x.confianza<99?` <span class="mut small">(confianza ${x.confianza})</span>`:''}</td></tr>`).join('')}</table></div>`;
+  el.innerHTML=h;
+}
+
+/* ---------- Maquetado ---------- */
+function pintaMaq(){
+  const m=D.maquetado, el=$('q-res'); if(!m){el.innerHTML='';return}
+  const r=m.resumen, pv=(D.previews||[]);
+  let h=`<div class="card"><div class="kpi"><div><b>${fmt(r.duracion_original)}</b>material original</div><div><b>${fmt(r.duracion_final)}</b>resultado</div><div><b>${r.ahorro_pct}%</b>menos</div><div><b>${r.lineas_ok}/${r.lineas_total}</b>líneas del guion cubiertas</div>
+  <div><b>${r.muletillas_cortadas}</b>muletillas</div><div><b>${r.silencios_cortados}</b>silencios</div><div><b>${r.respiraciones_cortadas}</b>respiraciones</div><div><b>${r.repeticiones_cortadas}</b>repeticiones</div></div>
+  ${pv.includes('maquetado_preview.mp4')?`<video controls src="/api/preview?proyecto=${encodeURIComponent(proy())}&archivo=maquetado_preview.mp4&t=${Date.now()}" style="max-height:320px"></video>`:''}
+  <div class="row" style="margin-top:8px"><button class="s fix" id="q-fin" onclick="lanzar('render',{calidad:'final'},'q-log',cargar)">Render en calidad original</button><button class="s fix" onclick="aCapcut('maquetado','q-log')">Crear proyecto de CapCut con los cortes</button><span class="mut small">${pv.includes('maquetado_final.mp4')?'Ya hay un render final en tomas_data/'+esc(proy())+'/maquetado/':''}</span></div></div>
+  <div class="card"><h2>Toma elegida para cada línea del guion</h2><table><tr><th>#</th><th>Guion</th><th>Estado</th><th>Toma elegida</th></tr>
+  ${m.lineas.map(l=>`<tr><td>${l.n}${l.escena?`<div class="mut small">esc. ${esc(l.escena)}</div>`:''}</td><td>${esc(l.guion)}</td>
+   <td><span class="tag ${l.estado==='ok'?'pass':l.estado==='incompleta'?'warn':'fail'}">${esc(l.estado)}</span></td>
+   <td class="small">${l.clip?`<b>${esc(l.clip)}</b> ${fmt(l.inicio)}–${fmt(l.fin)} · ${esc(l.motivo)}<div class="mut">«${esc(l.dicho)}»</div>`:esc(l.motivo)}</td></tr>`).join('')}</table></div>
+  <div class="card"><h2>Cortes realizados (${m.cortes.length})</h2><div style="max-height:240px;overflow:auto"><table>${m.cortes.map(c=>`<tr><td>${esc(c.motivo)}</td><td class="mut">${esc(m.clips[c.clip]?.split('/').pop())} · ${fmt(c.start)}–${fmt(c.end)}</td></tr>`).join('')||'<tr><td class="mut">Sin cortes internos</td></tr>'}</table></div></div>`;
+  el.innerHTML=h;
+}
+
+async function aCapcut(servicio,logId){
+  const btn=event.target; btn.disabled=true; const lg=$(logId); lg.classList.remove('hide'); lg.textContent='Creando proyecto de CapCut…';
+  const r=await api('/api/capcut',{proyecto:proy(),servicio,nombre:''});
+  const t=setInterval(async()=>{const j=await api('/api/job?id='+r.job); lg.textContent=j.log.slice(-8).join('\n');
+    if(j.estado==='terminado'||j.estado==='error'){clearInterval(t);btn.disabled=false;
+      lg.textContent+= j.estado==='error'?'\n✗ '+j.error:'\n✓ Listo. Cierra CapCut y ejecuta en la terminal:\n'+j.resultado.instalar+'\nLuego abre CapCut: el proyecto aparece en la lista.'}},1000)}
+
+/* ---------- Explorador de carpetas ---------- */
+let expDestino=null, expDir=null, expSoloDir=false;
+async function explorar(id,soloDir){expDestino=id;expSoloDir=soloDir;$('exp-usar').style.display=soloDir?'':'none';$('exp-m').classList.add('on');await ir(v(id)||E.home)}
+async function ir(r){const j=await api('/api/explorar?ruta='+encodeURIComponent(r)); if(j.error){$('exp-l').innerHTML='<div class="small">'+esc(j.error)+'</div>';return}
+  expDir=j.ruta; $('exp-ruta').textContent=j.ruta; window._padre=j.padre;
+  $('exp-l').innerHTML=j.items.map(x=>`<div data-r="${esc(x.ruta)}" data-d="${x.dir?1:0}">${x.dir?'📁':'🎬'} ${esc(x.nombre)}</div>`).join('')||'<div class="mut">Vacía</div>';
+  $('exp-l').querySelectorAll('div[data-r]').forEach(d=>d.onclick=()=>{d.dataset.d==='1'?ir(d.dataset.r):(!expSoloDir&&elegir(d.dataset.r))})}
+function irPadre(){ir(window._padre)} function usarRuta(){elegir(expDir)}
+function elegir(r){$(expDestino).value=r;cerrar('exp-m')}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "_nota": "Criterios de la productora (documento de requerimientos). Los umbrales son provisionales: se ajustan con las tomas que la productora clasifique.",
+  "criterios": [
+    {"id": "encuadre", "nombre": "Encuadre", "decide": "imagen", "importancia": "media",
+     "regla": "Regla de los tercios; sin demasiado cielo ni suelo; el sujeto no pegado a los bordes."},
+    {"id": "color", "nombre": "Color", "decide": "imagen", "importancia": "alta",
+     "regla": "Color natural; ni sobreexpuesta, ni subexpuesta, ni a contraluz."},
+    {"id": "movimiento", "nombre": "Movimiento", "decide": "imagen", "importancia": "alta",
+     "regla": "Cámara estable; si se mueve, que sea suave."},
+    {"id": "sonido", "nombre": "Calidad del sonido", "decide": "audio", "importancia": "alta",
+     "regla": "Sonido estable, sin ruido externo (viento, roces, popping), sin saturar y no muy bajo."},
+    {"id": "imagen", "nombre": "Calidad de la imagen", "decide": "imagen", "importancia": "alta",
+     "regla": "Nítida, sin pixelado, sin grano excesivo, sin desenfoque."},
+    {"id": "pronunciacion", "nombre": "Pronunciación", "decide": "audio", "importancia": "media",
+     "regla": "Palabras claras; sin exceso de muletillas."},
+    {"id": "guion", "nombre": "Fiel al guion", "decide": "guion", "importancia": "alta",
+     "regla": "Mantiene la misma idea del guion (palabras y orden pueden variar); no se equivoca, no divaga, no deja frases a medias."}
+  ],
+  "umbrales": {
+    "luma_sub_warn": 0.28, "luma_sub_fail": 0.18, "luma_sobre_warn": 0.72, "luma_sobre_fail": 0.82,
+    "clip_alto_warn": 0.08, "clip_alto_fail": 0.20, "contraluz_ratio_warn": 0.75, "contraluz_ratio_fail": 0.55,
+    "dominante_warn": 0.30, "dominante_fail": 0.50,
+    "nitidez_rel_warn": 0.55, "nitidez_abs_warn": 8.0, "nitidez_abs_fail": 3.0, "ruido_sigma_warn": 6.0, "ruido_sigma_fail": 12.0,
+    "alto_min_warn": 1080, "alto_min_fail": 480,
+    "jitter_warn": 0.004, "jitter_fail": 0.010, "brusco_warn": 0.03, "brusco_fail": 0.08,
+    "borde_fail": 0.06, "tercios_tol": 0.17,
+    "snr_warn": 20.0, "snr_fail": 12.0, "voz_baja_warn_db": -32.0, "voz_baja_fail_db": -40.0,
+    "clip_audio_warn": 0.001, "clip_audio_fail": 0.01, "graves_warn": 0.03, "graves_fail": 0.10, "pico_fail_dbtp": -0.3,
+    "muletillas_warn": 0.04, "muletillas_fail": 0.09, "baja_conf_warn": 0.12, "baja_conf_fail": 0.30,
+    "guion_ok": 0.70, "guion_dudoso": 0.45
+  },
+  "momentos": ["toma correcta", "toma incorrecta", "información valiosa", "inicio de escena", "fin de escena", "número de escena", "código de video", "toma de paso"],
+  "muletillas": ["eh", "ehh", "eeh", "em", "emm", "mm", "mmm", "mmmm", "um", "uh", "ah", "aah", "ahh", "eeee", "aaa"],
+  "muletillas_contextuales": ["este", "pues", "bueno", "osea", "entonces", "digamos", "verdad"]
+}
