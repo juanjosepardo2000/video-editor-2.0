@@ -183,9 +183,11 @@ def estabilidad(ventanas: list[np.ndarray], fps: float = 6.0) -> dict:
         k = min(5, len(d))
         liso = np.vstack([np.convolve(d[:, c], np.ones(k) / k, mode="same") for c in range(2)]).T
         jit.append(np.hypot(*(d - liso).T))
-        sp = mag > 0.06
-        brusco += int(sp.sum()); tot += len(d)
-        eventos += [{"t": round(offset + (i + 1) / fps, 2), "tipo": "movimiento brusco", "detalle": f"desplazamiento {mag[i]*100:.0f}% del ancho"}
+        # sacudida = cambio repentino de velocidad (un paneo suave, aunque rápido, no cuenta)
+        jerk = np.hypot(*np.diff(d, axis=0).T) if len(d) > 1 else np.zeros(1)
+        sp = jerk > 0.03
+        brusco += int(sp.sum()); tot += len(jerk)
+        eventos += [{"t": round(offset + (i + 2) / fps, 2), "tipo": "sacudida", "detalle": f"cambio brusco de velocidad ({jerk[i]*100:.1f}% del ancho)"}
                     for i in np.where(sp)[0][:4]]
         offset += len(v) / fps
     if not tot:
@@ -194,12 +196,12 @@ def estabilidad(ventanas: list[np.ndarray], fps: float = 6.0) -> dict:
     fb = brusco / tot
     estados, motivos = [], []
     for val, key, txt in ((j, "jitter", f"cámara temblorosa (vibración {j*100:.2f}% del ancho)"),
-                          (fb, "brusco", f"movimientos bruscos en {fb*100:.0f}% del tiempo")):
+                          (fb, "brusco", f"sacudidas bruscas en {fb*100:.0f}% del tiempo")):
         es = _status(val, U[f"{key}_warn"], U[f"{key}_fail"])
         if es != "pass":
             estados.append(es); motivos.append(txt)
     return {"estado": _worst(estados), "motivo": "; ".join(motivos) or "cámara estable",
-            "valores": {"vibracion": round(j, 5), "bruscos": round(fb, 3)}, "eventos": eventos[:8]}
+            "valores": {"vibracion": round(j, 5), "bruscos": round(fb, 3), "sacudidas": round(fb, 3)}, "eventos": eventos[:8]}
 
 
 _FACE = None
@@ -264,6 +266,48 @@ def _worst(estados: list[str]) -> str:
     return "fail" if "fail" in estados else "warn" if "warn" in estados else "pass"
 
 
+_PERFIL = None
+
+
+def _perfil():
+    global _PERFIL
+    if _PERFIL is None:
+        import cv2
+        _PERFIL = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_profileface.xml")
+    return _PERFIL
+
+
+def deteccion_caras(path, dur: float) -> dict:
+    """Rostro (frontal o de perfil, Haar) en ~10 fotogramas a 540 px: en cuántos aparece, su tamaño y dónde está.
+    El perfil cuenta porque en entrevistas la gente habla girada hacia el otro."""
+    try:
+        import cv2
+        det, per = _cascade(), _perfil()
+    except ImportError:
+        return {"n": 0, "ratio": None}
+    g = sample(path, dur, fps=1.0, width=540, gray=True, max_frames=10)
+    if not len(g):
+        return {"n": 0, "ratio": None}
+    H, W = g.shape[1], g.shape[2]
+    ms = (int(H * 0.025),) * 2
+    cajas, frontales = [], 0
+    for im in g:
+        fr = det.detectMultiScale(im, 1.1, 5, minSize=ms)
+        pf = per.detectMultiScale(im, 1.1, 6, minSize=ms)
+        pf2 = per.detectMultiScale(cv2.flip(im, 1), 1.1, 6, minSize=ms)
+        pf2 = [(W - x - w, y, w, h) for x, y, w, h in pf2]
+        frontales += len(fr) > 0
+        todas = list(fr) + list(pf) + pf2
+        cajas.append(max(todas, key=lambda b: b[2] * b[3]) if todas else None)
+    ok = [c for c in cajas if c is not None]
+    out = {"n": len(g), "ratio": round(len(ok) / len(g), 3), "ratio_frontal": round(frontales / len(g), 3), "h": 0.0, "cx": None, "top": None}
+    if ok:
+        out["h"] = round(float(np.median([c[3] / H for c in ok])), 4)
+        out["cx"] = round(float(np.median([(c[0] + c[2] / 2) / W for c in ok])), 3)
+        out["top"] = round(float(np.min([c[1] / H for c in ok])), 3)
+    return out
+
+
 def analizar_imagen(path, dur: float, alto: int) -> dict:
     rgb = sample(path, dur, fps=1.0, width=320, gray=False, max_frames=60)
     times = [i * dur / max(len(rgb), 1) for i in range(len(rgb))]
@@ -276,4 +320,4 @@ def analizar_imagen(path, dur: float, alto: int) -> dict:
     return {"color": exposicion_color(rgb, times),
             "imagen": nitidez_ruido(gray_hi, alto, times_hi),
             "movimiento": estabilidad(motion_windows(path, dur)),
-            "encuadre": encuadre(rgb, gray_lo)}
+            "encuadre": {**(e := encuadre(rgb, gray_lo)), "valores": {**e["valores"], "caras": deteccion_caras(path, dur)}}}

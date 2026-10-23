@@ -37,3 +37,30 @@ def test_gcc_phat_recupera_el_desfase():
     a, b = s[: M.SR * 20], 0.4 * s[M.SR * 12: M.SR * 30]       # b empieza 12 s después de a
     d, conf, _ = M.gcc_phat(a, b)
     assert abs(d - 12.0) < 0.01 and conf > M.CONF_OK
+
+
+def test_fidelidad_estricta_con_palabras_que_faltan():
+    g = [{"n": 1, "escena": "1", "texto": "¿Sabes hacia dónde está avanzando la ingeniería estructural?", "importante": False}]
+    r = G.fidelidad("¿De dónde está avanzando la ingeniería estructural?", g)
+    assert r["estado"] != "pass" and "sabes" in r["valores"]["faltan"]
+
+
+def test_frase_a_la_mitad_es_mala():
+    g = [{"n": 1, "escena": "1", "texto": "Si eres estudiante, profesional o investigador, podrás actualizarte, intercambiar ideas y conectar con el sector.", "importante": False}]
+    assert G.fidelidad("Si eres estudiante, profesional o investigador, podrás actualizarte.", g)["estado"] == "fail"
+
+
+def test_hablante_ausente_es_critico():
+    from tomas import clasificador as C
+    base = {"estado": "pass", "motivo": "", "eventos": [], "valores": {"caras": {"n": 10, "ratio": 0.2, "h": 0.1, "cx": 0.5, "top": 0.2}}}
+    r = C._encuadre_hablante(base)
+    assert r["estado"] == "fail" and r["critico"]
+    crit = {k: {"estado": "pass", "motivo": "", "valores": {}, "eventos": []} for k in C.CRITERIOS}
+    crit["encuadre"] = r
+    assert C.semaforo(crit)[0] == "rojo"
+
+
+def test_toma_demasiado_corta():
+    from tomas import clasificador as C
+    assert C._completa({"duracion": 1.6, "habla": {"palabras": []}}, None)["estado"] == "fail"
+    assert C._completa({"duracion": 8.0, "habla": {"palabras": []}}, None)["estado"] == "pass"

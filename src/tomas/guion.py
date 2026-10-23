@@ -116,6 +116,18 @@ def solape(toma: list[str], ref: list[str]) -> tuple[float, float]:
     return acierto / len(ref), acierto / len(toma)
 
 
+def palabras_faltantes(toma: list[str], ref: list[str]) -> list[str]:
+    """Palabras de contenido del guion que la toma no dice (con la misma tolerancia que el emparejamiento)."""
+    libres, falta = list(toma), []
+    for r in ref:
+        j = next((k for k, t in enumerate(libres) if _coincide(r, t) > 0), None)
+        if j is None:
+            falta.append(r)
+        else:
+            libres.pop(j)
+    return falta
+
+
 def mejor_tramo(texto_toma: str, guion: list[dict], max_lineas: int = 4) -> dict:
     """Busca el tramo de líneas consecutivas del guion más parecido a lo dicho en la toma."""
     t = content_tokens(texto_toma)
@@ -165,25 +177,34 @@ def fidelidad(texto_toma: str, guion: list[dict], juez: str = "difuso") -> dict:
     ref = " ".join(l["texto"] for l in lineas)
     cov, prec, f1 = t["cobertura"], t["precision"], t["f1"]
     motivo_juez = None
-    if juez == "claude" and U["guion_dudoso"] <= f1 < U["guion_ok"] + 0.1:
+    if juez == "claude" and 0.45 <= f1 < 0.9:
         j = juez_claude(texto_toma, ref)
         if j:
-            f1 = max(f1, float(j.get("score", f1))) if j.get("misma_idea") else min(f1, float(j.get("score", f1)))
+            if j.get("misma_idea") and j.get("completa", True):     # el juez confirma la misma idea, completa
+                cov, prec = max(cov, U["cob_ok"]), max(prec, U["prec_ok"])
+            elif not j.get("misma_idea"):
+                cov = min(cov, U["cob_dudoso"] - 0.1)
             motivo_juez = j.get("motivo")
-    if f1 >= U["guion_ok"]:
+    faltan = palabras_faltantes(content_tokens(texto_toma), content_tokens(ref))
+    f_txt = f" Le faltan: {', '.join(faltan[:4])}." if faltan else ""
+    if cov >= U["cob_ok"] and prec >= U["prec_ok"]:
         estado, motivo = "pass", f"dice lo del guion (cobertura {cov*100:.0f}%)"
-    elif f1 >= U["guion_dudoso"]:
+    elif cov >= U["cob_dudoso"] and prec >= U["prec_dudoso"]:
         estado = "warn"
-        motivo = (f"dice solo una parte del guion (cobertura {cov*100:.0f}%): posible frase a medias" if cov < prec
-                  else f"añade o cambia bastante respecto al guion (precisión {prec*100:.0f}%): revisar si mantiene la idea")
+        if cov < U["cob_ok"] and prec < U["prec_ok"]:
+            motivo = f"le faltan partes del guion y añade otras (cobertura {cov*100:.0f}%, precisión {prec*100:.0f}%).{f_txt}"
+        elif cov < U["cob_ok"]:
+            motivo = f"no dice todo el guion (cobertura {cov*100:.0f}%): frase incompleta o cambia palabras.{f_txt}"
+        else:
+            motivo = f"dice el guion pero añade otras cosas (precisión {prec*100:.0f}%): conversación o frases de más"
     else:
         estado = "fail"
-        motivo = (f"no se parece al guion (cobertura {cov*100:.0f}%, precisión {prec*100:.0f}%): se equivoca, divaga o es otra línea")
+        motivo = f"no se parece al guion (cobertura {cov*100:.0f}%, precisión {prec*100:.0f}%): se equivoca, divaga o es otra línea.{f_txt}"
     if motivo_juez:
         motivo += f" · juez: {motivo_juez}"
     esc = next((l["escena"] for l in lineas if l["escena"]), "")
     return {"estado": estado, "motivo": motivo,
-            "valores": {"cobertura": round(cov, 3), "precision": round(prec, 3), "f1": round(f1, 3),
+            "valores": {"cobertura": round(cov, 3), "precision": round(prec, 3), "f1": round(f1, 3), "faltan": faltan[:6],
                         "lineas": [l["n"] for l in lineas], "escena": esc,
                         "importante": any(l["importante"] for l in lineas)},
             "eventos": []}
